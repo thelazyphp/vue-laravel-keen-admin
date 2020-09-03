@@ -3,13 +3,13 @@
 </template>
 
 <script>
-import EmptyLayout   from '@/layouts/Empty.vue'
 import DefaultLayout from '@/layouts/Default.vue'
+import EmptyLayout   from '@/layouts/Empty.vue'
 
 export default {
   components: {
-    EmptyLayout,
-    DefaultLayout
+    DefaultLayout,
+    EmptyLayout
   },
 
   computed: {

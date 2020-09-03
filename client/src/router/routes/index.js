@@ -3,19 +3,21 @@ import Home from '@/views/Home.vue'
 export default [
   {
     path: '/',
+    name: 'home',
     component: Home,
 
     meta: {
-      title: 'Главная | Realty',
+      title: 'Главная',
       layout: 'default',
       middleware: ['auth']
     }
   },
   {
     path: '/sign-in',
+    name: 'sign-in',
 
     meta: {
-      title: 'Войти в аккаунт | Realty',
+      title: 'Войти в аккаунт',
       layout: 'empty',
       middleware: ['guest']
     },
@@ -24,9 +26,10 @@ export default [
   },
   {
     path: '/sign-up',
+    name: 'sign-up',
 
     meta: {
-      title: 'Создать аккаунт | Realty',
+      title: 'Создать аккаунт',
       layout: 'empty',
       middleware: ['guest']
     },
