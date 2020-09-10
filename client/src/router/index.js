@@ -1,8 +1,7 @@
-import Vue        from 'vue'
-import VueRouter  from 'vue-router'
-import routes     from './routes'
+import Vue from 'vue'
+import routes from './routes'
+import VueRouter from 'vue-router'
 import middleware from './middleware'
-import store      from '@/store'
 
 Vue.use(VueRouter)
 
@@ -14,12 +13,12 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   middleware.global.forEach(item => {
-    item(to, from, next, store)
+    item(to, from, next)
   })
 
   if (to.meta.middleware) {
     to.meta.middleware.forEach(item => {
-      middleware.route[item](to, from, next, store)
+      middleware.route[item](to, from, next)
     })
   }
 

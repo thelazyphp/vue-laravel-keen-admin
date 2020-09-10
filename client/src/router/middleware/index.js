@@ -1,6 +1,6 @@
-import user  from './user.js'
+import user from './user.js'
 import title from './title.js'
-import auth  from './auth.js'
+import auth from './auth.js'
 import guest from './guest.js'
 
 export default {
@@ -12,12 +12,5 @@ export default {
   route: {
     auth,
     guest,
-  },
-
-  priority: [
-    'auth',
-    'guest',
-    'user',
-    'title',
-  ]
+  }
 }

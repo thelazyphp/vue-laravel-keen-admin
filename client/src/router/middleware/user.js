@@ -1,7 +1,10 @@
-export default async function (to, from, next, store) {
-  if (store.getters['auth/check'] && !store.state.users.current) {
-    await store.dispatch('users/fetchCurrent')
-  }
+import store from '@/store'
 
-  next()
+export default function (to, from, next) {
+  if (store.getters['auth/isAuthenticated'] && !store.state.user) {
+    store.dispatch('fetchUser')
+      .then(() => next())
+  } else {
+    next()
+  }
 }

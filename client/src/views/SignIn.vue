@@ -22,6 +22,12 @@
 								<h3>Войти в аккаунт</h3>
 							</div>
 							<form class="kt-login-v2__form kt-form" @submit.prevent="signIn">
+                <div v-if="error" class="alert alert-danger" role="alert">
+                  <div class="alert-icon">
+                    <i class="flaticon-warning"></i>
+                  </div>
+                  <div class="alert-text">Неверный E-Mail или пароль!</div>
+                </div>
 								<div class="form-group">
 									<input v-model="form.username" type="email" class="form-control" placeholder="E-Mail" required autofocus autocomplete="email">
 								</div>
@@ -44,10 +50,12 @@
 </template>
 
 <script>
+require('@/assets/js/pages/custom/user/login.js')
+
 export default {
   data () {
     return {
-      loading: false,
+      error: false,
 
       form: {
         username: null,
@@ -56,25 +64,26 @@ export default {
     }
   },
 
-  mounted () {
-    document.body.setAttribute('class', 'kt-login-v2--enabled kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--transparent kt-aside--enabled kt-aside--fixed kt-page--loading')
-    require('@/assets/js/pages/custom/user/login.js')
+  validations: {
+    form: {
+      //
+    }
+  },
+
+  beforeMount () {
+    document.body.setAttribute(
+      'class',
+      'kt-login-v2--enabled kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--transparent kt-aside--enabled kt-aside--fixed kt-page--loading'
+    )
   },
 
   methods: {
-    async signIn () {
-      this.loading = true
+    signIn () {
+      this.error = false
 
-      try {
-        await this.$store.dispatch('auth/signIn', this.form)
-        this.$router.push('/')
-      } catch (error) {
-        //
-
-        console.log(error)
-      } finally {
-        this.loading = false
-      }
+      this.$store.dispatch('auth/signIn', this.form)
+        .then(() => this.$router.push('/'))
+        .catch(() => this.error = true)
     }
   }
 }

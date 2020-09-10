@@ -22,6 +22,12 @@
 								<h3>Создать аккаунт</h3>
 							</div>
 							<form class="kt-login-v2__form kt-form" @submit.prevent="signUp">
+                <div v-if="error" class="alert alert-danger" role="alert">
+                  <div class="alert-icon">
+                    <i class="flaticon-warning"></i>
+                  </div>
+                  <div class="alert-text">При создании аккаунта произошла ошибка!</div>
+                </div>
                 <div class="form-group">
 									<input v-model="form.l_name" type="text" class="form-control" placeholder="Фамилия*" required autofocus autocomplete="family-name">
 								</div>
@@ -59,12 +65,13 @@
 </template>
 
 <script>
+require('@/assets/js/pages/custom/user/login.js')
 import ApiService from '@/services/api.service.js'
 
 export default {
   data () {
     return {
-      loading: false,
+      error: false,
 
       form: {
         company_name: null,
@@ -78,31 +85,34 @@ export default {
     }
   },
 
-  mounted () {
-    document.body.setAttribute('class', 'kt-login-v2--enabled kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--transparent kt-aside--enabled kt-aside--fixed kt-page--loading')
-    require('@/assets/js/pages/custom/user/login.js')
+  validations: {
+    form: {
+      //
+    }
+  },
+
+  beforeMount () {
+    document.body.setAttribute(
+      'class',
+      'kt-login-v2--enabled kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--transparent kt-aside--enabled kt-aside--fixed kt-page--loading'
+    )
   },
 
   methods: {
-    async signUp () {
-      this.loading = true
+    signUp () {
+      this.error = false
 
-      try {
-        await ApiService.signUp(this.form)
+      ApiService.signUp(this.form)
+        .then(() => {
+          const form = {
+            username: this.form.email,
+            password: this.form.password
+          }
 
-        await this.$store.dispatch('auth/signIn', {
-          username: this.form.email,
-          password: this.form.password
+          this.$store.dispatch('auth/signIn', form)
+            .then(() => this.$router.push('/profile'))
         })
-
-        this.$router.push('/')
-      } catch (error) {
-        //
-
-        console.log(error)
-      } finally {
-        this.loading = false
-      }
+        .catch(() => this.error = true)
     }
   }
 }

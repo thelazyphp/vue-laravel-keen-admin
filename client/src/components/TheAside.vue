@@ -7,7 +7,7 @@
 				</router-link>
 			</div>
 			<div class="kt-aside__brand-tools">
-				<button id="kt_aside_toggler" class="kt-aside__brand-aside-toggler kt-aside__brand-aside-toggler--left">
+				<button id="kt_aside_toggler" type="button" class="kt-aside__brand-aside-toggler kt-aside__brand-aside-toggler--left">
           <span></span>
         </button>
 			</div>

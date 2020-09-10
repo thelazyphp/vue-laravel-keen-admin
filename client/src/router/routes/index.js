@@ -1,39 +1,57 @@
-import Home from '@/views/Home.vue'
-
 export default [
   {
     path: '/',
-    name: 'home',
-    component: Home,
+    component: () => import('@/layouts/Default.vue'),
 
-    meta: {
-      title: 'Главная',
-      layout: 'default',
-      middleware: ['auth']
-    }
+    children: [
+      {
+        path: '',
+
+        meta: {
+          middleware: ['auth'],
+          title: 'Главная'
+        },
+
+        component: () => import('@/views/Home.vue')
+      },
+      {
+        path: 'profile',
+
+        meta: {
+          middleware: ['auth'],
+          title: 'Профиль',
+          subheader: 'the-edit-profile-subheader'
+        },
+
+        component: () => import('@/views/Profile.vue')
+      }
+    ]
   },
   {
-    path: '/sign-in',
-    name: 'sign-in',
+    path: '/',
+    component: () => import('@/layouts/Empty.vue'),
 
-    meta: {
-      title: 'Войти в аккаунт',
-      layout: 'empty',
-      middleware: ['guest']
-    },
+    children: [
+      {
+        path: 'sign-in',
 
-    component: () => import(/* webpackChunkName: "sign-in" */ '@/views/SignIn.vue')
-  },
-  {
-    path: '/sign-up',
-    name: 'sign-up',
+        meta: {
+          middleware: ['guest'],
+          title: 'Войти в аккаунт'
+        },
 
-    meta: {
-      title: 'Создать аккаунт',
-      layout: 'empty',
-      middleware: ['guest']
-    },
+        component: () => import('@/views/SignIn.vue')
+      },
+      {
+        path: 'sign-up',
 
-    component: () => import(/* webpackChunkName: "sign-up" */ '@/views/SignUp.vue')
-  },
+        meta: {
+          middleware: ['guest'],
+          title: 'Создать аккаунт'
+        },
+
+        component: () => import('@/views/SignUp.vue')
+      }
+    ]
+  }
 ]

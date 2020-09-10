@@ -13,8 +13,7 @@ module.exports = {
   configureWebpack: {
     resolve: {
       alias: {
-        'morris.js': 'morris.js/morris.js',
-        'jquery-ui': 'jquery-ui'
+        'morris.js': 'morris.js/morris.js'
       }
     }
   }

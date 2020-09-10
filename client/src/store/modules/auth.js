@@ -8,7 +8,7 @@ export default {
   },
 
   getters: {
-    check (state) {
+    isAuthenticated (state) {
       return !!state.token
     }
   },
@@ -20,23 +20,27 @@ export default {
   },
 
   actions: {
-    async signIn ({ commit }, credentials) {
-      try {
-        const res = await ApiService.signIn(credentials)
-        commit('setToken', res.data.access_token)
-      } catch (error) {
-        //
-      }
+    signIn ({ commit }, credentials) {
+      return new Promise((resolve, reject) => {
+        ApiService.signIn(credentials)
+          .then(res => {
+            commit('setToken', res.data.access_token)
+            return resolve(res)
+          })
+          .catch(error => reject(error))
+      })
     },
 
-    async signOut ({ commit }) {
-      try {
-        await ApiService.signOut()
-        commit('setToken', null)
-        commit('users/setCurrent', null, { root: true })
-      } catch (error) {
-        //
-      }
+    signOut ({ commit }) {
+      return new Promise((resolve, reject) => {
+        ApiService.signOut()
+          .then(res => {
+            commit('setToken', null)
+            commit('setUser', null, { root: true })
+            return resolve(res)
+          })
+          .catch(error => reject(error))
+      })
     }
   }
 }

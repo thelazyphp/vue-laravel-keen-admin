@@ -1,7 +1,9 @@
-export default function (to, from, next, store) {
-  if (!store.getters['auth/check']) {
-    next('/sign-in')
-  } else {
+import store from '@/store'
+
+export default function (to, from, next) {
+  if (store.getters['auth/isAuthenticated']) {
     next()
+  } else {
+    next('/sign-in')
   }
 }
