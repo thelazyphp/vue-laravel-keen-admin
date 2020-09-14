@@ -23,8 +23,8 @@ var KTUsersEdit = function () {
                         //KTApp.unblock(formEl);
 
                         swal.fire({
-                            "title": "", 
-                            "text": "The application has been successfully submitted!", 
+                            "title": "",
+                            "text": "The application has been successfully submitted!",
                             "type": "success",
                             "confirmButtonClass": "btn btn-secondary"
                         });
@@ -45,6 +45,6 @@ var KTUsersEdit = function () {
     };
 }();
 
-jQuery(document).ready(function() {    
+jQuery(document).ready(function() {
     KTUsersEdit.init();
 });

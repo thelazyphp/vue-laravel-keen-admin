@@ -1,10 +1,8 @@
-import store from '@/store'
-
-export default function (to, from, next) {
+export default function user ({ next, store }) {
   if (store.getters['auth/isAuthenticated'] && !store.state.user) {
-    store.dispatch('fetchUser')
+    return store.dispatch('fetchUser')
       .then(() => next())
-  } else {
-    next()
   }
+
+  return next()
 }

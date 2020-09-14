@@ -48,18 +48,34 @@
 								<img src="@/assets/media/users/300_13.jpg" class="kt-rounded-" alt="">
 							</div>
 							<div class="kt-user-card__details">
-								<div class="kt-user-card__name">{{ $store.state.user.f_name }} {{ $store.state.user.l_name }}</div>
+								<div class="kt-user-card__name">{{ $store.state.user.l_name }} {{ $store.state.user.f_name }}</div>
 								<div v-if="$store.state.user.company" class="kt-user-card__position">{{ $store.state.user.company.name }}</div>
 							</div>
 						</div>
 					</div>
 					<ul class="kt-nav kt-margin-b-10">
 						<li class="kt-nav__item">
-							<router-link to="/profile" class="kt-nav__link">
+							<router-link :to="{ name: 'user.profile' }" class="kt-nav__link">
 								<span class="kt-nav__link-icon">
                   <i class="flaticon2-calendar-3"></i>
                 </span>
 								<span class="kt-nav__link-text">Профиль</span>
+							</router-link>
+						</li>
+            <li class="kt-nav__item">
+							<router-link :to="{ name: 'user.account' }" class="kt-nav__link">
+								<span class="kt-nav__link-icon">
+                  <i class="flaticon2-protected"></i>
+                </span>
+								<span class="kt-nav__link-text">Аккаунт</span>
+							</router-link>
+						</li>
+            <li class="kt-nav__item">
+							<router-link :to="{ name: 'user.company' }" class="kt-nav__link">
+								<span class="kt-nav__link-icon">
+                  <i class="flaticon2-architecture-and-city"></i>
+                </span>
+								<span class="kt-nav__link-text">Организация</span>
 							</router-link>
 						</li>
 						<li class="kt-nav__separator kt-nav__separator--fit"></li>
@@ -76,11 +92,10 @@
 <script>
 export default {
   name: 'TheHeader',
-
   methods: {
-    async signOut () {
-      await this.$store.dispatch('auth/signOut')
-      this.$router.push('/sign-in')
+    signOut () {
+      this.$store.dispatch('auth/signOut')
+        .then(() => this.$router.push('/sign-in'))
     }
   }
 }

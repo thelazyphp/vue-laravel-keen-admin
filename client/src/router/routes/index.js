@@ -1,56 +1,140 @@
+import Home from '@/views/Home.vue'
+import auth from '../middleware/auth.js'
+import guest from '../middleware/guest.js'
+import user from '../middleware/user.js'
+import title from '../middleware/title.js'
+
 export default [
   {
     path: '/',
-    component: () => import('@/layouts/Default.vue'),
-
+    name: 'home',
+    component: Home,
+    meta: {
+      title: 'Главная',
+      layout: 'default',
+      middleware: [
+        auth,
+        user,
+        title,
+      ]
+    }
+  },
+  {
+    path: '/sign-in',
+    name: 'sign-in',
+    component: () => import('@/views/SignIn.vue'),
+    meta: {
+      title: 'Войти в аккаунт',
+      layout: 'empty',
+      middleware: [
+        guest,
+        title,
+      ]
+    }
+  },
+  {
+    path: '/sign-up',
+    name: 'sign-up',
+    component: () => import('@/views/SignUp.vue'),
+    meta: {
+      title: 'Создать аккаунт',
+      layout: 'empty',
+      middleware: [
+        guest,
+        title,
+      ]
+    }
+  },
+  {
+    path: '/ads',
+    component: () => import('@/views/Ads'),
+    meta: {
+      layout: 'default'
+    },
     children: [
       {
-        path: '',
-
+        path: 'apartments',
+        name: 'ads.apartments',
+        component: () => import('@/views/Ads/Apartments.vue'),
         meta: {
-          middleware: ['auth'],
-          title: 'Главная'
-        },
-
-        component: () => import('@/views/Home.vue')
+          title: 'Квартиры',
+          middleware: [
+            auth,
+            title,
+          ]
+        }
       },
       {
-        path: 'profile',
-
+        path: 'houses',
+        name: 'ads.houses',
+        component: () => import('@/views/Ads/Houses.vue'),
         meta: {
-          middleware: ['auth'],
-          title: 'Профиль',
-          subheader: 'the-edit-profile-subheader'
-        },
-
-        component: () => import('@/views/Profile.vue')
+          title: 'Земельная',
+          middleware: [
+            auth,
+            title,
+          ]
+        }
+      },
+      {
+        path: 'commercial-real-estate',
+        name: 'ads.commercial-real-estate',
+        component: () => import('@/views/Ads/CommercialRealEstate.vue'),
+        meta: {
+          title: 'Коммерческая',
+          middleware: [
+            auth,
+            title,
+          ]
+        }
       }
     ]
   },
   {
-    path: '/',
-    component: () => import('@/layouts/Empty.vue'),
-
+    path: '/user',
+    component: () => import('@/views/User'),
+    meta: {
+      layout: 'default'
+    },
     children: [
       {
-        path: 'sign-in',
-
+        path: 'profile',
+        name: 'user.profile',
+        component: () => import('@/views/User/Profile.vue'),
         meta: {
-          middleware: ['guest'],
-          title: 'Войти в аккаунт'
-        },
-
-        component: () => import('@/views/SignIn.vue')
+          title: 'Профиль',
+          middleware: [
+            auth,
+            user,
+            title,
+          ]
+        }
       },
       {
-        path: 'sign-up',
-
+        path: 'account',
+        name: 'user.account',
+        component: () => import('@/views/User/Account.vue'),
         meta: {
-          middleware: ['guest'],
-          title: 'Создать аккаунт'
-        },
-
-        component: () => import('@/views/SignUp.vue')
+          title: 'Аккаунт',
+          middleware: [
+            auth,
+            user,
+            title,
+          ]
+        }
+      },
+      {
+        path: 'company',
+        name: 'user.company',
+        component: () => import('@/views/User/Company.vue'),
+        meta: {
+          title: 'Организация',
+          middleware: [
+            auth,
+            user,
+            title,
+          ]
+        }
       }
     ]
   }

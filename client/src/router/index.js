@@ -1,7 +1,8 @@
 import Vue from 'vue'
-import routes from './routes'
 import VueRouter from 'vue-router'
-import middleware from './middleware'
+import routes from './routes'
+import store from '@/store'
+import middlewarePipeline from './middlewarePipeline.js'
 
 Vue.use(VueRouter)
 
@@ -12,17 +13,22 @@ const router = new VueRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  middleware.global.forEach(item => {
-    item(to, from, next)
-  })
-
-  if (to.meta.middleware) {
-    to.meta.middleware.forEach(item => {
-      middleware.route[item](to, from, next)
-    })
+  if (!to.meta.middleware) {
+    return next()
   }
 
-  next()
+  const middleware = to.meta.middleware
+  const context = {
+    to,
+    from,
+    next,
+    store
+  }
+
+  return middleware[0]({
+    ...context,
+    next: middlewarePipeline(context, middleware, 1)
+  })
 })
 
 export default router

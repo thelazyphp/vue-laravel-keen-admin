@@ -4,13 +4,13 @@
 			<div class="kt-grid__item kt-grid--hor">
 				<div class="kt-login-v2__head">
 					<div class="kt-login-v2__logo">
-						<router-link to="/">
+						<router-link :to="{ name: 'home' }">
 							<img src="@/assets/media/logos/logo-5.png" alt="">
 						</router-link>
 					</div>
 					<div class="kt-login-v2__signup">
 						<span>Нет аккаунта?</span>
-						<router-link to="/sign-up" class="kt-link kt-font-brand">Создать аккаунт</router-link>
+						<router-link :to="{ name: 'sign-up' }" class="kt-link kt-font-brand">Создать аккаунт</router-link>
 					</div>
 				</div>
 			</div>
@@ -56,31 +56,26 @@ export default {
   data () {
     return {
       error: false,
-
       form: {
         username: null,
         password: null
       }
     }
   },
-
   validations: {
     form: {
       //
     }
   },
-
   beforeMount () {
     document.body.setAttribute(
       'class',
       'kt-login-v2--enabled kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--transparent kt-aside--enabled kt-aside--fixed kt-page--loading'
     )
   },
-
   methods: {
     signIn () {
       this.error = false
-
       this.$store.dispatch('auth/signIn', this.form)
         .then(() => this.$router.push('/'))
         .catch(() => this.error = true)

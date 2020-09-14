@@ -7,17 +7,14 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules,
-
   state: {
     user: null
   },
-
   mutations: {
     setUser (state, user) {
       state.user = user
     }
   },
-
   actions: {
     fetchUser ({ commit }) {
       return new Promise((resolve, reject) => {

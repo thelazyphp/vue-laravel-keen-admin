@@ -1,8 +1,7 @@
-export default function (to, from, next) {
+export default function title ({ to, next }) {
   if (to.meta.title) {
     document.title = `${to.meta.title} | Realty`
-    next()
-  } else {
-    next()
   }
+
+  return next()
 }

@@ -1,6 +1,6 @@
 import Vue from 'vue'
-import store from '@/store'
 import Http from '@/plugins/Http.js'
+import store from '@/store'
 
 export default {
   init () {
@@ -12,7 +12,6 @@ export default {
       Vue.Http.setToken(store.state.auth.token)
     }
   },
-
   /**
    * @param {Object} credentials
    * @returns {Promise}
@@ -28,7 +27,6 @@ export default {
         .catch(error => reject(error))
     })
   },
-
   /**
    * @returns {Promise}
    */
@@ -43,7 +41,6 @@ export default {
         .catch(error => reject(error))
     })
   },
-
   /**
    * @param {Object} user
    * @returns {Promise}
@@ -55,7 +52,6 @@ export default {
         .catch(error => reject(error))
     })
   },
-
   /**
    * @param {(Number|String)} slug
    * @returns {Promise}
@@ -67,7 +63,6 @@ export default {
         .catch(error => reject(error))
     })
   },
-
   /**
    * @param {File} file
    * @returns {Promise}
@@ -79,7 +74,7 @@ export default {
 
       Vue.Http.post('/images', data, {
         headers: {
-          'Content-Type': 'multipart/form-data'
+          'content-type': 'multipart/form-data'
         }
       })
       .then(res => resolve(res))

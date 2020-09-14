@@ -1,9 +1,7 @@
-import store from '@/store'
-
-export default function (to, from, next) {
+export default function guest ({ next, store }) {
   if (store.getters['auth/isAuthenticated']) {
-    next('/')
-  } else {
-    next()
+    return next({ name: 'home' })
   }
+
+  return next()
 }

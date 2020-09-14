@@ -1,7 +1,7 @@
 <template>
   <div id="kt_header_mobile" class="kt-header-mobile kt-header-mobile--fixed">
 		<div class="kt-header-mobile__logo">
-			<router-link to="/">
+			<router-link :to="{ name: 'home' }">
 				<img src="@/assets/media/logos/logo-6.png" alt="">
 			</router-link>
 		</div>
@@ -18,6 +18,6 @@
 
 <script>
 export default {
-  name: 'HeaderMobile'
+  name: 'TheHeaderMobile'
 }
 </script>

@@ -4,13 +4,13 @@
 			<div class="kt-grid__item kt-grid--hor">
 				<div class="kt-login-v2__head">
 					<div class="kt-login-v2__logo">
-						<router-link to="/">
+						<router-link :to="{ name: 'home' }">
 							<img src="@/assets/media/logos/logo-5.png" alt="">
 						</router-link>
 					</div>
 					<div class="kt-login-v2__signup">
 						<span>Уже есть аккаунт?</span>
-						<router-link to="/sign-in" class="kt-link kt-font-brand">Войти в аккаунт</router-link>
+						<router-link :to="{ name: 'sign-in' }" class="kt-link kt-font-brand">Войти в аккаунт</router-link>
 					</div>
 				</div>
 			</div>
@@ -72,7 +72,6 @@ export default {
   data () {
     return {
       error: false,
-
       form: {
         company_name: null,
         f_name: null,
@@ -84,24 +83,20 @@ export default {
       }
     }
   },
-
   validations: {
     form: {
       //
     }
   },
-
   beforeMount () {
     document.body.setAttribute(
       'class',
       'kt-login-v2--enabled kt-quick-panel--right kt-demo-panel--right kt-offcanvas-panel--right kt-header--fixed kt-header-mobile--fixed kt-subheader--enabled kt-subheader--transparent kt-aside--enabled kt-aside--fixed kt-page--loading'
     )
   },
-
   methods: {
     signUp () {
       this.error = false
-
       ApiService.signUp(this.form)
         .then(() => {
           const form = {
@@ -110,7 +105,7 @@ export default {
           }
 
           this.$store.dispatch('auth/signIn', form)
-            .then(() => this.$router.push('/profile'))
+            .then(() => this.$router.push({ name: 'user.profile' }))
         })
         .catch(() => this.error = true)
     }
