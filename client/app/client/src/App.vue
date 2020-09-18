@@ -1,15 +1,12 @@
 <template>
-  <div id="app"></div>
+  <router-view></router-view>
 </template>
 
 <script>
-const DEFAULT_LAYOUT = 'default'
-
 export default {
-  computed: {
-    layout () {
-      return DEFAULT_LAYOUT
-    }
+  beforeMount () {
+    document.body.id = 'kt_body'
+    document.body.className = 'header-fixed header-mobile-fixed subheader-enabled subheader-fixed aside-enabled aside-fixed aside-minimize-hoverable'
   }
 }
 </script>
