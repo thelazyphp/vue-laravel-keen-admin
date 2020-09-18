@@ -174,7 +174,7 @@ export default {
               identical: {
                 compare: () => {
                   return document.getElementById('kt_login_signup_form')
-                    .querySelector('[name="password_confirmation"]').value
+                    .querySelector('[name="password"]').value
                 },
                 message: 'Пароли должны совпадать'
               }
