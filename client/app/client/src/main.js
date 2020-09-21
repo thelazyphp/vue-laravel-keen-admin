@@ -157,7 +157,6 @@ window.KTLayoutQuickSearch = require('./assets/js/layout/extended/quick-search.j
 window.KTLayoutQuickUser = require('./assets/js/layout/extended/quick-user.js')
 window.KTLayoutScrolltop = require('./assets/js/layout/extended/scrolltop.js')
 window.KTLayoutSearch = window.KTLayoutSearchOffcanvas = require('./assets/js/layout/extended/search.js')
-require('./assets/js/layout/initialize.js')
 
 Vue.config.productionTip = false
 

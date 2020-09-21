@@ -2,12 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Company;
-use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\User;
+use App\Http\Resources\Users;
+use App\Http\Requests\StoreUser;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 use App\Http\Resources\User as UserResource;
+use App\Http\Requests\UpdateUser;
+use App\Http\Requests\RegisterUser;
+use App\Models\Company;
+use App\Http\Requests\UpdateUserProfile;
+use App\Http\Requests\UpdateUserAccount;
+use App\Http\Requests\UpdateUserCompany;
 
 class UserController extends Controller
 {
@@ -21,55 +27,70 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $this->authorize('viewAny', User::class);
+
+        $this->validate($request, [
+            'sort.field' => 'string',
+            'sort.sort' => 'string:in:asc,desc',
+            'pagination.page' => 'integer|min:1',
+            'pagination.perpage' => 'integer|min:1',
+        ]);
+
+        $field = $request->input('sort.field', 'id');
+        $sort = $request->input('sort.sort', 'asc');
+        $page = $request->input('pagination.page', 1);
+        $perpage = $request->input('pagination.perpage', 10);
+
+        $query = auth()->user()
+            ->company
+            ->users();
+
+        $total = $query->count();
+
+        $pages = ceil($total / $perpage);
+
+        $users = $query->orderBy($field, $sort)
+            ->skip(($page - 1) * $perpage)
+            ->take($perpage)
+            ->get();
+
+        return (new Users($users))->additional([
+            'meta' => [
+                'field' => $field,
+                'sort' => $sort,
+                'total' => $total,
+                'pages' => $pages,
+                'page' => $page,
+                'perpage' => $perpage,
+            ]
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\StoreUser  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUser $request)
     {
-        $this->validate($request, [
-            'image_id' => 'nullable|integer|exists:images,id',
+        $this->authorize('create', User::class);
 
-            'role' => [
-                'required',
-                'string',
-                Rule::in(User::roles()),
-            ],
+        $validated = $request->validated();
 
-            'f_name' => 'string|max:191',
-            'm_name' => 'nullable|string|max:191',
-            'l_name' => 'string|max:191',
-            'email' => 'required|string|max:191|email|unique:users',
-            'phone' => 'nullable|string|max:191|regex:/\+\d{1,3}\d{1,12}/',
-            'about' => 'nullable|string',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+        $validated['password'] = Hash::make($validated['password']);
 
-        $user = User::create($request->only([
-            'image_id',
-            'role',
-            'f_name',
-            'm_name',
-            'l_name',
-            'email',
-            'phone',
-            'about',
-            'password',
-        ]));
+        $user = User::create($validated);
 
         $user->company()->associate(auth()->user()->company);
         $user->save();
 
-        return $user;
+        return new UserResource($user);
     }
 
     /**
@@ -80,50 +101,30 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        $this->authorize('view', $user);
         return new UserResource($user);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\UpdateUser  $request
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, User $user)
+    public function update(UpdateUser $request, User $user)
     {
-        $this->validate($request, [
-            'image_id' => 'nullable|integer|exists:images,id',
+        $this->authorize('update', $user);
 
-            'role' => [
-                'string',
-                Rule::in(User::roles()),
-            ],
+        $validated = $request->validated();
 
-            'f_name' => 'max:191',
-            'm_name' => 'nullable|string|max:191',
-            'l_name' => 'max:191',
-            'email' => 'string|max:191|email|unique:users',
-            'phone' => 'nullable|string|max:191|regex:/\+\d{1,3}\d{1,12}/',
-            'about' => 'nullable|string',
-            'password' => 'string|min:8|confirmed',
-        ]);
-
-        if ($request->has('password')) {
-            $request->password = Hash::make($request->passwrod);
+        if (!empty($validated['password'])) {
+            $validated['password'] = Hash::make($validated['password']);
         }
 
-        return tap($user)->update($request->only([
-            'image_id',
-            'role',
-            'f_name',
-            'm_name',
-            'l_name',
-            'email',
-            'phone',
-            'about',
-            'password',
-        ]));
+        return new UserResource(
+            tap($user)->update($validated)
+        );
     }
 
     /**
@@ -134,38 +135,36 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $this->authorize('delete', $user);
+
         $user->delete();
+
+        return response('', 204);
     }
 
     /**
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\RegisterUser  $request
      * @return \Illuminate\Http\Response
      */
-    public function register(Request $request)
+    public function register(RegisterUser $request)
     {
-        $this->validate($request, [
-            'company_name' => 'nullable|string|max:191|unique:companies,name',
-            'f_name'       => 'required|string|max:191',
-            'm_name'       => 'nullable|string|max:191',
-            'l_name'       => 'required|string|max:191',
-            'email'        => 'required|string|max:191|email|unique:users',
-            'password'     => 'required|string|min:8|confirmed',
-        ]);
+        $validated = $request->validated();
 
-        $attributes = $request->all();
-        $attributes['password'] = Hash::make($request->password);
-        $user = User::create($attributes);
+        $validated['password'] = Hash::make($validated['password']);
 
-        if ($request->filled('company_name')) {
-            $company = Company::create([
-                'name' => $request->company_name,
-            ]);
+        $user = User::create($validated);
 
-            $user->company()->associate($company);
+        if (!empty($validated['company_name'])) {
+            $user->company()->associate(
+                Company::create([
+                    'name' => $validated['company_name'],
+                ])
+            );
+
             $user->save();
         }
 
-        return $user;
+        return new UserResource($user);
     }
 
     /**
@@ -173,51 +172,80 @@ class UserController extends Controller
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function updateAccount(Request $request, User $user)
+    public function activate(Request $request, User $user)
     {
-        $this->validate($request, [
-            'email' => [
-                'string', 'max:191', 'email', Rule::unique('users')->ignore($user),
-            ],
+        $this->authorize('activate', $user);
+        $user->activate();
+    }
 
-            'cur_password' => 'required_with:new_password|password',
-            'new_password' => 'string|min:8|confirmed',
-        ]);
+    /**
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function deactivate(Request $request, User $user)
+    {
+        $this->authorize('deactivate', $user);
+        $user->deactivate();
+    }
 
-        $user = tap($user)->update($request->only('email'));
+    /**
+     * @param  \App\Http\Requests\UpdateUserProfile  $request
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function updateProfile(UpdateUserProfile $request, User $user)
+    {
+        $this->authorize('updateProfile', $user);
 
-        if ($request->has('new_password')) {
-            $user->password = Hash::make($request->new_password);
+        $validated = $request->validated();
+
+        return new UserResource(
+            tap($user)->update($validated)
+        );
+    }
+
+    /**
+     * @param  \App\Http\Requests\UpdateUserAccount  $request
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function updateAccount(UpdateUserAccount $request, User $user)
+    {
+        $this->authorize('updateAccount', $user);
+
+        $validated = $request->validated();
+
+        if (!empty($validated['new_password'])) {
+            $validated['password'] = Hash::make($validated['new_password']);
         }
 
-        $user->save();
-
-        return $user;
+        return new UserResource(
+            tap($user)->update($validated)
+        );
     }
 
     /**
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\UpdateUserCompany  $request
      * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function updateProfile(Request $request, User $user)
+    public function updateCompany(UpdateUserCompany $request, User $user)
     {
-        $this->validate($request, [
-            'image_id' => 'nullable|integer|exists:images,id',
-            'f_name' => 'string|max:191',
-            'm_name' => 'nullable|string|max:191',
-            'l_name' => 'string|max:191',
-            'phone' => 'nullable|string|max:191|regex:/\+\d{1,3}\d{1,12}/',
-            'about' => 'nullable|string',
-        ]);
+        $this->authorize('updateCompany', $user);
 
-        return tap($user)->update($request->only([
-            'image_id',
-            'f_name',
-            'm_name',
-            'l_name',
-            'phone',
-            'about',
-        ]));
+        $validated = $request->validated();
+
+        if (empty($user->company) && !empty($validated['name'])) {
+            $user->company()->associate(
+                Company::create($validated)
+            );
+
+            $user->save();
+        } else {
+            $user->company()->update($validated);
+        }
+
+        return new UserResource($user);
     }
 }

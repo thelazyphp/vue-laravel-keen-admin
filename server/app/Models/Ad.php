@@ -67,6 +67,7 @@ class Ad extends Model
         'url',
         'images',
         'title',
+        'full_address',
         'address_country',
         'address_province',
         'address_area',

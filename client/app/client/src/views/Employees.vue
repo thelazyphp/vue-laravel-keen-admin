@@ -12,7 +12,7 @@ import {
 
 export default {
   beforeMount () {
-    this[SET_PAGE_TITLE]('Главная')
+    this[SET_PAGE_TITLE]('Сотрудники')
   },
   methods: {
     ...mapMutations([

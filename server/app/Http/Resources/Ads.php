@@ -7,6 +7,13 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 class Ads extends ResourceCollection
 {
     /**
+     * The resource that this resource collects.
+     *
+     * @var string
+     */
+    public $collects = 'App\Http\Resources\Ad';
+
+    /**
      * Transform the resource collection into an array.
      *
      * @param  \Illuminate\Http\Request  $request

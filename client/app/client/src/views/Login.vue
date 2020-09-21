@@ -1,11 +1,11 @@
 <template>
   <div class="d-flex flex-column flex-root">
     <div id="kt_login" ref="kt_login" class="login login-4 login-signin-on d-flex flex-row-fluid">
-      <div class="d-flex flex-center flex-row-fluid bgi-size-cover bgi-position-top bgi-no-repeat" :style="{ backgroundImage: `url(${require('@/assets/media/bg/bg-3.jpg')})` }">
+      <div class="d-flex flex-center flex-row-fluid bgi-size-cover bgi-position-top bgi-no-repeat" :style="{ backgroundImage: `url(${backgroundImage})` }">
         <div class="login-form text-center p-7 position-relative overflow-hidden">
           <div class="d-flex flex-center mb-15">
             <router-link :to="{ name: 'home' }">
-              <img src="@/assets/media/logos/logo-letter-13.png" class="max-h-75px" alt="">
+              <img :src="logo" class="max-h-75px" alt="">
             </router-link>
           </div>
           <div class="login-signin">
@@ -20,7 +20,7 @@
               <div class="form-group mb-5">
                 <input v-model="signInForm.password" type="password" class="form-control h-auto form-control-solid py-4 px-8" name="password" placeholder="Пароль">
               </div>
-              <button ref="kt_login_signin_submit" id="kt_login_signin_submit" type="button" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4" @click="handleSignInForm">Войти</button>
+              <button ref="kt_login_signin_submit" id="kt_login_signin_submit" type="submit" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4" @click="handleSignInForm">Войти</button>
             </form>
             <div class="mt-10">
               <span class="opacity-70 mr-4">Еще нет аккаунта?</span>
@@ -55,7 +55,7 @@
                 <input v-model="signUpForm.password_confirmation" type="password" class="form-control h-auto form-control-solid py-4 px-8" name="password_confirmation" placeholder="Подтвердите пароль">
               </div>
               <div class="form-group d-flex flex-wrap flex-center mt-10">
-                <button ref="kt_login_signup_submit" id="kt_login_signup_submit" type="button" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-2" @click="handleSignUpForm">Создать</button>
+                <button ref="kt_login_signup_submit" id="kt_login_signup_submit" type="submit" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-2" @click="handleSignUpForm">Создать</button>
                 <button id="kt_login_signup_cancel" type="button" class="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-2" @click.prevent="showSignInForm">Отмена</button>
               </div>
             </form>
@@ -67,6 +67,11 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
+import {
+  SET_PAGE_TITLE
+} from '../store'
+
 export default {
   data () {
     return {
@@ -86,6 +91,12 @@ export default {
     }
   },
   computed: {
+    backgroundImage () {
+      return require('../assets/media/bg/bg-3.jpg')
+    },
+    logo () {
+      return require('../assets/media/logos/logo-letter-13.png')
+    },
     signInFormValidation () {
       return window.FormValidation.formValidation(this.$refs['kt_login_signin_form'], {
         fields: {
@@ -149,6 +160,11 @@ export default {
               notEmpty: {
                 message: 'Введите имя пользователя'
               },
+              regexp: {
+                regexp: /^[a-z][a-z0-9_]*$/,
+                flags: 'i',
+                message: 'Имя пользователя должно начинаться с латинской буквы и включать только латинские буквы, цифры и нижние подчеркивания'
+              },
               stringLength: {
                 max: 191,
                 message: 'Имя пользователя не может превышать 191 символ'
@@ -174,7 +190,8 @@ export default {
               identical: {
                 compare: () => {
                   return document.getElementById('kt_login_signup_form')
-                    .querySelector('[name="password"]').value
+                    .querySelector('[name="password"]')
+                    .value
                 },
                 message: 'Пароли должны совпадать'
               }
@@ -189,10 +206,17 @@ export default {
       })
     }
   },
+  beforeMount () {
+    this[SET_PAGE_TITLE]('Войти в аккаунт')
+  },
   methods: {
+    ...mapMutations([
+      SET_PAGE_TITLE
+    ]),
     showSignInForm () {
       this.$refs['kt_login'].classList.remove('login-signup-on')
       this.$refs['kt_login'].classList.add('login-signin-on')
+      this[SET_PAGE_TITLE]('Войти в аккаунт')
       window.KTUtil.animateClass(
         this.$refs['kt_login_signin_form'], 'animate__animated animate__backInUp'
       )
@@ -200,6 +224,7 @@ export default {
     showSignUpForm () {
       this.$refs['kt_login'].classList.remove('login-signin-on')
       this.$refs['kt_login'].classList.add('login-signup-on')
+      this[SET_PAGE_TITLE]('Создать аккаунт')
       window.KTUtil.animateClass(
         this.$refs['kt_login_signup_form'], 'animate__animated animate__backInUp'
       )

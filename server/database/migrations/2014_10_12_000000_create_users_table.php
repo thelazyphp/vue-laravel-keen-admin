@@ -17,17 +17,18 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('company_id')->nullable();
             $table->unsignedBigInteger('image_id')->nullable();
-            $table->string('role')->default('manager');
+            $table->boolean('active')->default(true);
+            $table->string('role')->default('admin');
             $table->string('f_name');
             $table->string('m_name')->nullable();
             $table->string('l_name');
-            $table->string('email')->unique();
+            $table->string('email')->nullable();
             $table->string('phone')->nullable();
-            $table->text('about')->nullable();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('username')->unique();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            $table->timestamp('email_verified_at')->nullable();
         });
     }
 

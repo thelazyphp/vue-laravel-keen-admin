@@ -23,6 +23,7 @@ class CreateAdsTable extends Migration
             $table->string('url');
             $table->text('images')->nullable();
             $table->string('title')->nullable();
+            $table->string('full_address')->nullable();
             $table->string('address_country')->nullable();
             $table->string('address_province')->nullable();
             $table->string('address_area')->nullable();

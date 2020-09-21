@@ -19,13 +19,14 @@ class User extends JsonResource
             'id' => $this->id,
             'company' => $this->company,
             'image' => Image::find($this->image_id),
+            'active' => $this->active,
             'role' => $this->role,
             'f_name' => $this->f_name,
             'm_name' => $this->m_name,
             'l_name' => $this->l_name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'about' => $this->about,
+            'username' => $this->username,
         ];
     }
 }

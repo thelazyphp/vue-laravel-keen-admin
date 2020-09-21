@@ -10,6 +10,7 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
+    const ROLE_ADMIN = 'admin';
     const ROLE_MANAGER = 'manager';
     const ROLE_EMPLOYEE = 'employee';
 
@@ -19,6 +20,18 @@ class User extends Authenticatable
      * @return string[]
      */
     public static function roles()
+    {
+        return [
+            self::ROLE_ADMIN,
+            self::ROLE_MANAGER,
+            self::ROLE_EMPLOYEE,
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function fillableRoles()
     {
         return [
             self::ROLE_MANAGER,
@@ -32,7 +45,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $attributes = [
-        'role' => self::ROLE_MANAGER,
+        'active' => true,
+        'role' => self::ROLE_ADMIN,
     ];
 
     /**
@@ -43,13 +57,14 @@ class User extends Authenticatable
     protected $fillable = [
         'company_id',
         'image_id',
+        'active',
         'role',
         'f_name',
         'm_name',
         'l_name',
         'email',
         'phone',
-        'about',
+        'username',
         'password',
     ];
 
@@ -72,6 +87,51 @@ class User extends Authenticatable
     ];
 
     /**
+     * Find the user instance for the given username.
+     *
+     * @param  string  $username
+     * @return \App\Models\User
+     */
+    public function findForPassport($username)
+    {
+        return $this->where('username', $username)->first();
+    }
+
+    /**
+     * @return void
+     */
+    public function activate()
+    {
+        $this->active = true;
+        $this->save();
+    }
+
+    /**
+     * @return void
+     */
+    public function deactivate()
+    {
+        $this->active = false;
+        $this->save();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isActive()
+    {
+        return $this->active;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->role == self::ROLE_ADMIN;
+    }
+
+    /**
      * @return bool
      */
     public function isManager()
@@ -85,32 +145,6 @@ class User extends Authenticatable
     public function isEmployee()
     {
         return $this->role == self::ROLE_EMPLOYEE;
-    }
-
-    /**
-     * @return bool
-     */
-    public function hasCompany()
-    {
-        return !is_null($this->company);
-    }
-
-    /**
-     * @param  \App\Models\Company  $company
-     * @return bool
-     */
-    public function isBelongsToCompany(Company $company)
-    {
-        return $this->hasCompany() && $this->company->id == $company->id;
-    }
-
-    /**
-     * @param  \App\Models\User  $user
-     * @return bool
-     */
-    public function isSameCompany(User $user)
-    {
-        return $user->hasCompany() && $this->isBelongsToCompany($user->company);
     }
 
     /**

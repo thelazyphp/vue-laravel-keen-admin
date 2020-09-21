@@ -13,7 +13,7 @@ const routes = [
   {
     path: '/404',
     name: 'error',
-    component: () => import('../views/Error.vue')
+    component: () => import(/* webpackChunkName: "error" */ '../views/Error.vue')
   },
   {
     path: '/',
@@ -22,14 +22,24 @@ const routes = [
       {
         path: '',
         name: 'home',
-        component: () => import('../views/Home.vue')
+        component: () => import(/* webpackChunkName: "home" */ '../views/Home.vue')
       },
+      {
+        path: 'clients',
+        name: 'clients',
+        component: () => import(/* webpackChunkName: "clients" */ '../views/Clients.vue')
+      },
+      {
+        path: 'employees',
+        name: 'employees',
+        component: () => import(/* webpackChunkName: "employees" */ '../views/Employees.vue')
+      }
     ]
   },
   {
     path: '*',
     redirect: { name: 'error' }
-  },
+  }
 ]
 
 const router = new VueRouter({
