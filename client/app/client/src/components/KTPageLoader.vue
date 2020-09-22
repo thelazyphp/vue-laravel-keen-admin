@@ -15,13 +15,19 @@
 
 <script>
 export default {
-  name: 'KTPageLoader',
+  name: "KTPageLoader",
   props: {
     logo: String,
     spinnerClass: {
       type: String,
-      default: 'spinner-primary'
+      default: "spinner-primary"
     }
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.page-loader {
+  z-index: 9999 !important;
+}
+</style>

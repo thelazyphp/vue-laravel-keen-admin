@@ -24,16 +24,17 @@
             href=""
             class="font-weight-bold font-size-h5 text-dark-75 text-hover-primary"
           >
-            {{ userFullName }}
+            {{ user.f_name }} {{ user.l_name }}
           </a>
           <div class="text-muted mt-1">{{ userRole }}</div>
           <div class="navi mt-2">
-            <router-link
-              to="/login"
+            <button
+              type="button"
               class="btn btn-sm btn-light-primary font-weight-bolder py-2 px-5"
+              @click="logout"
             >
               Выйти
-            </router-link>
+            </button>
           </div>
         </div>
       </div>
@@ -69,28 +70,59 @@
 </template>
 
 <script>
-import KTQuickUserClose from './KTQuickUserClose.vue'
+import { mapGetters, mapActions } from "vuex"
+import {
+  LOGOUT
+} from "../store/auth.module.js"
+import KTQuickUserClose from "./KTQuickUserClose.vue"
 
 export default {
-  name: 'KTQuickUser',
+  name: "KTQuickUser",
   components: {
     KTQuickUserClose
   },
   computed: {
+    ...mapGetters([
+      "user"
+    ]),
     userAvatar () {
-      return require('../assets/media/users/300_21.jpg')
-    },
-    userFullName () {
-      return 'Денис Чайка'
+      return require("../assets/media/users/300_21.jpg")
     },
     userRole () {
-      return 'Администратор'
+      let role = ""
+
+      switch (this.user.role) {
+        case "admin":
+          role = "Администратор"
+          break
+        case "manager":
+          role = "Менеджер"
+          break
+        case "employee":
+          role = "Сотрудник"
+          break
+      }
+
+      return role
     }
   },
   mounted () {
     this.$nextTick(() => {
-      window.KTLayoutQuickUser.init('kt_quick_user')
+      window.KTLayoutQuickUser.init("kt_quick_user")
     })
+  },
+  methods: {
+    ...mapActions([
+      "auth/" + LOGOUT
+    ]),
+    logout () {
+      this["auth/" + LOGOUT]()
+        .then(() => {
+          this.$router.push({
+            name: "login"
+          })
+        })
+    }
   }
 }
 </script>

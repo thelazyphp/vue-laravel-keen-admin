@@ -6,9 +6,9 @@
 
 <script>
 export default {
-  name: 'KTHeaderMenu',
+  name: "KTHeaderMenu",
   mounted () {
-    // window.KTLayoutHeaderMenu.init('kt_header_menu', 'kt_header_menu_wrapper')
+    // window.KTLayoutHeaderMenu.init("kt_header_menu", "kt_header_menu_wrapper")
   }
 }
 </script>

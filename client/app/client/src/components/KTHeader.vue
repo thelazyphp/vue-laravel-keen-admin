@@ -11,11 +11,11 @@
 </template>
 
 <script>
-import KTHeaderMenu from './KTHeaderMenu.vue'
-import KTHeaderTopbar from './KTHeaderTopbar.vue'
+import KTHeaderMenu from "./KTHeaderMenu.vue"
+import KTHeaderTopbar from "./KTHeaderTopbar.vue"
 
 export default {
-  name: 'KTHeader',
+  name: "KTHeader",
   components: {
     KTHeaderMenu,
     KTHeaderTopbar

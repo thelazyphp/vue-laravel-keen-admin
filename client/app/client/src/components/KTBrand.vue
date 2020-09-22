@@ -17,10 +17,10 @@
 </template>
 
 <script>
-import KTAsideToggle from './KTAsideToggle.vue'
+import KTAsideToggle from "./KTAsideToggle.vue"
 
 export default {
-  name: 'KTBrand',
+  name: "KTBrand",
   components: {
     KTAsideToggle
   },
@@ -29,7 +29,7 @@ export default {
   },
   mounted () {
     this.$nextTick(() => {
-      window.KTLayoutBrand.init('kt_brand')
+      window.KTLayoutBrand.init("kt_brand")
     })
   }
 }

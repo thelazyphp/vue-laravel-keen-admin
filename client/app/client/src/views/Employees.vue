@@ -5,14 +5,14 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations } from "vuex"
 import {
   SET_PAGE_TITLE
-} from '../store'
+} from "../store"
 
 export default {
   beforeMount () {
-    this[SET_PAGE_TITLE]('Сотрудники')
+    this[SET_PAGE_TITLE]("Сотрудники")
   },
   methods: {
     ...mapMutations([

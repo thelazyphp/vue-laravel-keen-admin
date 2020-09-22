@@ -1,23 +1,24 @@
 <template>
   <div class="topbar">
     <div class="topbar-item">
-      <KTQuickUserToggle :user-name="userName"/>
+      <KTQuickUserToggle :user-name="user.f_name"/>
     </div>
   </div>
 </template>
 
 <script>
-import KTQuickUserToggle from './KTQuickUserToggle.vue'
+import { mapGetters } from "vuex"
+import KTQuickUserToggle from "./KTQuickUserToggle.vue"
 
 export default {
-  name: 'KTHeaderTopbar',
+  name: "KTHeaderTopbar",
   components: {
     KTQuickUserToggle
   },
   computed: {
-    userName () {
-      return 'Денис'
-    }
+    ...mapGetters([
+      "user"
+    ])
   }
 }
 </script>

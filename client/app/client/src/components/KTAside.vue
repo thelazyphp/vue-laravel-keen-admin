@@ -14,23 +14,23 @@
 </template>
 
 <script>
-import KTBrand from './KTBrand.vue'
-import KTAsideMenu from './KTAsideMenu.vue'
+import KTBrand from "./KTBrand.vue"
+import KTAsideMenu from "./KTAsideMenu.vue"
 
 export default {
-  name: 'KTAside',
+  name: "KTAside",
   components: {
     KTBrand,
     KTAsideMenu
   },
   computed: {
     brandLogo () {
-      return require('../assets/media/logos/logo-light.png')
+      return require("../assets/media/logos/logo-light.png")
     }
   },
   mounted () {
     this.$nextTick(() => {
-      window.KTLayoutAside.init('kt_aside')
+      window.KTLayoutAside.init("kt_aside")
     })
   }
 }

@@ -175,10 +175,14 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex'
+import { mapMutations, mapActions } from "vuex"
 import {
   SET_PAGE_TITLE
-} from '../store'
+} from "../store"
+import {
+  LOGIN
+} from "../store/auth.module.js"
+import UsersService from "../services/users.service.js"
 
 export default {
   data () {
@@ -200,25 +204,25 @@ export default {
   },
   computed: {
     backgroundImage () {
-      return require('../assets/media/bg/bg-3.jpg')
+      return require("../assets/media/bg/bg-3.jpg")
     },
     logo () {
-      return require('../assets/media/logos/logo-letter-13.png')
+      return require("../assets/media/logos/logo-letter-13.png")
     },
     signInFormValidation () {
-      return window.FormValidation.formValidation(this.$refs['kt_login_signin_form'], {
+      return window.FormValidation.formValidation(this.$refs["kt_login_signin_form"], {
         fields: {
           username: {
             validators: {
               notEmpty: {
-                message: 'Введите имя пользователя'
+                message: "Введите имя пользователя"
               }
             }
           },
           password: {
             validators: {
               notEmpty: {
-                message: 'Введите пароль'
+                message: "Введите пароль"
               }
             }
           }
@@ -231,27 +235,27 @@ export default {
       })
     },
     signUpFormValidation () {
-      return window.FormValidation.formValidation(this.$refs['kt_login_signup_form'], {
+      return window.FormValidation.formValidation(this.$refs["kt_login_signup_form"], {
         fields: {
           l_name: {
             validators: {
               notEmpty: {
-                message: 'Введите фамилию'
+                message: "Введите фамилию"
               },
               stringLength: {
                 max: 191,
-                message: 'Фамилия не может превышать 191 символ'
+                message: "Фамилия не может превышать 191 символ"
               }
             }
           },
           f_name: {
             validators: {
               notEmpty: {
-                message: 'Введите имя'
+                message: "Введите имя"
               },
               stringLength: {
                 max: 191,
-                message: 'Имя не может превышать 191 символ'
+                message: "Имя не может превышать 191 символ"
               }
             }
           },
@@ -259,49 +263,47 @@ export default {
             validators: {
               stringLength: {
                 max: 191,
-                message: 'Отчество не может превышать 191 символ'
+                message: "Отчество не может превышать 191 символ"
               }
             }
           },
           username: {
             validators: {
               notEmpty: {
-                message: 'Введите имя пользователя'
+                message: "Введите имя пользователя"
               },
               regexp: {
                 regexp: /^[a-z][a-z0-9_]*$/,
-                flags: 'i',
-                message: 'Имя пользователя должно начинаться с латинской буквы и включать только латинские буквы, цифры и знаки нижнего подчеркивания'
+                flags: "i",
+                message: "Имя пользователя должно начинаться с латинской буквы и включать только латинские буквы, цифры и знаки нижнего подчеркивания"
               },
               stringLength: {
                 max: 191,
-                message: 'Имя пользователя не может превышать 191 символ'
+                message: "Имя пользователя не может превышать 191 символ"
               }
             }
           },
           password: {
             validators: {
               notEmpty: {
-                message: 'Введите пароль'
+                message: "Введите пароль"
               },
               stringLength: {
                 min: 8,
-                message: 'Пароль должен состоять минимум из 8 символов'
+                message: "Пароль должен состоять минимум из 8 символов"
               }
             }
           },
           password_confirmation: {
             validators: {
               notEmpty: {
-                message: 'Подтвердите пароль'
+                message: "Подтвердите пароль"
               },
               identical: {
                 compare: () => {
-                  return document.getElementById('kt_login_signup_form')
-                    .querySelector('[name="password"]')
-                    .value
+                  return document.getElementById("kt_login_signup_form").querySelector("[name='password']").value
                 },
-                message: 'Пароли должны совпадать'
+                message: "Пароли должны совпадать"
               }
             }
           }
@@ -315,60 +317,104 @@ export default {
     }
   },
   beforeMount () {
-    this[SET_PAGE_TITLE]('Войти в аккаунт')
+    this[SET_PAGE_TITLE]("Войти в аккаунт")
   },
   methods: {
     ...mapMutations([
       SET_PAGE_TITLE
     ]),
+    ...mapActions([
+      "auth/" + LOGIN
+    ]),
     showSignInForm () {
-      this.$refs['kt_login'].classList.remove('login-signup-on')
-      this.$refs['kt_login'].classList.add('login-signin-on')
-      this[SET_PAGE_TITLE]('Войти в аккаунт')
+      this.$refs["kt_login"].classList.remove("login-signup-on")
+      this.$refs["kt_login"].classList.add("login-signin-on")
+      this[SET_PAGE_TITLE]("Войти в аккаунт")
       window.KTUtil.animateClass(
-        this.$refs['kt_login_signin_form'], 'animate__animated animate__backInUp'
+        this.$refs["kt_login_signin_form"], "animate__animated animate__backInUp"
       )
     },
     showSignUpForm () {
-      this.$refs['kt_login'].classList.remove('login-signin-on')
-      this.$refs['kt_login'].classList.add('login-signup-on')
-      this[SET_PAGE_TITLE]('Создать аккаунт')
+      this.$refs["kt_login"].classList.remove("login-signin-on")
+      this.$refs["kt_login"].classList.add("login-signup-on")
+      this[SET_PAGE_TITLE]("Создать аккаунт")
       window.KTUtil.animateClass(
-        this.$refs['kt_login_signup_form'], 'animate__animated animate__backInUp'
+        this.$refs["kt_login_signup_form"], "animate__animated animate__backInUp"
       )
     },
     handleSignInForm () {
       this.signInFormValidation.validate()
         .then(status => {
-          if (status === 'Valid') {
+          if (status === "Valid") {
             window.swal.fire({
-              text: 'Все хорошо!',
-              icon: 'success',
+              text: "Все хорошо!",
+              icon: "success",
               buttonsStyling: false,
-              confirmButtonText: 'Отправить форму',
+              confirmButtonText: "Отправить форму",
               customClass: {
-                confirmButton: 'btn font-weight-bold btn-light-primary'
+                confirmButton: "btn font-weight-bold btn-light-primary"
               }
             })
             .then(() => {
               window.KTUtil.scrollTop()
-              this.$refs['kt_login_signin_submit'].classList.add(
-                'spinner', 'spinner-light', 'spinner-right'
-              )
-              setTimeout(() => {
-                //
 
-                this.$router.push({ name: 'home' })
-              }, 2000)
+              this.$refs["kt_login_signin_submit"].classList.add(
+                "spinner", "spinner-light", "spinner-right"
+              )
+
+              this["auth/" + LOGIN](this.signInForm)
+                .then(() => {
+                  this.$router.push({
+                    name: "dashboard"
+                  })
+                })
+                .catch(error => {
+                  console.log(error)
+
+                  if (error.response.status === 400) {
+                    window.swal.fire({
+                      text: "Неверное имя пользователя или пароль!",
+                      icon: "error",
+                      buttonsStyling: false,
+                      confirmButtonText: "Попробовать снова",
+                      customClass: {
+                        confirmButton: "btn font-weight-bold btn-light-primary"
+                      }
+                    })
+                    .then(() => {
+                      this.signInFormValidation.resetForm(true)
+                      window.KTUtil.scrollTop()
+                    })
+                  } else {
+                    window.swal.fire({
+                      text: "При входе в аккаунт произошла ошибка!",
+                      icon: "error",
+                      buttonsStyling: false,
+                      confirmButtonText: "Попробовать снова",
+                      customClass: {
+                        confirmButton: "btn font-weight-bold btn-light-primary"
+                      }
+                    })
+                    .then(() => {
+                      this.signInFormValidation.resetForm(true)
+                      window.KTUtil.scrollTop()
+                    })
+                  }
+                })
+                .finally(() => {
+                  this.$refs["kt_login_signin_submit"].classList.remove(
+                    "spinner", "spinner-light", "spinner-right"
+                  )
+                })
             })
           } else {
             window.swal.fire({
-              text: 'Форма заполнена с ошибками!',
-              icon: 'error',
+              text: "Форма заполнена с ошибками!",
+              icon: "error",
               buttonsStyling: false,
-              confirmButtonText: 'Исправить ошибки',
+              confirmButtonText: "Исправить ошибки",
               customClass: {
-                confirmButton: 'btn font-weight-bold btn-light-primary'
+                confirmButton: "btn font-weight-bold btn-light-primary"
               }
             })
             .then(() => {
@@ -380,34 +426,65 @@ export default {
     handleSignUpForm () {
       this.signUpFormValidation.validate()
         .then(status => {
-          if (status === 'Valid') {
+          if (status === "Valid") {
             window.swal.fire({
-              text: 'Все хорошо!',
-              icon: 'success',
+              text: "Все хорошо!",
+              icon: "success",
               buttonsStyling: false,
-              confirmButtonText: 'Отправить форму',
+              confirmButtonText: "Отправить форму",
               customClass: {
-                confirmButton: 'btn font-weight-bold btn-light-primary'
+                confirmButton: "btn font-weight-bold btn-light-primary"
               }
             }).then(() => {
               window.KTUtil.scrollTop()
-              this.$refs['kt_login_signup_submit'].classList.add(
-                'spinner', 'spinner-light', 'spinner-right'
-              )
-              setTimeout(() => {
-                //
 
-                this.$router.push({ name: 'home' })
-              }, 2000)
+              this.$refs["kt_login_signup_submit"].classList.add(
+                "spinner", "spinner-light", "spinner-right"
+              )
+
+              UsersService.register(this.signUpForm)
+                .then(() => {
+                  this["auth/" + LOGIN]({
+                    username: this.signUpForm.username,
+                    password: this.signUpForm.password
+                  })
+                  .then(() => {
+                    this.$router.push({
+                      name: "dashboard"
+                    })
+                  })
+                })
+                .catch(error => {
+                  console.log(error)
+
+                  window.swal.fire({
+                    text: "При создании аккаунта произошла ошибка!",
+                    icon: "error",
+                    buttonsStyling: false,
+                    confirmButtonText: "Попробовать снова",
+                    customClass: {
+                      confirmButton: "btn font-weight-bold btn-light-primary"
+                    }
+                  })
+                  .then(() => {
+                    this.signUpFormValidation.resetForm(true)
+                    window.KTUtil.scrollTop()
+                  })
+                })
+                .finally(() => {
+                  this.$refs["kt_login_signup_submit"].classList.remove(
+                    "spinner", "spinner-light", "spinner-right"
+                  )
+                })
             })
           } else {
             window.swal.fire({
-              text: 'Форма заполнена с ошибками!',
-              icon: 'error',
+              text: "Форма заполнена с ошибками!",
+              icon: "error",
               buttonsStyling: false,
-              confirmButtonText: 'Исправить ошибки',
+              confirmButtonText: "Исправить ошибки",
               customClass: {
-                confirmButton: 'btn font-weight-bold btn-light-primary'
+                confirmButton: "btn font-weight-bold btn-light-primary"
               }
             }).then(() => {
               window.KTUtil.scrollTop()

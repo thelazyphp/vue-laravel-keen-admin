@@ -18,10 +18,10 @@
 
 <script>
 export default {
-  name: 'KTAsideToggle',
+  name: "KTAsideToggle",
   mounted () {
     this.$nextTick(() => {
-      window.KTLayoutAsideToggle.init('kt_aside_toggle')
+      window.KTLayoutAsideToggle.init("kt_aside_toggle")
     })
   }
 }

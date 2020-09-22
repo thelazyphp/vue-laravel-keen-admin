@@ -11,6 +11,6 @@
 
 <script>
 export default {
-  name: 'KTQuickUserClose'
+  name: "KTQuickUserClose"
 }
 </script>

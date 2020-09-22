@@ -10,6 +10,6 @@
 
 <script>
 export default {
-  name: 'KTAsideMobileToggle'
+  name: "KTAsideMobileToggle"
 }
 </script>

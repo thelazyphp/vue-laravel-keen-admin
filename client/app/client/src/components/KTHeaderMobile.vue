@@ -17,18 +17,18 @@
 </template>
 
 <script>
-import KTAsideMobileToggle from './KTAsideMobileToggle.vue'
-import KTHeaderMobileTopbarToggle from './KTHeaderMobileTopbarToggle.vue'
+import KTAsideMobileToggle from "./KTAsideMobileToggle.vue"
+import KTHeaderMobileTopbarToggle from "./KTHeaderMobileTopbarToggle.vue"
 
 export default {
-  name: 'KTHeaderMobile',
+  name: "KTHeaderMobile",
   components: {
     KTAsideMobileToggle,
     KTHeaderMobileTopbarToggle
   },
   computed: {
     logo () {
-      return require('../assets/media/logos/logo-light.png')
+      return require("../assets/media/logos/logo-light.png")
     }
   }
 }

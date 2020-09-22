@@ -13,11 +13,11 @@
 
 <script>
 export default {
-  name: 'KTQuickUserToggle',
+  name: "KTQuickUserToggle",
   props: {
     userName: {
       type: String,
-      default: ''
+      default: ""
     }
   },
   computed: {

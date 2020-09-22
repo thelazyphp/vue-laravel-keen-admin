@@ -13,13 +13,13 @@
 
 <script>
 export default {
-  name: 'KTSubheader',
+  name: "KTSubheader",
   props: {
     pageTitle: String
   },
   mounted () {
     this.$nextTick(() => {
-      window.KTLayoutSubheader.init('kt_subheader')
+      window.KTLayoutSubheader.init("kt_subheader")
     })
   }
 }
