@@ -17,7 +17,9 @@ export default new Vuex.Store({
   mutations: {
     [SET_PAGE_TITLE](state, title) {
       state.pageTitle = title
-      document.title = title
+      Vue.nextTick(() => {
+        document.title = title
+      })
     }
   }
 })

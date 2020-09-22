@@ -1,7 +1,15 @@
 <template>
   <div class="page-loader page-loader-logo">
-    <img :src="logo" alt="" width="100">
-    <div class="spinner" :class="spinnerClass"></div>
+    <img
+      :src="logo"
+      alt=""
+      width="100px"
+    >
+    <div
+      class="spinner"
+      :class="spinnerClass"
+    >
+    </div>
   </div>
 </template>
 

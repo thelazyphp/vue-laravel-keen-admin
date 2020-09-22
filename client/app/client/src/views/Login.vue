@@ -1,11 +1,24 @@
 <template>
   <div class="d-flex flex-column flex-root">
-    <div id="kt_login" ref="kt_login" class="login login-4 login-signin-on d-flex flex-row-fluid">
-      <div class="d-flex flex-center flex-row-fluid bgi-size-cover bgi-position-top bgi-no-repeat" :style="{ backgroundImage: `url(${backgroundImage})` }">
+    <div
+      id="kt_login"
+      ref="kt_login"
+      class="login login-4 login-signin-on d-flex flex-row-fluid"
+    >
+      <div
+        class="d-flex flex-center flex-row-fluid bgi-size-cover bgi-position-top bgi-no-repeat"
+        :style="{
+          backgroundImage: `url(${backgroundImage})`
+        }"
+      >
         <div class="login-form text-center p-7 position-relative overflow-hidden">
           <div class="d-flex flex-center mb-15">
-            <router-link :to="{ name: 'home' }">
-              <img :src="logo" class="max-h-75px" alt="">
+            <router-link to="/">
+              <img
+                :src="logo"
+                class="max-h-75px"
+                alt=""
+              >
             </router-link>
           </div>
           <div class="login-signin">
@@ -13,18 +26,50 @@
               <h3>Войти в аккаунт</h3>
               <div class="text-muted font-weight-bold">Заполните форму, чтобы войти в аккаунт</div>
             </div>
-            <form id="kt_login_signin_form" ref="kt_login_signin_form" class="form">
+            <form
+              id="kt_login_signin_form"
+              ref="kt_login_signin_form"
+              class="form"
+            >
               <div class="form-group mb-5">
-                <input v-model="signInForm.username" type="text" class="form-control h-auto form-control-solid py-4 px-8" name="username" placeholder="Имя пользователя" autocomplete="off">
+                <input
+                  v-model="signInForm.username"
+                  type="text"
+                  class="form-control h-auto form-control-solid py-4 px-8"
+                  name="username"
+                  placeholder="Имя пользователя"
+                  autocomplete="off"
+                >
               </div>
               <div class="form-group mb-5">
-                <input v-model="signInForm.password" type="password" class="form-control h-auto form-control-solid py-4 px-8" name="password" placeholder="Пароль">
+                <input
+                  v-model="signInForm.password"
+                  type="password"
+                  class="form-control h-auto form-control-solid py-4 px-8"
+                  name="password"
+                  placeholder="Пароль"
+                >
               </div>
-              <button ref="kt_login_signin_submit" id="kt_login_signin_submit" type="submit" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4" @click="handleSignInForm">Войти</button>
+              <button
+                id="kt_login_signin_submit"
+                ref="kt_login_signin_submit"
+                type="submit"
+                class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"
+                @click="handleSignInForm"
+              >
+                Войти
+              </button>
             </form>
             <div class="mt-10">
               <span class="opacity-70 mr-4">Еще нет аккаунта?</span>
-              <a id="kt_login_signup" href="" class="text-muted text-hover-primary font-weight-bold" @click.prevent="showSignUpForm">Создать аккаунт!</a>
+              <a
+                id="kt_login_signup"
+                href=""
+                class="text-muted text-hover-primary font-weight-bold"
+                @click.prevent="showSignUpForm"
+              >
+                Создать аккаунт
+              </a>
             </div>
           </div>
           <div class="login-signup">
@@ -32,31 +77,94 @@
               <h3>Создать аккаунт</h3>
               <div class="text-muted font-weight-bold">Заполните форму, чтобы создать аккаунт</div>
             </div>
-            <form id="kt_login_signup_form" ref="kt_login_signup_form" class="form">
+            <form
+              id="kt_login_signup_form"
+              ref="kt_login_signup_form"
+              class="form"
+            >
               <div class="form-group mb-5">
-                <input v-model="signUpForm.l_name" type="text" class="form-control h-auto form-control-solid py-4 px-8" name="l_name" placeholder="Фамилия">
+                <input
+                  v-model="signUpForm.l_name"
+                  type="text"
+                  class="form-control h-auto form-control-solid py-4 px-8"
+                  name="l_name"
+                  placeholder="Фамилия"
+                >
               </div>
               <div class="form-group mb-5">
-                <input v-model="signUpForm.f_name" type="text" class="form-control h-auto form-control-solid py-4 px-8" name="f_name" placeholder="Имя">
+                <input
+                  v-model="signUpForm.f_name"
+                  type="text"
+                  class="form-control h-auto form-control-solid py-4 px-8"
+                  name="f_name"
+                  placeholder="Имя"
+                >
               </div>
               <div class="form-group mb-5">
-                <input v-model="signUpForm.m_name" type="text" class="form-control h-auto form-control-solid py-4 px-8" name="m_name" placeholder="Отчество">
+                <input
+                  v-model="signUpForm.m_name"
+                  type="text"
+                  class="form-control h-auto form-control-solid py-4 px-8"
+                  name="m_name"
+                  placeholder="Отчество"
+                >
               </div>
               <div class="form-group mb-5">
-                <input v-model="signUpForm.company_name" type="text" class="form-control h-auto form-control-solid py-4 px-8" name="company_name" placeholder="Название организации">
+                <input
+                  v-model="signUpForm.company_name"
+                  type="text"
+                  class="form-control h-auto form-control-solid py-4 px-8"
+                  name="company_name"
+                  placeholder="Название организации"
+                >
               </div>
               <div class="form-group mb-5">
-                <input v-model="signUpForm.username" type="text" class="form-control h-auto form-control-solid py-4 px-8" name="username" placeholder="Имя пользователя" autocomplete="off">
+                <input
+                  v-model="signUpForm.username"
+                  type="text"
+                  class="form-control h-auto form-control-solid py-4 px-8"
+                  name="username"
+                  placeholder="Имя пользователя"
+                  autocomplete="off"
+                >
               </div>
               <div class="form-group mb-5">
-                <input v-model="signUpForm.password" type="password" class="form-control h-auto form-control-solid py-4 px-8" name="password" placeholder="Пароль">
+                <input
+                  v-model="signUpForm.password"
+                  type="password"
+                  class="form-control h-auto form-control-solid py-4 px-8"
+                  name="password"
+                  placeholder="Пароль"
+                >
               </div>
               <div class="form-group mb-5">
-                <input v-model="signUpForm.password_confirmation" type="password" class="form-control h-auto form-control-solid py-4 px-8" name="password_confirmation" placeholder="Подтвердите пароль">
+                <input
+                  v-model="signUpForm.password_confirmation"
+                  type="password"
+                  class="form-control h-auto form-control-solid py-4 px-8"
+                  name="password_confirmation"
+                  placeholder="Подтвердите пароль"
+                  @paste.prevent
+                >
               </div>
               <div class="form-group d-flex flex-wrap flex-center mt-10">
-                <button ref="kt_login_signup_submit" id="kt_login_signup_submit" type="submit" class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-2" @click="handleSignUpForm">Создать</button>
-                <button id="kt_login_signup_cancel" type="button" class="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-2" @click.prevent="showSignInForm">Отмена</button>
+                <button
+                  id="kt_login_signup_submit"
+                  ref="kt_login_signup_submit"
+                  type="submit"
+                  class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-2"
+                  @click="handleSignUpForm"
+                >
+                  Создать
+                </button>
+                <button
+                  id="kt_login_signup_cancel"
+                  type="button"
+                  class="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-2"
+                  @click.prevent="showSignInForm"
+                >
+                  Отмена
+                </button>
               </div>
             </form>
           </div>
@@ -163,7 +271,7 @@ export default {
               regexp: {
                 regexp: /^[a-z][a-z0-9_]*$/,
                 flags: 'i',
-                message: 'Имя пользователя должно начинаться с латинской буквы и включать только латинские буквы, цифры и нижние подчеркивания'
+                message: 'Имя пользователя должно начинаться с латинской буквы и включать только латинские буквы, цифры и знаки нижнего подчеркивания'
               },
               stringLength: {
                 max: 191,
