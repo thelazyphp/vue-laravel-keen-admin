@@ -35,23 +35,61 @@ class UserController extends Controller
         $this->authorize('viewAny', User::class);
 
         $this->validate($request, [
+            'query.search' => 'nullable|string',
+            'params' => 'array',
             'sort.field' => 'string',
             'sort.sort' => 'string:in:asc,desc',
             'pagination.page' => 'integer|min:1',
             'pagination.perpage' => 'integer|min:1',
         ]);
 
+        $query = User::query();
+
+        if ($request->filled('query.search')) {
+            $search = $request->input('query.search');
+
+            $query = $query->where(function ($query) use ($search) {
+                $query = $query->where(
+                    'first_name', 'like', '%'.$search.'%'
+                );
+
+                return $query->orWhere(
+                    'last_name', 'like', '%'.$search.'%'
+                );
+            });
+        }
+
+        foreach ($request->input('params', []) as $key => $value) {
+            [$field, $op] = explode(':', $key, 2);
+
+            switch ($op) {
+                case 'eq':
+                    $query = $query->where($field, $value);
+                    break;
+                case 'lt':
+                    $query = $query->where($field, '<', $value);
+                    break;
+                case 'le':
+                    $query = $query->where($field, '<', $value);
+                    break;
+                case 'gt':
+                    $query = $query->where($field, '>', $value);
+                    break;
+                case 'ge':
+                    $query = $query->where($field, '>', $value);
+                    break;
+                case 'in':
+                    $query = $query->whereIn($field, explode(',', $value));
+                    break;
+            }
+        }
+
         $field = $request->input('sort.field', 'id');
         $sort = $request->input('sort.sort', 'asc');
-        $page = $request->input('pagination.page', 1);
-        $perpage = $request->input('pagination.perpage', 10);
-
-        $query = auth()->user()
-            ->company
-            ->users();
+        $page = (int) $request->input('pagination.page', 1);
+        $perpage = (int) $request->input('pagination.perpage', 10);
 
         $total = $query->count();
-
         $pages = ceil($total / $perpage);
 
         $users = $query->orderBy($field, $sort)

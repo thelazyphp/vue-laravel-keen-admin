@@ -1,50 +1,35 @@
+"use strict";
+
 // Class definition
 var KTProfile = function () {
-    // Base elements
-    var formEl;
-    var validator;
-    var avatar;
+	// Elements
+	var avatar;
+	var offcanvas;
 
-    var initSubmit = function() {
-        var btn = formEl.find('[data-ktwizard-action="action-submit"]');
-
-        btn.on('click', function(e) {
-            e.preventDefault();
-
-            if (validator.form()) {
-                // See: src\js\framework\base\app.js
-                KTApp.progress(btn);
-                //KTApp.block(formEl);
-
-                // See: http://malsup.com/jquery/form/#ajaxSubmit
-                formEl.ajaxSubmit({
-                    success: function() {
-                        KTApp.unprogress(btn);
-                        //KTApp.unblock(formEl);
-
-                        swal.fire({
-                            "title": "", 
-                            "text": "The application has been successfully submitted!", 
-                            "type": "success",
-                            "confirmButtonClass": "btn btn-secondary"
-                        });
-                    }
-                });
-            }
+	// Private functions
+	var _initAside = function () {
+		// Mobile offcanvas for mobile mode
+		offcanvas = new KTOffcanvas('kt_profile_aside', {
+            overlay: true,
+            baseClass: 'offcanvas-mobile',
+            //closeBy: 'kt_user_profile_aside_close',
+            toggleBy: 'kt_subheader_mobile_toggle'
         });
-    }
+	}
 
-    return {
-        // public functions
-        init: function() {
-            formEl = $('#kt_profile_form');
+	var _initForm = function() {
+		avatar = new KTImageInput('kt_profile_avatar');
+	}
 
-            var avatar = new KTAvatar('kt_profile_avatar');
-            initSubmit();
-        }
-    };
+	return {
+		// public functions
+		init: function() {
+			_initAside();
+			_initForm();
+		}
+	};
 }();
 
-jQuery(document).ready(function() {    
-    KTProfile.init();
+jQuery(document).ready(function() {
+	KTProfile.init();
 });

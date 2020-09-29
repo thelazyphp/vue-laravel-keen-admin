@@ -25,11 +25,10 @@ class UpdateUserProfile extends FormRequest
     {
         return [
             'image_id' => 'nullable|integer|exists:images,id',
-            'f_name' => 'string|max:191|alpha',
-            'm_name' => 'nullable|string|max:191|alpha',
-            'l_name' => 'string|max:191|alpha',
+            'first_name' => 'string|max:191|alpha',
+            'last_name' => 'string|max:191|alpha',
             'email' => 'nullable|string|max:191|email',
-            'phone' => 'nullable|string|max:191|regex:/\+\d{1,3}\d{1,12}/',
+            'contact_phone' => 'nullable|string|max:191|regex:/^\+\d{1,3}\d{1,12}$/',
         ];
     }
 }

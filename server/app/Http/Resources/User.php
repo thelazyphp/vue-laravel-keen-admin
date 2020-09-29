@@ -21,11 +21,10 @@ class User extends JsonResource
             'image' => Image::find($this->image_id),
             'active' => $this->active,
             'role' => $this->role,
-            'f_name' => $this->f_name,
-            'm_name' => $this->m_name,
-            'l_name' => $this->l_name,
+            'first_name' => $this->first_name,
+            'last_name' => $this->last_name,
             'email' => $this->email,
-            'phone' => $this->phone,
+            'contact_phone' => $this->contact_phone,
             'username' => $this->username,
         ];
     }

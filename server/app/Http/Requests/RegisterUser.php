@@ -25,10 +25,9 @@ class RegisterUser extends FormRequest
     {
         return [
             'company_name' => 'nullable|string|max:191|unique:companies,name',
-            'f_name' => 'required|string|max:191|alpha',
-            'm_name' => 'nullable|string|max:191|alpha',
-            'l_name' => 'required|string|max:191|alpha',
-            'username' => 'required|string|max:191|unique:users',
+            'first_name' => 'required|string|max:191|alpha',
+            'last_name' => 'required|string|max:191|alpha',
+            'username' => 'required|string|max:191|regex:/^[a-z][a-z0-9_]*$/i|unique:users',
             'password' => 'required|string|min:8|confirmed',
         ];
     }

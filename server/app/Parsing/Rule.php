@@ -14,13 +14,22 @@ class Rule
     protected $closures = [];
 
     /**
+     * (coming soon)
+     *
+     * @var array
+     */
+    protected $cache = [];
+
+    /**
+     * (coming soon)
+     *
      * @var mixed
      */
     protected $default = null;
 
     /**
      * @param  \App\Parsing\DOM\Element[]  $elements
-     * @param  int|null  $index
+     * @param  null|int  $index
      * @return null|\App\Parsing\DOM\Element|\App\Parsing\DOM\Element[]
      */
     protected static function takeElement($elements, $index = null)
@@ -57,6 +66,17 @@ class Rule
     }
 
     /**
+     * @param  mixed  $source
+     * @return bool
+     */
+    public function notEmpty($source)
+    {
+        return !empty($this->evaluate($source));
+    }
+
+    /**
+     * (coming soon)
+     *
      * @param  mixed  $value
      * @return self
      */
@@ -271,6 +291,8 @@ class Rule
     }
 
     /**
+     * (an alias to "attribute")
+     *
      * @param  string  $name
      * @param  mixed  $default
      * @return self
@@ -349,15 +371,44 @@ class Rule
     }
 
     /**
-     * @param  string  $delimiter
+     * @param  string  $pattern
+     * @param  int  $limit
+     * @param  int  $flags
      * @return self
      */
-    public function explode($delimiter)
+    public function pregSplit(
+        $pattern,
+        $limit = -1,
+        $flags = 0)
     {
         $rule = $this->text();
 
-        $rule->closures[] = function ($result) use ($delimiter) {
-            return explode($delimiter, $result);
+        $rule->closures[] = function ($result) use (
+            $pattern,
+            $limit,
+            $flags)
+        {
+            return preg_split(
+                $pattern, $result, $limit, $flags
+            );
+        };
+
+        return $rule;
+    }
+
+    /**
+     * @param  string  $delimiter
+     * @param  null|int  $limit
+     * @return self
+     */
+    public function explode($delimiter, $limit = null)
+    {
+        $rule = $this->text();
+
+        $rule->closures[] = function ($result) use ($delimiter, $limit) {
+            return explode(
+                $delimiter, $result
+            );
         };
 
         return $rule;
@@ -370,7 +421,7 @@ class Rule
     public function implode($delimiter)
     {
         $rule = $this->map(function () {
-            return (new Rule)->text();
+            return (new Rule())->text();
         });
 
         $rule->closures[] = function ($result) use ($delimiter) {
@@ -392,13 +443,13 @@ class Rule
             $result = (array) $result;
 
             foreach ($result as $key => $value) {
-                $value = $callback($value, $key);
+                $val = $callback($value, $key);
 
-                if ($value instanceof Rule) {
-                    $value = $value->evaluate($value);
+                if ($val instanceof Rule) {
+                    $val = $val->evaluate($value);
                 }
 
-                $result[$key] = $value;
+                $result[$key] = $val;
             }
 
             return $result;
@@ -409,14 +460,17 @@ class Rule
 
     /**
      * @param  callable  $callback
+     * @param  int  $flag
      * @return self
      */
-    public function filter(callable $callback)
+    public function filter(callable $callback, $flag = 0)
     {
         $rule = clone $this;
 
-        $rule->closures[] = function ($result) use ($callback) {
-            return array_filter((array) $result, $callback);
+        $rule->closures[] = function ($result) use ($callback, $flag) {
+            return array_filter(
+                (array) $result, $callback, $flag
+            );
         };
 
         return $rule;

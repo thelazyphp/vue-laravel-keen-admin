@@ -2,33 +2,19 @@
 
 namespace App\Parsing\Parsers\Realt;
 
-use App\Parsing\Parsers\Parser;
-use App\Models\Ad;
+use App\Parsing\Parsers\ApartmentsParser;
 use App\Parsing\Facades\Rule;
 use App\Parsing\DOM\Document;
+use Throwable;
+use App\Models\Ad;
 use App\Models\Seller;
 
-class RealtApartmentsParser extends Parser
+class RealtApartmentsParser extends ApartmentsParser
 {
     /**
      * {@inheritDoc}
      */
-    protected $category = Ad::CATEGORY_APARTMENTS;
-
-    /**
-     * {@inheritDoc}
-     */
     protected $source = 'realt.by';
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function parseLinks(?int $limit = null): array
-    {
-        return [
-            //
-        ];
-    }
 
     /**
      * {@inheritDoc}
@@ -62,9 +48,9 @@ class RealtApartmentsParser extends Parser
 
         $this->rules['rooms'] = Rule::findWhereText('.table-row-left', 'Комнат всего/разд.')->nextSibling()->takeInteger();
 
-        $this->rules['floor'] = Rule::findWhereText('.table-row-left', 'Этаж / этажность')->nextSibling()->takeInteger();
+        $this->rules['floor'] = Rule::findWhereText('.table-row-left', 'Этаж / этажность')->nextSibling()->explode(' / ')->take(0)->takeInteger();
 
-        $this->rules['floors'] = Rule::findWhereText('.table-row-left', 'Этаж / этажность')->nextSibling()->match('/\d\s+\/\s+(\d)/', 1);
+        $this->rules['floors'] = Rule::findWhereText('.table-row-left', 'Этаж / этажность')->nextSibling()->explode(' / ')->take(1)->takeInteger();
 
         $this->rules['year_built'] = Rule::findWhereText('.table-row-left', 'Год постройки')->nextSibling()->takeInteger();
 
@@ -90,8 +76,83 @@ class RealtApartmentsParser extends Parser
     /**
      * {@inheritDoc}
      */
-    protected function attributesParsed(Document $document, $url, &$attributes)
+    protected function parse()
     {
+        $endpoints = [
+            // 'https://realt.by/newflats/',
+            // 'https://realt.by/sale/flats/',
+            // 'https://realt.by/rent/flat-for-long/',
+            'https://realt.by/brest-region/newflats/',
+            'https://realt.by/brest-region/sale/flats/',
+            'https://realt.by/brest-region/rent/flat-for-long/',
+            // 'https://realt.by/grodno-region/newflats/',
+            // 'https://realt.by/grodno-region/sale/flats/',
+            // 'https://realt.by/grodno-region/rent/flat-for-long/',
+        ];
+
+        $document = new Document();
+
+        foreach ($endpoints as $endpoint) {
+            try {
+                $res = $this->client->get($endpoint);
+            } catch (Throwable $e) {
+                //
+
+                continue;
+            }
+
+            if (!$document->loadHTML((string) $res->getBody())) {
+                //
+
+                continue;
+            }
+
+            $lastPage = Rule::findLast('.uni-paging a')->attr('href')->match('/page=(\d+)/', 1)->evaluate($document);
+
+            for ($page = 0; $page <= $lastPage; $page++) {
+                try {
+                    $res = $this->client->get(
+                        $page == 0 ? $endpoint : $endpoint.'?page='.$page
+                    );
+                } catch (Throwable $e) {
+                    //
+
+                    continue;
+                }
+
+                if (!$document->loadHTML((string) $res->getBody())) {
+                    //
+
+                    continue;
+                }
+
+                foreach ($document->querySelectorAll('.title a') as $element) {
+                    try {
+                        $this->parsePage($element->href);
+                    } catch (Throwable $e) {
+                        //
+
+                        continue;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function attributesParsed(
+        Document $document,
+        $url,
+        &$attributes)
+    {
+        parent::attributesParsed(
+            $document,
+            $url,
+            $attributes
+        );
+
         if (strpos($url, '/sale/') !== false) {
             $attributes['transaction'] = Ad::TRANSACTION_SELL;
         } else {
@@ -115,21 +176,24 @@ class RealtApartmentsParser extends Parser
         if (!empty($attributes['address_street'])) {
             $attributes['full_address'] .= ', '.$attributes['address_street'];
         }
-
-        if (
-            $attributes['price_amount']
-            && $attributes['size_total']
-            && $attributes['transaction'] == Ad::TRANSACTION_SELL
-        ) {
-            $attributes['price_sq_m_amount'] = round($attributes['price_amount'] / $attributes['size_total']);
-        }
     }
 
     /**
      * {@inheritDoc}
      */
-    protected function modelCreated(Document $document, $url, Ad $model)
+    protected function modelCreated(
+        Document $document,
+        $url,
+        Ad $model,
+        &$attributes)
     {
+        parent::modelCreated(
+            $document,
+            $url,
+            $model,
+            $attributes
+        );
+
         $seller = [];
 
         if (Rule::findWhereText('.table-row-left', 'Агентство')->nextSibling()->empty($document)) {
@@ -154,6 +218,5 @@ class RealtApartmentsParser extends Parser
 
         $seller = Seller::updateOrCreate(['phone' => $seller['phone']], $seller);
         $model->seller()->associate($seller);
-        $model->save();
     }
 }

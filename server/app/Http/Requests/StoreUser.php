@@ -28,12 +28,11 @@ class StoreUser extends FormRequest
         return [
             'image_id' => 'nullable|integer|exists:images,id',
             'role' => ['required', 'string', Rule::in(User::fillableRoles())],
-            'f_name' => 'required|string|max:191|alpha',
-            'm_name' => 'nullable|string|max:191|alpha',
-            'l_name' => 'required|string|max:191|alpha',
+            'first_name' => 'required|string|max:191|alpha',
+            'last_name' => 'required|string|max:191|alpha',
             'email' => 'nullable|string|max:191|email',
-            'phone' => 'nullable|string|max:191|regex:/\+\d{1,3}\d{1,12}/',
-            'username' => 'required|string|max:191|unique:users',
+            'contact_phone' => 'nullable|string|max:191|regex:/^\+\d{1,3}\d{1,12}$/',
+            'username' => 'required|string|max:191|regex:/^[a-z][a-z0-9_]*$/i|unique:users',
             'password' => 'required|string|min:8',
         ];
     }

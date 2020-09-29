@@ -17,6 +17,8 @@ use App\Http\Controllers\UserController;
 */
 
 Route::match(['get', 'post'], '/parsers/start', function () {
+    (new \App\Parsing\Parsers\Onliner\OnlinerApartmentsParser())->start();
+    (new \App\Parsing\Parsers\Realt\RealtApartmentsParser())->start();
     (new \App\Parsing\Parsers\Irr\IrrApartmentsParser())->start();
 });
 

@@ -1,84 +1,79 @@
-import Vue from 'vue'
-import Http from '@/plugins/Http.js'
-import store from '@/store'
+import axios from "axios"
 
-export default {
+const ApiService = {
   init () {
-    Vue.use(Http, {
-      baseURL: 'http://localhost/realty/api'
-    })
-
-    if (store.state.auth.token) {
-      Vue.Http.setToken(store.state.auth.token)
-    }
+    axios.defaults.baseURL = process.env.BASE_URL + "api"
   },
   /**
-   * @param {Object} credentials
-   * @returns {Promise}
+   * @param {string} name
+   * @param {string} value
    */
-  signIn (credentials) {
-    return new Promise((resolve, reject) => {
-      Vue.Http.post('/auth/login', credentials)
-        .then(res => {
-          Vue.Http.setToken(res.data.access_token)
-          localStorage.setItem('token', res.data.access_token)
-          return resolve(res)
-        })
-        .catch(error => reject(error))
-    })
+  setHeader (name, value) {
+    axios.defaults.headers.common[name] = value
   },
   /**
-   * @returns {Promise}
+   * @param {string} name
    */
-  signOut () {
-    return new Promise((resolve, reject) => {
-      Vue.Http.post('/auth/logout')
-        .then(res => {
-          Vue.Http.removeToken()
-          localStorage.removeItem('token')
-          return resolve(res)
-        })
-        .catch(error => reject(error))
-    })
+  removeHeader (name) {
+    delete axios.defaults.headers.common[name]
   },
   /**
-   * @param {Object} user
-   * @returns {Promise}
+   * @param {string} resource
+   * @param {object} [params={}]
+   * @return {Promise}
    */
-  signUp (user) {
-    return new Promise((resolve, reject) => {
-      Vue.Http.post('/users/register', user)
-        .then(res => resolve(res))
-        .catch(error => reject(error))
-    })
+  query (resource, params = {}) {
+    return axios.get(resource, { params })
   },
   /**
-   * @param {(Number|String)} slug
-   * @returns {Promise}
+   * @param {string} resource
+   * @param {(string|number)} [slug=""]
+   * @return {Promise}
    */
-  getUser (slug) {
-    return new Promise((resolve, reject) => {
-      Vue.Http.get(`/users/${slug}`)
-        .then(res => resolve(res))
-        .catch(error => reject(error))
-    })
+  get (resource, slug = "") {
+    return axios.get(resource + (slug ? "/" + slug : ""))
   },
   /**
-   * @param {File} file
-   * @returns {Promise}
+   * @param {string} resource
+   * @param {(string|number)} [slug=""]
+   * @param {object=} [data]
+   * @return {Promise}
    */
-  uploadImage (file) {
-    return new Promise((resolve, reject) => {
-      const data = new FormData()
-      data.append('file', file)
-
-      Vue.Http.post('/images', data, {
-        headers: {
-          'content-type': 'multipart/form-data'
-        }
-      })
-      .then(res => resolve(res))
-      .catch(error => reject(error))
-    })
+  post (resource, slug = "", data = null) {
+    return axios.post(
+      resource + (slug ? "/" + slug : ""), data
+    )
+  },
+  /**
+   * @param {string} resource
+   * @param {(string|number)} [slug=""]
+   * @param {object=} [data]
+   * @return {Promise}
+   */
+  put (resource, slug = "", data = null) {
+    return axios.put(
+      resource + (slug ? "/" + slug : ""), data
+    )
+  },
+  /**
+   * @param {string} resource
+   * @param {(string|number)} [slug=""]
+   * @param {object=} [data]
+   * @return {Promise}
+   */
+  patch (resource, slug = "", data = null) {
+    return axios.patch(
+      resource + (slug ? "/" + slug : ""), data
+    )
+  },
+  /**
+   * @param {string} resource
+   * @param {(string|number)} [slug=""]
+   * @return {Promise}
+   */
+  delete (resource, slug = "") {
+    return axios.delete(resource + (slug ? "/" + slug : ""))
   }
 }
+
+export default ApiService

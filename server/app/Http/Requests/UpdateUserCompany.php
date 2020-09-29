@@ -28,7 +28,7 @@ class UpdateUserCompany extends FormRequest
             'name' => ['string', 'max:191', Rule::unique('companies', 'name')->ignore($this->user()->company)],
             'website' => 'nullable|string|max:191|url',
             'email' => 'nullable|string|max:191|email',
-            'phone' => 'nullable|string|max:191|regex:/\+\d{1,3}\d{1,12}/',
+            'phone' => 'nullable|string|max:191|regex:/^\+\d{1,3}\d{1,12}$/',
             'license' => 'nullable|string|max:191',
             'address' => 'nullable|string|max:191',
             'description' => 'nullable|string',

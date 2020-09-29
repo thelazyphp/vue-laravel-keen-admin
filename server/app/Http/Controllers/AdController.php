@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Ad;
+use App\Models\Seller;
 use App\Http\Resources\Ads;
 use App\Http\Resources\Ad as AdResource;
 
@@ -25,21 +26,69 @@ class AdController extends Controller
     public function index(Request $request)
     {
         $this->validate($request, [
+            'query.search' => 'nullable|string',
+            'params' => 'array',
             'sort.field' => 'string',
             'sort.sort' => 'string:in:asc,desc',
             'pagination.page' => 'integer|min:1',
             'pagination.perpage' => 'integer|min:1',
         ]);
 
-        $field = $request->input('sort.field', 'id');
-        $sort = $request->input('sort.sort', 'asc');
-        $page = $request->input('pagination.page', 1);
-        $perpage = $request->input('pagination.perpage', 10);
-
         $query = Ad::query();
 
-        $total = $query->count();
+        if ($request->filled('query.search')) {
+            $search = $request->input('query.search');
 
+            $query = $query->where(function ($query) use ($search) {
+                $query = $query->where(
+                    'full_address', 'like', '%'.$search.'%'
+                );
+
+                return $query->orWhere(
+                    'address_microdistrict', 'like', '%'.$search.'%'
+                );
+            });
+        }
+
+        foreach ($request->input('params', []) as $key => $value) {
+            [$field, $op] = explode(':', $key, 2);
+
+            if ($field == 'seller.type') {
+                $query = $query->whereIn(
+                    'seller_id', Seller::select('id')->where('type', $value)->get()->pluck('id')->toArray()
+                );
+
+                continue;
+            }
+
+            switch ($op) {
+                case 'eq':
+                    $query = $query->where($field, $value);
+                    break;
+                case 'lt':
+                    $query = $query->where($field, '<', $value);
+                    break;
+                case 'le':
+                    $query = $query->where($field, '<', $value);
+                    break;
+                case 'gt':
+                    $query = $query->where($field, '>', $value);
+                    break;
+                case 'ge':
+                    $query = $query->where($field, '>', $value);
+                    break;
+                case 'in':
+                    $query = $query->whereIn($field, explode(',', $value));
+                    break;
+            }
+        }
+
+        $field = $request->input('sort.field', 'id');
+        $sort = $request->input('sort.sort', 'asc');
+        $page = (int) $request->input('pagination.page', 1);
+        $perpage = (int) $request->input('pagination.perpage', 10);
+
+        $total = $query->count();
         $pages = ceil($total / $perpage);
 
         $users = $query->orderBy($field, $sort)
