@@ -44,26 +44,6 @@
               <span class="nav-text font-size-lg">Аккаунт</span>
             </a>
           </li>
-          <li class="nav-item">
-            <a
-              href="#tab3"
-              class="nav-link"
-              data-toggle="tab"
-            >
-              <span class="nav-icon">
-                <span class="svg-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-                      <rect x="0" y="0" width="24" height="24"/>
-                      <path d="M18.6225,9.75 L18.75,9.75 C19.9926407,9.75 21,10.7573593 21,12 C21,13.2426407 19.9926407,14.25 18.75,14.25 L18.6854912,14.249994 C18.4911876,14.250769 18.3158978,14.366855 18.2393549,14.5454486 C18.1556809,14.7351461 18.1942911,14.948087 18.3278301,15.0846699 L18.372535,15.129375 C18.7950334,15.5514036 19.03243,16.1240792 19.03243,16.72125 C19.03243,17.3184208 18.7950334,17.8910964 18.373125,18.312535 C17.9510964,18.7350334 17.3784208,18.97243 16.78125,18.97243 C16.1840792,18.97243 15.6114036,18.7350334 15.1896699,18.3128301 L15.1505513,18.2736469 C15.008087,18.1342911 14.7951461,18.0956809 14.6054486,18.1793549 C14.426855,18.2558978 14.310769,18.4311876 14.31,18.6225 L14.31,18.75 C14.31,19.9926407 13.3026407,21 12.06,21 C10.8173593,21 9.81,19.9926407 9.81,18.75 C9.80552409,18.4999185 9.67898539,18.3229986 9.44717599,18.2361469 C9.26485393,18.1556809 9.05191298,18.1942911 8.91533009,18.3278301 L8.870625,18.372535 C8.44859642,18.7950334 7.87592081,19.03243 7.27875,19.03243 C6.68157919,19.03243 6.10890358,18.7950334 5.68746499,18.373125 C5.26496665,17.9510964 5.02757002,17.3784208 5.02757002,16.78125 C5.02757002,16.1840792 5.26496665,15.6114036 5.68716991,15.1896699 L5.72635306,15.1505513 C5.86570889,15.008087 5.90431906,14.7951461 5.82064513,14.6054486 C5.74410223,14.426855 5.56881236,14.310769 5.3775,14.31 L5.25,14.31 C4.00735931,14.31 3,13.3026407 3,12.06 C3,10.8173593 4.00735931,9.81 5.25,9.81 C5.50008154,9.80552409 5.67700139,9.67898539 5.76385306,9.44717599 C5.84431906,9.26485393 5.80570889,9.05191298 5.67216991,8.91533009 L5.62746499,8.870625 C5.20496665,8.44859642 4.96757002,7.87592081 4.96757002,7.27875 C4.96757002,6.68157919 5.20496665,6.10890358 5.626875,5.68746499 C6.04890358,5.26496665 6.62157919,5.02757002 7.21875,5.02757002 C7.81592081,5.02757002 8.38859642,5.26496665 8.81033009,5.68716991 L8.84944872,5.72635306 C8.99191298,5.86570889 9.20485393,5.90431906 9.38717599,5.82385306 L9.49484664,5.80114977 C9.65041313,5.71688974 9.7492905,5.55401473 9.75,5.3775 L9.75,5.25 C9.75,4.00735931 10.7573593,3 12,3 C13.2426407,3 14.25,4.00735931 14.25,5.25 L14.249994,5.31450877 C14.250769,5.50881236 14.366855,5.68410223 14.552824,5.76385306 C14.7351461,5.84431906 14.948087,5.80570889 15.0846699,5.67216991 L15.129375,5.62746499 C15.5514036,5.20496665 16.1240792,4.96757002 16.72125,4.96757002 C17.3184208,4.96757002 17.8910964,5.20496665 18.312535,5.626875 C18.7350334,6.04890358 18.97243,6.62157919 18.97243,7.21875 C18.97243,7.81592081 18.7350334,8.38859642 18.3128301,8.81033009 L18.2736469,8.84944872 C18.1342911,8.99191298 18.0956809,9.20485393 18.1761469,9.38717599 L18.1988502,9.49484664 C18.2831103,9.65041313 18.4459853,9.7492905 18.6225,9.75 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"/>
-                      <path d="M12,15 C13.6568542,15 15,13.6568542 15,12 C15,10.3431458 13.6568542,9 12,9 C10.3431458,9 9,10.3431458 9,12 C9,13.6568542 10.3431458,15 12,15 Z" fill="#000000"/>
-                    </g>
-                  </svg>
-                </span>
-              </span>
-              <span class="nav-text font-size-lg">Настройки</span>
-            </a>
-          </li>
         </ul>
       </div>
     </div>
@@ -75,7 +55,7 @@
           role="tabpanel"
         >
           <form
-            ref="profileForm"
+            ref="updateProfileForm"
             class="form"
           >
             <div class="card-body">
@@ -139,9 +119,9 @@
                     <div class="col-lg-9">
                       <input
                         id="firstName"
-                        v-model="profileForm.first_name"
+                        v-model="updateProfileForm.firstName"
                         type="text" class="form-control form-control-lg form-control-solid"
-                        name="first_name"
+                        name="firstName"
                       >
                     </div>
                   </div>
@@ -155,10 +135,10 @@
                     <div class="col-lg-9">
                       <input
                         id="lastName"
-                        v-model="profileForm.last_name"
+                        v-model="updateProfileForm.lastName"
                         type="text"
                         class="form-control form-control-lg form-control-solid"
-                        name="last_name"
+                        name="lastName"
                       >
                     </div>
                   </div>
@@ -178,7 +158,7 @@
                         </div>
                         <input
                           id="email"
-                          v-model="profileForm.email"
+                          v-model="updateProfileForm.email"
                           type="email" class="form-control form-control-lg form-control-solid"
                           name="email"
                         >
@@ -202,10 +182,10 @@
                         </div>
                         <input
                           id="contactPhone"
-                          v-model="profileForm.contact_phone"
+                          v-model="updateProfileForm.contactPhone"
                           type="phone"
                           class="form-control form-control-lg form-control-solid"
-                          name="contact_phone"
+                          name="contactPhone"
                         >
                       </div>
                       <span class="form-text text-muted">Контактный телефон будет виден только сотрудникам вашей организации.</span>
@@ -222,10 +202,10 @@
                     <div class="col-lg-3"></div>
                     <div class="col-lg-9">
                       <button
-                        ref="profileFormSubmit"
+                        ref="updateProfileFormSubmit"
                         type="submit"
                         class="btn btn-light-primary font-weight-bold"
-                        @click="handleProfileForm"
+                        @click="handleUpdateProfileForm"
                       >
                         Сохранить изменения
                       </button>
@@ -242,8 +222,7 @@
           role="tabpanel"
         >
           <form
-            id="accountForm"
-            ref="accountForm"
+            ref="updateAccountForm"
             class="form"
           >
             <div class="card-body">
@@ -267,7 +246,7 @@
                       <div ref="username">
                         <input
                           id="username"
-                          v-model="accountForm.username"
+                          v-model="updateAccountForm.username"
                           type="text"
                           class="form-control form-control-lg form-control-solid"
                           name="username"
@@ -298,10 +277,10 @@
                     <div class="col-lg-9">
                       <input
                         id="curPassword"
-                        v-model="accountForm.cur_password"
+                        v-model="updateAccountForm.curPassword"
                         type="password"
                         class="form-control form-control-lg form-control-solid"
-                        name="cur_password"
+                        name="curPassword"
                       >
                     </div>
                   </div>
@@ -315,10 +294,10 @@
                     <div class="col-lg-9">
                       <input
                         id="newPassword"
-                        v-model="accountForm.new_password"
+                        v-model="updateAccountForm.newPassword"
                         type="password"
                         class="form-control form-control-lg form-control-solid"
-                        name="new_password"
+                        name="newPassword"
                       >
                     </div>
                   </div>
@@ -332,10 +311,10 @@
                     <div class="col-lg-9">
                       <input
                         id="newPasswordConfirmation"
-                        v-model="accountForm.new_password_confirmation"
+                        v-model="updateAccountForm.newPasswordConfirmation"
                         type="password"
                         class="form-control form-control-lg form-control-solid"
-                        name="new_password_confirmation"
+                        name="newPasswordConfirmation"
                         @paste.prevent
                       >
                     </div>
@@ -351,57 +330,14 @@
                     <div class="col-lg-3"></div>
                     <div class="col-lg-9">
                       <button
-                        ref="accountFormSubmit"
+                        ref="updateAccountFormSubmit"
                         type="submit"
                         class="btn btn-light-primary font-weight-bold"
-                        @click="handleAccountForm"
+                        @click="handleUpdateAccountForm"
                       >
                         Сохранить изменения
                       </button>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-        <div
-          id="tab3"
-          class="tab-pane px-7"
-          role="tabpanel"
-        >
-          <form
-            class="form"
-            @submit.prevent
-          >
-            <div class="row">
-              <div class="col-xl-2"></div>
-              <div class="col-xl-7 my-2">
-                <div class="row">
-                  <label class="col-lg-3"></label>
-                  <div class="col-lg-9">
-                    <h6 class="text-dark font-weight-bold mb-10">Общие:</h6>
-                  </div>
-                </div>
-                <!-- <div class="form-group row mb-2"> -->
-                <div class="form-group row">
-                  <label
-                    for="enableNotifications"
-                    class="col-form-label col-lg-3 text-lg-right text-left"
-                  >
-                    Включить уведомления
-                  </label>
-                  <div class="col-lg-3">
-                    <span class="switch">
-                      <label>
-                        <input
-                          id="enableNotifications"
-                          type="checkbox"
-                          checked
-                        >
-                        <span></span>
-                      </label>
-                    </span>
                   </div>
                 </div>
               </div>
@@ -418,22 +354,22 @@ import { mapGetters, mapMutations } from "vuex"
 import {
   SET_PAGE_TITLE
 } from "../store"
+import UsersService from "../services/users.service.js"
 
 export default {
   data () {
     return {
-      profileForm: {
-        image_id: null,
-        first_name: null,
-        last_name: null,
+      updateProfileForm: {
+        firstName: null,
+        lastName: null,
         email: null,
-        contact_phone: null
+        contactPhone: null
       },
-      accountForm: {
+      updateAccountForm: {
         username: null,
-        cur_password: null,
-        new_password: null,
-        new_password_confirmation: null
+        curPassword: null,
+        newPassword: null,
+        newPasswordConfirmation: null
       }
     }
   },
@@ -444,10 +380,10 @@ export default {
     defaultAvatar () {
       return require("../assets/media/users/blank.png")
     },
-    profileFormValidation () {
-      return window.FormValidation.formValidation(this.$refs["profileForm"], {
+    updateProfileFormValidation () {
+      return window.FormValidation.formValidation(this.$refs["updateProfileForm"], {
         fields: {
-          first_name: {
+          firstName: {
             validators: {
               notEmpty: {
                 message: "Введите имя"
@@ -458,7 +394,7 @@ export default {
               }
             }
           },
-          last_name: {
+          lastName: {
             validators: {
               notEmpty: {
                 message: "Введите фамилию"
@@ -472,7 +408,7 @@ export default {
           email: {
             validators: {
               emailAddress: {
-                message: "Неверный формат E-Mail"
+                message: "E-Mail введен неверно"
               },
               stringLength: {
                 max: 191,
@@ -480,11 +416,11 @@ export default {
               }
             }
           },
-          contact_phone: {
+          contactPhone: {
             validators: {
               regexp: {
                 regexp: /^\+\d{1,3}\d{1,12}$/,
-                message: "Контактный телефон должен быть указан в международном формате"
+                message: "Контактный телефон введен неверно"
               }
             }
           }
@@ -496,60 +432,32 @@ export default {
         }
       })
     },
-    accountFormValidation () {
-      return window.FormValidation.formValidation(this.$refs["accountForm"], {
+    updateAccountFormValidation () {
+      return window.FormValidation.formValidation(this.$refs["updateAccountForm"], {
         fields: {
           username: {
             validators: {
               notEmpty: {
                 message: "Введите имя пользователя"
               },
+              callback: {
+                callback (input) {
+                  return /^[a-z]/i.test(input.value)
+                },
+                message: "Имя пользователя должно начинаться с буквы"
+              },
               regexp: {
-                regexp: /^[a-z][a-z0-9_]*$/i,
-                message: "Имя пользователя должно начинаться с латинской буквы и включать только латинские буквы, цифры и знаки нижнего подчеркивания"
+                regexp: /^[a-z][a-z0-9_.\-@]*$/i,
+                message: "Допустимые символы: a-Z0-9_.-@"
               },
               stringLength: {
                 max: 191,
                 message: "Имя пользователя не может превышать 191 символ"
               }
             }
-          },
-          cur_password: {
-            validators: {
-              notEmpty: {
-                message: "Введите текущий пароль"
-              }
-            }
-          },
-          new_password: {
-            validators: {
-              stringLength: {
-                min: 8,
-                message: "Новый пароль должен состоять минимум из 8 символов"
-              }
-            }
-          },
-          new_password_confirmation: {
-            validators: {
-              notEmpty: {
-                message: "Подтвердите пароль"
-              },
-              identical: {
-                compare: () => {
-                  return document.getElementById("accountForm").querySelector("[name='new_password']").value
-                },
-                message: "Пароли должны совпадать"
-              }
-            }
           }
         },
         plugins: {
-          excluded: new window.FormValidation.plugins.Excluded({
-            excluded: (field) => {
-              return (field === "cur_password" || field === "new_password_confirmation")
-                && !document.getElementById("accountForm").querySelector("[name='new_password']").value
-            }
-          }),
           trigger: new window.FormValidation.plugins.Trigger(),
           bootstrap: new window.FormValidation.plugins.Bootstrap(),
           submitButton: new window.FormValidation.plugins.SubmitButton()
@@ -557,27 +465,13 @@ export default {
       })
     }
   },
-  watch: {
-    ["accountForm.username"] () {
-      this.$refs["username"].className = "spinner spinner-sm spinner-success spinner-right spinner-input"
-
-      const timeout = setTimeout(() => {
-        clearTimeout(timeout)
-        this.$refs["username"].className = ""
-      }, 1000)
-    }
-  },
   created () {
-    this.accountForm.username = this.user.username
+    this.updateProfileForm.firstName = this.user.first_name
+    this.updateProfileForm.lastName = this.user.last_name
+    this.updateProfileForm.email = this.user.email
+    this.updateProfileForm.contactPhone = this.user.contact_phone
 
-    if (this.user.image) {
-      this.profileForm.image_id = this.user.image.id
-    }
-
-    this.profileForm.first_name = this.user.first_name
-    this.profileForm.last_name = this.user.last_name
-    this.profileForm.email = this.user.email
-    this.profileForm.contact_phone = this.user.contact_phone
+    this.updateAccountForm.username = this.user.username
   },
   beforeMount () {
     this[SET_PAGE_TITLE]("Мой профиль")
@@ -589,62 +483,50 @@ export default {
     ...mapMutations([
       SET_PAGE_TITLE
     ]),
-    resetProfileForm () {
-      this.profileFormValidation.resetForm(true)
-
-      if (this.user.image) {
-        this.profileForm.image_id = this.user.image.id
-      }
-
-      this.profileForm.first_name = this.user.first_name
-      this.profileForm.last_name = this.user.last_name
-      this.profileForm.email = this.user.email
-      this.profileForm.contact_phone = this.user.contact_phone
-    },
-    resetAccountForm () {
-      this.accountFormValidation.resetForm(true)
-      this.accountForm.username = this.user.username
-      this.accountForm.cur_password = null
-      this.accountForm.new_password = null
-      this.accountForm.new_password_confirmation = null
-    },
-    handleProfileForm () {
-      this.profileFormValidation.validate()
+    handleUpdateProfileForm () {
+      this.updateProfileFormValidation.validate()
         .then(status => {
           if (status === "Valid") {
-            window.swal.fire({
-              text: "Все хорошо!",
-              icon: "success",
-              buttonsStyling: false,
-              confirmButtonText: "Отправить форму",
-              customClass: {
-                confirmButton: "btn font-weight-bold btn-light-primary"
-              }
+            this.$refs["updateProfileFormSubmit"].classList.add(
+              "spinner", "spinner-light", "spinner-right"
+            )
+
+            UsersService.updateProfile(this.user.id, {
+              first_name: this.updateProfileForm.firstName,
+              last_name: this.updateProfileForm.lastName,
+              email: this.updateProfileForm.email,
+              contact_phone: this.updateProfileForm.contactPhone
             })
             .then(() => {
-              this.$refs["profileFormSubmit"].classList.add(
+              window.swal.fire({
+                text: "Изменения успешно сохранены!",
+                icon: "success",
+                buttonsStyling: false,
+                confirmButtonText: "Продолжить",
+                customClass: {
+                  confirmButton: "btn font-weight-bold btn-light-primary"
+                }
+              })
+            })
+            .catch(error => {
+              console.log(error)
+
+              window.swal.fire({
+                text: "Произошла неизвестная ошибка!",
+                icon: "error",
+                buttonsStyling: false,
+                confirmButtonText: "Попробовать снова",
+                customClass: {
+                  confirmButton: "btn font-weight-bold btn-light-primary"
+                }
+              })
+            })
+            .finally(() => {
+              this.updateProfileFormValidation.resetForm(false)
+
+              this.$refs["updateProfileFormSubmit"].classList.remove(
                 "spinner", "spinner-light", "spinner-right"
               )
-
-              const timeout = setTimeout(() => {
-                clearTimeout(timeout)
-
-                this.$refs["profileFormSubmit"].classList.remove(
-                  "spinner", "spinner-light", "spinner-right"
-                )
-
-                this.profileFormValidation.resetForm(false)
-
-                window.swal.fire({
-                  text: "Изменения сохранены!",
-                  icon: "success",
-                  buttonsStyling: false,
-                  confirmButtonText: "Продолжить",
-                  customClass: {
-                    confirmButton: "btn font-weight-bold btn-light-primary"
-                  }
-                })
-              }, 1000)
             })
           } else {
             window.swal.fire({
@@ -659,35 +541,28 @@ export default {
           }
         })
     },
-    handleAccountForm () {
-      this.accountFormValidation.validate()
+    handleUpdateAccountForm () {
+      this.updateAccountFormValidation.validate()
         .then(status => {
           if (status === "Valid") {
-            window.swal.fire({
-              text: "Все хорошо!",
-              icon: "success",
-              buttonsStyling: false,
-              confirmButtonText: "Отправить форму",
-              customClass: {
-                confirmButton: "btn font-weight-bold btn-light-primary"
-              }
-            })
-            .then(() => {
-              this.$refs["accountFormSubmit"].classList.add(
-                "spinner", "spinner-light", "spinner-right"
-              )
+            this.$refs["updateAccountFormSubmit"].classList.add(
+              "spinner", "spinner-light", "spinner-right"
+            )
 
-              const timeout = setTimeout(() => {
-                clearTimeout(timeout)
+            let data = {
+              username: this.updateAccountForm.username
+            }
 
-                this.$refs["accountFormSubmit"].classList.remove(
-                  "spinner", "spinner-light", "spinner-right"
-                )
+            if (this.updateAccountForm.newPassword) {
+              data["new_password"] = this.updateAccountForm.newPassword
+              data["cur_password"] = this.updateAccountForm.curPassword
+              data["new_password_confirmation"] = this.updateAccountForm.newPasswordConfirmation
+            }
 
-                this.accountFormValidation.resetForm(false)
-
+            UsersService.updateAccount(this.user.id, data)
+              .then(() => {
                 window.swal.fire({
-                  text: "Изменения сохранены!",
+                  text: "Изменения успешно сохранены!",
                   icon: "success",
                   buttonsStyling: false,
                   confirmButtonText: "Продолжить",
@@ -695,8 +570,31 @@ export default {
                     confirmButton: "btn font-weight-bold btn-light-primary"
                   }
                 })
-              }, 1000)
-            })
+              })
+              .catch(error => {
+                console.log(error)
+
+                window.swal.fire({
+                  text: "Произошла неизвестная ошибка!",
+                  icon: "error",
+                  buttonsStyling: false,
+                  confirmButtonText: "Попробовать снова",
+                  customClass: {
+                    confirmButton: "btn font-weight-bold btn-light-primary"
+                  }
+                })
+              })
+              .finally(() => {
+                this.updateAccountFormValidation.resetForm(false)
+
+                this.updateAccountForm.newPassword = null
+                this.updateAccountForm.curPassword = null
+                this.updateAccountForm.newPasswordConfirmation = null
+
+                this.$refs["updateAccountFormSubmit"].classList.remove(
+                  "spinner", "spinner-light", "spinner-right"
+                )
+              })
           } else {
             window.swal.fire({
               text: "Форма заполнена с ошибками!",
