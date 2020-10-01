@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Company extends Model
+class Role extends Model
 {
     use HasFactory;
 
@@ -16,19 +16,13 @@ class Company extends Model
      */
     protected $fillable = [
         'name',
-        'website',
-        'email',
-        'phone',
-        'license',
-        'address',
-        'description',
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function users()
     {
-        return $this->hasMany('App\Models\User');
+        return $this->belongsToMany('App\Models\User');
     }
 }

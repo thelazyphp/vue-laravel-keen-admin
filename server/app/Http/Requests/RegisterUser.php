@@ -24,11 +24,11 @@ class RegisterUser extends FormRequest
     public function rules()
     {
         return [
-            'company_name' => 'nullable|string|max:191|unique:companies,name',
-            'first_name' => 'required|string|max:191|alpha',
-            'last_name' => 'required|string|max:191|alpha',
-            'username' => 'required|string|max:191|regex:/^[a-z][a-z0-9_]*$/i|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'organization_name' => 'nullable|string|max:191|unique:organizations,name',
+            'first_name'        => 'required|string|max:191',
+            'last_name'         => 'required|string|max:191',
+            'username'          => 'required|string|max:191|regex:/^[a-z][a-z0-9._\-@]*$/i|unique:users',
+            'password'          => 'required|string|min:8|confirmed',
         ];
     }
 }

@@ -25,9 +25,9 @@ class UpdateUserAccount extends FormRequest
     public function rules()
     {
         return [
-            'username' => ['string', 'max:191', 'regex:/^[a-z][a-z0-9_]*$/i', Rule::unique('users')->ignore($this->user())],
-            'cur_password' => 'required_with:new_password|password',
-            'new_password' => 'string|min:8|confirmed',
+            'username'      => ['string', 'max:191', 'regex:/^[a-z][a-z0-9._\-@]*$/i', Rule::unique('users')->ignore($this->user())],
+            'cur_password'  => 'required_with:new_password|password',
+            'new_password'  => 'string|min:8|confirmed',
         ];
     }
 }

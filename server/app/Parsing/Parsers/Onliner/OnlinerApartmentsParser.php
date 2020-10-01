@@ -23,7 +23,7 @@ class OnlinerApartmentsParser extends ApartmentsParser
     {
         $this->rules['images'] = Rule::findAll('.apartment-gallery__slide')->map(function ($element) {
             return [
-                'src' => Rule::attr('style')->match('/url\([\'"]?(.+?)[\'"]?\)/i', 1)->evaluate($element),
+                'src'   => Rule::attr('style')->match('/url\([\'"]?(.+?)[\'"]?\)/i', 1)->evaluate($element),
                 'thumb' => Rule::attr('data-thumb')->evaluate($element),
             ];
         });

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFavoritesTable extends Migration
+class CreateNotificationUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateFavoritesTable extends Migration
      */
     public function up()
     {
-        Schema::create('favorites', function (Blueprint $table) {
+        Schema::create('notification_user', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('ad_id');
-            $table->timestamps();
+            $table->unsignedBigInteger('notification_id');
         });
     }
 
@@ -27,6 +26,6 @@ class CreateFavoritesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('favorites');
+        Schema::dropIfExists('notification_user');
     }
 }

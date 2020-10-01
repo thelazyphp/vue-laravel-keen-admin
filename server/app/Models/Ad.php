@@ -10,9 +10,9 @@ class Ad extends Model
     const TRANSACTION_SELL = 'sell';
     const TRANSACTION_RENT = 'rent';
 
-    const CATEGORY_APARTMENTS = 'apartments';
-    const CATEGORY_HOUSES = 'houses';
-    const CATEGORY_COMMERCIAL_REAL_ESTATE = 'commercial_real_estate';
+    const CATEGORY_APARTMENTS               = 'apartments';
+    const CATEGORY_HOUSES                   = 'houses';
+    const CATEGORY_COMMERCIAL_REAL_ESTATE   = 'commercial_real_estate';
 
     use HasFactory;
 
@@ -45,12 +45,12 @@ class Ad extends Model
      * @var array
      */
     protected $attributes = [
-        'transaction' => self::TRANSACTION_SELL,
-        'images' => '[]',
-        'price_history' => '[]',
-        'price_currency' => 'USD',
-        'price_sq_m_history' => '[]',
-        'price_sq_m_currency' => 'USD',
+        'transaction'           => self::TRANSACTION_SELL,
+        'images'                => '[]',
+        'price_history'         => '[]',
+        'price_currency'        => 'USD',
+        'price_sq_m_history'    => '[]',
+        'price_sq_m_currency'   => 'USD',
     ];
 
     /**
@@ -105,20 +105,20 @@ class Ad extends Model
      * @var array
      */
     protected $casts = [
-        'images' => 'array',
-        'rooms' => 'integer',
-        'floor' => 'integer',
-        'floors' => 'integer',
-        'year_built' => 'integer',
-        'size_land' => 'float',
-        'size_total' => 'float',
-        'size_living' => 'float',
-        'size_kitchen' => 'float',
-        'price_history' => 'array',
-        'price_amount' => 'integer',
-        'price_sq_m_history' => 'array',
-        'price_sq_m_amount' => 'integer',
-        'published_at' => 'datetime',
+        'images'                => 'array',
+        'rooms'                 => 'integer',
+        'floor'                 => 'integer',
+        'floors'                => 'integer',
+        'year_built'            => 'integer',
+        'size_land'             => 'float',
+        'size_total'            => 'float',
+        'size_living'           => 'float',
+        'size_kitchen'          => 'float',
+        'price_history'         => 'array',
+        'price_amount'          => 'integer',
+        'price_sq_m_history'    => 'array',
+        'price_sq_m_amount'     => 'integer',
+        'published_at'          => 'datetime',
     ];
 
     /**
@@ -134,6 +134,6 @@ class Ad extends Model
      */
     public function isFavorite()
     {
-        return Favorite::where('user_id', auth()->id())->where('ad_id', $this->id)->exists();
+        return auth()->user()->favorites()->where('ad_id', $this->id)->exists();
     }
 }

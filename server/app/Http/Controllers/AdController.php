@@ -26,12 +26,12 @@ class AdController extends Controller
     public function index(Request $request)
     {
         $this->validate($request, [
-            'query.search' => 'nullable|string',
-            'params' => 'array',
-            'sort.field' => 'string',
-            'sort.sort' => 'string:in:asc,desc',
-            'pagination.page' => 'integer|min:1',
-            'pagination.perpage' => 'integer|min:1',
+            'query.search'          => 'nullable|string',
+            'params'                => 'array',
+            'sort.field'            => 'string',
+            'sort.sort'             => 'string:in:asc,desc',
+            'pagination.page'       => 'integer|min:1',
+            'pagination.perpage'    => 'integer|min:1',
         ]);
 
         $query = Ad::query();
@@ -42,6 +42,10 @@ class AdController extends Controller
             $query = $query->where(function ($query) use ($search) {
                 $query = $query->where(
                     'full_address', 'like', '%'.$search.'%'
+                );
+
+                $query = $query->where(
+                    'address_district', 'like', '%'.$search.'%'
                 );
 
                 return $query->orWhere(
@@ -57,33 +61,37 @@ class AdController extends Controller
                 $query = $query->whereIn(
                     'seller_id', Seller::select('id')->where('type', $value)->get()->pluck('id')->toArray()
                 );
-
-                continue;
-            }
-
-            switch ($op) {
-                case 'eq':
-                    $query = $query->where($field, $value);
-                    break;
-                case 'lt':
-                    $query = $query->where($field, '<', $value);
-                    break;
-                case 'le':
-                    $query = $query->where($field, '<', $value);
-                    break;
-                case 'gt':
-                    $query = $query->where($field, '>', $value);
-                    break;
-                case 'ge':
-                    $query = $query->where($field, '>', $value);
-                    break;
-                case 'in':
-                    $query = $query->whereIn($field, explode(',', $value));
-                    break;
+            } else {
+                switch ($op) {
+                    case 'not':
+                        $query = $query->where($field, '<>', $value);
+                        break;
+                    case 'eq':
+                        $query = $query->where($field, $value);
+                        break;
+                    case 'lt':
+                        $query = $query->where($field, '<', $value);
+                        break;
+                    case 'le':
+                        $query = $query->where($field, '<=', $value);
+                        break;
+                    case 'gt':
+                        $query = $query->where($field, '>', $value);
+                        break;
+                    case 'ge':
+                        $query = $query->where($field, '>=', $value);
+                        break;
+                    case 'in':
+                        $query = $query->whereIn($field, explode(',', $value));
+                        break;
+                    case 'not_in':
+                        $query = $query->whereNotIn($field, explode(',', $value));
+                        break;
+                }
             }
         }
 
-        $field = $request->input('sort.field', 'id');
+        $field = $request->input('sort.field', 'published_at');
         $sort = $request->input('sort.sort', 'asc');
         $page = (int) $request->input('pagination.page', 1);
         $perpage = (int) $request->input('pagination.perpage', 10);
@@ -98,12 +106,12 @@ class AdController extends Controller
 
         return (new Ads($users))->additional([
             'meta' => [
-                'field' => $field,
-                'sort' => $sort,
-                'total' => $total,
-                'pages' => $pages,
-                'page' => $page,
-                'perpage' => $perpage,
+                'field'     => $field,
+                'sort'      => $sort,
+                'total'     => $total,
+                'pages'     => $pages,
+                'page'      => $page,
+                'perpage'   => $perpage,
             ]
         ]);
     }

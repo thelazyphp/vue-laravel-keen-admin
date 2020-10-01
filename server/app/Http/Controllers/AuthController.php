@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\User;
 
 class AuthController extends Controller
 {
@@ -20,17 +21,21 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $this->validate($request, [
-            'username' => 'required',
+            'username' => 'bail|required|exists:users',
             'password' => 'required',
         ]);
 
+        $user = User::where('username', $request->username)->first();
+
+        //
+
         return app()->handle(
             Request::create('/oauth/token', 'POST', [
-                'grant_type' => 'password',
-                'scope' => '*',
-                'username' => $request->username,
-                'password' => $request->password,
-                'client_id' => env('APP_CLIENT_ID'),
+                'grant_type'    => 'password',
+                'scope'         => '*',
+                'username'      => $request->username,
+                'password'      => $request->password,
+                'client_id'     => env('APP_CLIENT_ID'),
                 'client_secret' => env('APP_CLIENT_SECRET'),
             ])
         );
@@ -56,10 +61,10 @@ class AuthController extends Controller
 
         return app()->handle(
             Request::create('/oauth/token', 'POST', [
-                'grant_type' => 'refresh_token',
-                'scope' => '*',
+                'grant_type'    => 'refresh_token',
+                'scope'         => '*',
                 'refresh_token' => $request->refresh_token,
-                'client_id' => env('APP_CLIENT_ID'),
+                'client_id'     => env('APP_CLIENT_ID'),
                 'client_secret' => env('APP_CLIENT_SECRET'),
             ])
         );

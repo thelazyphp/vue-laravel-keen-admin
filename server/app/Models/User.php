@@ -10,44 +10,7 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    const ROLE_ADMIN = 'admin';
-    const ROLE_MANAGER = 'manager';
-    const ROLE_EMPLOYEE = 'employee';
-
     use HasFactory, Notifiable, HasApiTokens;
-
-    /**
-     * @return string[]
-     */
-    public static function roles()
-    {
-        return [
-            self::ROLE_ADMIN,
-            self::ROLE_MANAGER,
-            self::ROLE_EMPLOYEE,
-        ];
-    }
-
-    /**
-     * @return string[]
-     */
-    public static function fillableRoles()
-    {
-        return [
-            self::ROLE_MANAGER,
-            self::ROLE_EMPLOYEE,
-        ];
-    }
-
-    /**
-     * The model's default values for attributes.
-     *
-     * @var array
-     */
-    protected $attributes = [
-        'active' => true,
-        'role' => self::ROLE_ADMIN,
-    ];
 
     /**
      * The attributes that are mass assignable.
@@ -55,10 +18,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'company_id',
+        'organization_id',
         'image_id',
-        'active',
-        'role',
         'first_name',
         'last_name',
         'email',
@@ -97,61 +58,11 @@ class User extends Authenticatable
     }
 
     /**
-     * @return void
-     */
-    public function activate()
-    {
-        $this->active = true;
-        $this->save();
-    }
-
-    /**
-     * @return void
-     */
-    public function deactivate()
-    {
-        $this->active = false;
-        $this->save();
-    }
-
-    /**
-     * @return bool
-     */
-    public function isActive()
-    {
-        return $this->active;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isAdmin()
-    {
-        return $this->role == self::ROLE_ADMIN;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isManager()
-    {
-        return $this->role == self::ROLE_MANAGER;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEmployee()
-    {
-        return $this->role == self::ROLE_EMPLOYEE;
-    }
-
-    /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function company()
+    public function organization()
     {
-        return $this->belongsTo('App\Models\Company');
+        return $this->belongsTo('App\Models\Organization');
     }
 
     /**
@@ -168,6 +79,22 @@ class User extends Authenticatable
     public function requests()
     {
         return $this->hasMany('App\Models\Request');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function notifications()
+    {
+        return $this->belongsToMany('App\Models\Notification');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function roles()
+    {
+        return $this->belongsToMany('App\Models\Role');
     }
 
     /**

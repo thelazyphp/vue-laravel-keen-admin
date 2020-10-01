@@ -24,10 +24,10 @@ class UpdateUserProfile extends FormRequest
     public function rules()
     {
         return [
-            'image_id' => 'nullable|integer|exists:images,id',
-            'first_name' => 'string|max:191|alpha',
-            'last_name' => 'string|max:191|alpha',
-            'email' => 'nullable|string|max:191|email',
+            'image_id'      => 'nullable|integer|exists:images,id',
+            'first_name'    => 'string|max:191',
+            'last_name'     => 'string|max:191',
+            'email'         => 'nullable|string|max:191|email',
             'contact_phone' => 'nullable|string|max:191|regex:/^\+\d{1,3}\d{1,12}$/',
         ];
     }

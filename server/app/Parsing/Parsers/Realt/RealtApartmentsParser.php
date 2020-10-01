@@ -23,7 +23,7 @@ class RealtApartmentsParser extends ApartmentsParser
     {
         $this->rules['images'] = Rule::findAll('.lightgallery')->map(function ($element) {
             return [
-                'src' => Rule::attr('href')->evaluate($element),
+                'src'   => Rule::attr('href')->evaluate($element),
                 'thumb' => Rule::find('img')->attr('src')->evaluate($element),
             ];
         });

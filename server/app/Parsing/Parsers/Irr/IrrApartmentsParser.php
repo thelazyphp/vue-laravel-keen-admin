@@ -24,8 +24,8 @@ class IrrApartmentsParser extends ApartmentsParser
             'verify' => false,
 
             'headers' => [
-                'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-                'accept-language' => 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
+                'accept'            => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                'accept-language'   => 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
             ],
         ],
     ];
@@ -37,7 +37,7 @@ class IrrApartmentsParser extends ApartmentsParser
     {
         $this->rules['images'] = Rule::findAll('.nyroModal')->map(function ($element) {
             return [
-                'src' => Rule::attr('href')->evaluate($element),
+                'src'   => Rule::attr('href')->evaluate($element),
                 'thumb' => Rule::find('img')->attr('src')->evaluate($element),
             ];
         });
@@ -78,22 +78,22 @@ class IrrApartmentsParser extends ApartmentsParser
 
         $this->rules['price_amount'] = Rule::findWhereTextContains('.credit_cost li', '$')->takeDigits();
 
-        $publishedAtReplacements = [
-            'января'   => 'jan',
-            'февраля'  => 'feb',
-            'марта'    => 'mar',
-            'апреля'   => 'apr',
-            'мая'      => 'may',
-            'июня'     => 'jun',
-            'июля'     => 'jul',
-            'августа'  => 'aug',
-            'сентября' => 'sep',
-            'октября'  => 'oct',
-            'ноября'   => 'nov',
-            'декабря'  => 'dec',
+        $arr = [
+            'января'    => 'jan',
+            'февраля'   => 'feb',
+            'марта'     => 'mar',
+            'апреля'    => 'apr',
+            'мая'       => 'may',
+            'июня'      => 'jun',
+            'июля'      => 'jul',
+            'августа'   => 'aug',
+            'сентября'  => 'sep',
+            'октября'   => 'oct',
+            'ноября'    => 'nov',
+            'декабря'   => 'dec',
         ];
 
-        $this->rules['published_at'] = Rule::find('.data')->replace(array_keys($publishedAtReplacements), array_values($publishedAtReplacements))->toDateTime();
+        $this->rules['published_at'] = Rule::find('.data')->replace(array_keys($arr), array_values($arr))->toDateTime();
     }
 
     /**

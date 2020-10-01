@@ -17,7 +17,7 @@ class UserPolicy
      */
     public function viewAny(User $user)
     {
-        return (bool) $user->company;
+        //
     }
 
     /**
@@ -29,10 +29,7 @@ class UserPolicy
      */
     public function view(User $user, User $model)
     {
-        return $user->id == $model->id
-            || ((bool) $user->company
-                && (bool) $model->company
-                && $user->company->id == $model->company->id);
+        //
     }
 
     /**
@@ -43,8 +40,7 @@ class UserPolicy
      */
     public function create(User $user)
     {
-        return (bool) $user->company
-            && ($user->isAdmin() || $user->isManager());
+        //
     }
 
     /**
@@ -56,12 +52,7 @@ class UserPolicy
      */
     public function update(User $user, User $model)
     {
-        return $user->id != $model->id
-            && (bool) $user->company
-            && (bool) $model->company
-            && $user->company->id == $model->company->id
-            && ($user->isAdmin()
-                || $user->isManager() && !$model->isAdmin());
+        //
     }
 
     /**
@@ -73,12 +64,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model)
     {
-        return $user->id != $model->id
-            && (bool) $user->company
-            && (bool) $model->company
-            && $user->company->id == $model->company->id
-            && ($user->isAdmin()
-                || $user->isManager() && !$model->isAdmin());
+        //
     }
 
     /**
@@ -110,39 +96,9 @@ class UserPolicy
      * @param  \App\Models\User  $model
      * @return mixed
      */
-    public function activate(User $user, User $model)
-    {
-        return $user->id != $model->id
-            && $user->isAdmin()
-            && !$model->isAdmin()
-            && (bool) $user->company
-            && (bool) $model->company
-            && $user->company->id == $model->company->id;
-    }
-
-    /**
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
-     * @return mixed
-     */
-    public function deactivate(User $user, User $model)
-    {
-        return $user->id != $model->id
-            && $user->isAdmin()
-            && !$model->isAdmin()
-            && (bool) $user->company
-            && (bool) $model->company
-            && $user->company->id == $model->company->id;
-    }
-
-    /**
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
-     * @return mixed
-     */
     public function updateProfile(User $user, User $model)
     {
-        return $user->id == $model->id;
+        //
     }
 
     /**
@@ -152,17 +108,6 @@ class UserPolicy
      */
     public function updateAccount(User $user, User $model)
     {
-        return $user->id == $model->id;
-    }
-
-    /**
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\User  $model
-     * @return mixed
-     */
-    public function updateCompany(User $user, User $model)
-    {
-        return $user->isAdmin()
-            && $user->id == $model->id;
+        //
     }
 }

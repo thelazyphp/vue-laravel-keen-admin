@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Client extends Model
+class Organization extends Model
 {
     use HasFactory;
 
@@ -15,26 +15,20 @@ class Client extends Model
      * @var array
      */
     protected $fillable = [
-        'first_name',
-        'last_name',
+        'name',
+        'website',
         'email',
         'phone',
+        'license',
         'address',
+        'description',
     ];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user()
-    {
-        return $this->belongsTo('App\Models\User');
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function requests()
+    public function users()
     {
-        return $this->hasMany('App\Models\Request');
+        return $this->hasMany('App\Models\User');
     }
 }

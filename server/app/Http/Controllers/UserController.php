@@ -10,10 +10,9 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\User as UserResource;
 use App\Http\Requests\UpdateUser;
 use App\Http\Requests\RegisterUser;
-use App\Models\Company;
+use App\Models\Organization;
 use App\Http\Requests\UpdateUserProfile;
 use App\Http\Requests\UpdateUserAccount;
-use App\Http\Requests\UpdateUserCompany;
 
 class UserController extends Controller
 {
@@ -35,12 +34,12 @@ class UserController extends Controller
         $this->authorize('viewAny', User::class);
 
         $this->validate($request, [
-            'query.search' => 'nullable|string',
-            'params' => 'array',
-            'sort.field' => 'string',
-            'sort.sort' => 'string:in:asc,desc',
-            'pagination.page' => 'integer|min:1',
-            'pagination.perpage' => 'integer|min:1',
+            'query.search'          => 'nullable|string',
+            'params'                => 'array',
+            'sort.field'            => 'string',
+            'sort.sort'             => 'string:in:asc,desc',
+            'pagination.page'       => 'integer|min:1',
+            'pagination.perpage'    => 'integer|min:1',
         ]);
 
         $query = User::query();
@@ -48,21 +47,18 @@ class UserController extends Controller
         if ($request->filled('query.search')) {
             $search = $request->input('query.search');
 
-            $query = $query->where(function ($query) use ($search) {
-                $query = $query->where(
-                    'first_name', 'like', '%'.$search.'%'
-                );
-
-                return $query->orWhere(
-                    'last_name', 'like', '%'.$search.'%'
-                );
-            });
+            //
         }
 
         foreach ($request->input('params', []) as $key => $value) {
             [$field, $op] = explode(':', $key, 2);
 
+            //
+
             switch ($op) {
+                case 'not':
+                    $query = $query->where($field, '<>', $value);
+                    break;
                 case 'eq':
                     $query = $query->where($field, $value);
                     break;
@@ -70,21 +66,24 @@ class UserController extends Controller
                     $query = $query->where($field, '<', $value);
                     break;
                 case 'le':
-                    $query = $query->where($field, '<', $value);
+                    $query = $query->where($field, '<=', $value);
                     break;
                 case 'gt':
                     $query = $query->where($field, '>', $value);
                     break;
                 case 'ge':
-                    $query = $query->where($field, '>', $value);
+                    $query = $query->where($field, '>=', $value);
                     break;
                 case 'in':
                     $query = $query->whereIn($field, explode(',', $value));
                     break;
+                case 'not_in':
+                    $query = $query->whereNotIn($field, explode(',', $value));
+                    break;
             }
         }
 
-        $field = $request->input('sort.field', 'id');
+        $field = $request->input('sort.field', 'first_name');
         $sort = $request->input('sort.sort', 'asc');
         $page = (int) $request->input('pagination.page', 1);
         $perpage = (int) $request->input('pagination.perpage', 10);
@@ -99,12 +98,12 @@ class UserController extends Controller
 
         return (new Users($users))->additional([
             'meta' => [
-                'field' => $field,
-                'sort' => $sort,
-                'total' => $total,
-                'pages' => $pages,
-                'page' => $page,
-                'perpage' => $perpage,
+                'field'     => $field,
+                'sort'      => $sort,
+                'total'     => $total,
+                'pages'     => $pages,
+                'page'      => $page,
+                'perpage'   => $perpage,
             ]
         ]);
     }
@@ -125,7 +124,7 @@ class UserController extends Controller
 
         $user = User::create($validated);
 
-        $user->company()->associate(auth()->user()->company);
+        $user->organization()->associate(auth()->user()->organization);
         $user->save();
 
         return new UserResource($user);
@@ -140,6 +139,7 @@ class UserController extends Controller
     public function show(User $user)
     {
         $this->authorize('view', $user);
+
         return new UserResource($user);
     }
 
@@ -192,10 +192,10 @@ class UserController extends Controller
 
         $user = User::create($validated);
 
-        if (!empty($validated['company_name'])) {
-            $user->company()->associate(
-                Company::create([
-                    'name' => $validated['company_name'],
+        if (!empty($validated['organization_name'])) {
+            $user->organization()->associate(
+                Organization::create([
+                    'name' => $validated['organization_name'],
                 ])
             );
 
@@ -203,28 +203,6 @@ class UserController extends Controller
         }
 
         return new UserResource($user);
-    }
-
-    /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function activate(Request $request, User $user)
-    {
-        $this->authorize('activate', $user);
-        $user->activate();
-    }
-
-    /**
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function deactivate(Request $request, User $user)
-    {
-        $this->authorize('deactivate', $user);
-        $user->deactivate();
     }
 
     /**
@@ -261,29 +239,5 @@ class UserController extends Controller
         return new UserResource(
             tap($user)->update($validated)
         );
-    }
-
-    /**
-     * @param  \App\Http\Requests\UpdateUserCompany  $request
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Http\Response
-     */
-    public function updateCompany(UpdateUserCompany $request, User $user)
-    {
-        $this->authorize('updateCompany', $user);
-
-        $validated = $request->validated();
-
-        if (empty($user->company) && !empty($validated['name'])) {
-            $user->company()->associate(
-                Company::create($validated)
-            );
-
-            $user->save();
-        } else {
-            $user->company()->update($validated);
-        }
-
-        return new UserResource($user);
     }
 }

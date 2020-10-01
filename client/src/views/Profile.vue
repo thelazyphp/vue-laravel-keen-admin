@@ -55,7 +55,7 @@
           role="tabpanel"
         >
           <form
-            ref="updateProfileForm"
+            ref="profileForm"
             class="form"
           >
             <div class="card-body">
@@ -78,7 +78,7 @@
                         <div
                           class="image-input-wrapper"
                           :style="{
-                            backgroundImage: `url(${defaultAvatar})`
+                            backgroundImage: `url(${userAvatar})`
                           }"
                         >
                         </div>
@@ -92,8 +92,8 @@
                           <i class="fa fa-pen icon-sm text-muted"></i>
                           <input
                             type="file"
-                            name="file"
                             accept=".png, .jpg, .jpeg"
+                            @change="uploadUserAvatar"
                           >
                           <input type="hidden">
                         </label>
@@ -119,7 +119,7 @@
                     <div class="col-lg-9">
                       <input
                         id="firstName"
-                        v-model="updateProfileForm.firstName"
+                        v-model="profileForm.firstName"
                         type="text" class="form-control form-control-lg form-control-solid"
                         name="firstName"
                       >
@@ -135,7 +135,7 @@
                     <div class="col-lg-9">
                       <input
                         id="lastName"
-                        v-model="updateProfileForm.lastName"
+                        v-model="profileForm.lastName"
                         type="text"
                         class="form-control form-control-lg form-control-solid"
                         name="lastName"
@@ -158,7 +158,7 @@
                         </div>
                         <input
                           id="email"
-                          v-model="updateProfileForm.email"
+                          v-model="profileForm.email"
                           type="email" class="form-control form-control-lg form-control-solid"
                           name="email"
                         >
@@ -182,7 +182,7 @@
                         </div>
                         <input
                           id="contactPhone"
-                          v-model="updateProfileForm.contactPhone"
+                          v-model="profileForm.contactPhone"
                           type="phone"
                           class="form-control form-control-lg form-control-solid"
                           name="contactPhone"
@@ -202,10 +202,10 @@
                     <div class="col-lg-3"></div>
                     <div class="col-lg-9">
                       <button
-                        ref="updateProfileFormSubmit"
+                        ref="profileFormSubmit"
                         type="submit"
                         class="btn btn-light-primary font-weight-bold"
-                        @click="handleUpdateProfileForm"
+                        @click="handleProfileForm"
                       >
                         Сохранить изменения
                       </button>
@@ -222,7 +222,7 @@
           role="tabpanel"
         >
           <form
-            ref="updateAccountForm"
+            ref="accountForm"
             class="form"
           >
             <div class="card-body">
@@ -246,7 +246,7 @@
                       <div ref="username">
                         <input
                           id="username"
-                          v-model="updateAccountForm.username"
+                          v-model="accountForm.username"
                           type="text"
                           class="form-control form-control-lg form-control-solid"
                           name="username"
@@ -277,7 +277,7 @@
                     <div class="col-lg-9">
                       <input
                         id="curPassword"
-                        v-model="updateAccountForm.curPassword"
+                        v-model="accountForm.curPassword"
                         type="password"
                         class="form-control form-control-lg form-control-solid"
                         name="curPassword"
@@ -294,7 +294,7 @@
                     <div class="col-lg-9">
                       <input
                         id="newPassword"
-                        v-model="updateAccountForm.newPassword"
+                        v-model="accountForm.newPassword"
                         type="password"
                         class="form-control form-control-lg form-control-solid"
                         name="newPassword"
@@ -311,7 +311,7 @@
                     <div class="col-lg-9">
                       <input
                         id="newPasswordConfirmation"
-                        v-model="updateAccountForm.newPasswordConfirmation"
+                        v-model="accountForm.newPasswordConfirmation"
                         type="password"
                         class="form-control form-control-lg form-control-solid"
                         name="newPasswordConfirmation"
@@ -330,10 +330,10 @@
                     <div class="col-lg-3"></div>
                     <div class="col-lg-9">
                       <button
-                        ref="updateAccountFormSubmit"
+                        ref="accountFormSubmit"
                         type="submit"
                         class="btn btn-light-primary font-weight-bold"
-                        @click="handleUpdateAccountForm"
+                        @click="handleAccountForm"
                       >
                         Сохранить изменения
                       </button>
@@ -351,21 +351,19 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex"
-import {
-  SET_PAGE_TITLE
-} from "../store"
+import { SET_PAGE_TITLE, SET_USER } from "../store"
 import UsersService from "../services/users.service.js"
 
 export default {
   data () {
     return {
-      updateProfileForm: {
+      profileForm: {
         firstName: null,
         lastName: null,
         email: null,
         contactPhone: null
       },
-      updateAccountForm: {
+      accountForm: {
         username: null,
         curPassword: null,
         newPassword: null,
@@ -377,11 +375,14 @@ export default {
     ...mapGetters([
       "user"
     ]),
-    defaultAvatar () {
+    defaultUserAvatar () {
       return require("../assets/media/users/blank.png")
     },
-    updateProfileFormValidation () {
-      return window.FormValidation.formValidation(this.$refs["updateProfileForm"], {
+    userAvatar () {
+      return this.user.image ? this.user.image.url : this.defaultUserAvatar
+    },
+    profileFormValidation () {
+      return window.FormValidation.formValidation(this.$refs["profileForm"], {
         fields: {
           firstName: {
             validators: {
@@ -432,8 +433,8 @@ export default {
         }
       })
     },
-    updateAccountFormValidation () {
-      return window.FormValidation.formValidation(this.$refs["updateAccountForm"], {
+    accountFormValidation () {
+      return window.FormValidation.formValidation(this.$refs["accountForm"], {
         fields: {
           username: {
             validators: {
@@ -466,12 +467,8 @@ export default {
     }
   },
   created () {
-    this.updateProfileForm.firstName = this.user.first_name
-    this.updateProfileForm.lastName = this.user.last_name
-    this.updateProfileForm.email = this.user.email
-    this.updateProfileForm.contactPhone = this.user.contact_phone
-
-    this.updateAccountForm.username = this.user.username
+    this.initProfileForm()
+    this.initAccountForm()
   },
   beforeMount () {
     this[SET_PAGE_TITLE]("Мой профиль")
@@ -481,23 +478,40 @@ export default {
   },
   methods: {
     ...mapMutations([
-      SET_PAGE_TITLE
+      SET_PAGE_TITLE,
+      SET_USER
     ]),
-    handleUpdateProfileForm () {
-      this.updateProfileFormValidation.validate()
+    initProfileForm () {
+      this.profileForm.firstName = this.user.first_name
+      this.profileForm.lastName = this.user.last_name
+      this.profileForm.email = this.user.email
+      this.profileForm.contactPhone = this.user.contact_phone
+    },
+    initAccountForm () {
+      this.accountForm.username = this.user.username
+    },
+    uploadUserAvatar (event) {
+      if (event.target.files.length) {
+        //
+      }
+    },
+    handleProfileForm () {
+      this.profileFormValidation.validate()
         .then(status => {
           if (status === "Valid") {
-            this.$refs["updateProfileFormSubmit"].classList.add(
+            this.$refs["profileFormSubmit"].classList.add(
               "spinner", "spinner-light", "spinner-right"
             )
 
             UsersService.updateProfile(this.user.id, {
-              first_name: this.updateProfileForm.firstName,
-              last_name: this.updateProfileForm.lastName,
-              email: this.updateProfileForm.email,
-              contact_phone: this.updateProfileForm.contactPhone
+              first_name: this.profileForm.firstName,
+              last_name: this.profileForm.lastName,
+              email: this.profileForm.email,
+              contact_phone: this.profileForm.contactPhone
             })
-            .then(() => {
+            .then(res => {
+              this[SET_USER](res.data.data)
+
               window.swal.fire({
                 text: "Изменения успешно сохранены!",
                 icon: "success",
@@ -522,9 +536,9 @@ export default {
               })
             })
             .finally(() => {
-              this.updateProfileFormValidation.resetForm(false)
+              this.profileFormValidation.resetForm(false)
 
-              this.$refs["updateProfileFormSubmit"].classList.remove(
+              this.$refs["profileFormSubmit"].classList.remove(
                 "spinner", "spinner-light", "spinner-right"
               )
             })
@@ -541,26 +555,28 @@ export default {
           }
         })
     },
-    handleUpdateAccountForm () {
-      this.updateAccountFormValidation.validate()
+    handleAccountForm () {
+      this.accountFormValidation.validate()
         .then(status => {
           if (status === "Valid") {
-            this.$refs["updateAccountFormSubmit"].classList.add(
+            this.$refs["accountFormSubmit"].classList.add(
               "spinner", "spinner-light", "spinner-right"
             )
 
             let data = {
-              username: this.updateAccountForm.username
+              username: this.accountForm.username
             }
 
-            if (this.updateAccountForm.newPassword) {
-              data["new_password"] = this.updateAccountForm.newPassword
-              data["cur_password"] = this.updateAccountForm.curPassword
-              data["new_password_confirmation"] = this.updateAccountForm.newPasswordConfirmation
+            if (this.accountForm.newPassword) {
+              data["new_password"] = this.accountForm.newPassword
+              data["cur_password"] = this.accountForm.curPassword
+              data["new_password_confirmation"] = this.accountForm.newPasswordConfirmation
             }
 
             UsersService.updateAccount(this.user.id, data)
-              .then(() => {
+              .then(res => {
+                this[SET_USER](res.data.data)
+
                 window.swal.fire({
                   text: "Изменения успешно сохранены!",
                   icon: "success",
@@ -585,13 +601,13 @@ export default {
                 })
               })
               .finally(() => {
-                this.updateAccountFormValidation.resetForm(false)
+                this.accountFormValidation.resetForm(false)
 
-                this.updateAccountForm.newPassword = null
-                this.updateAccountForm.curPassword = null
-                this.updateAccountForm.newPasswordConfirmation = null
+                this.accountForm.newPassword = null
+                this.accountForm.curPassword = null
+                this.accountForm.newPasswordConfirmation = null
 
-                this.$refs["updateAccountFormSubmit"].classList.remove(
+                this.$refs["accountFormSubmit"].classList.remove(
                   "spinner", "spinner-light", "spinner-right"
                 )
               })
