@@ -3,9 +3,6 @@ import VueRouter from "vue-router"
 import Login from "../views/Login.vue"
 import auth from "./middleware/auth.middleware.js"
 import guest from "./middleware/guest.middleware.js"
-import {
-  FETCH_USER
-} from "../store"
 import store from "../store"
 
 Vue.use(VueRouter)
@@ -17,7 +14,7 @@ const routes = [
     component: Login,
     meta: {
       middleware: [
-        guest
+        guest,
       ]
     }
   },
@@ -37,7 +34,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "dashboard" */ "../views/Dashboard.vue"),
         meta: {
           middleware: [
-            auth
+            auth,
           ]
         }
       },
@@ -47,7 +44,17 @@ const routes = [
         component: () => import(/* webpackChunkName: "profile" */ "../views/Profile.vue"),
         meta: {
           middleware: [
-            auth
+            auth,
+          ]
+        }
+      },
+      {
+        path: "company",
+        name: "company",
+        component: () => import(/* webpackChunkName: "company" */ "../views/Company.vue"),
+        meta: {
+          middleware: [
+            auth,
           ]
         }
       },
@@ -57,7 +64,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "ads" */ "../views/Ads.vue"),
         meta: {
           middleware: [
-            auth
+            auth,
           ]
         }
       },
@@ -67,7 +74,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "bookmarks" */ "../views/Bookmarks.vue"),
         meta: {
           middleware: [
-            auth
+            auth,
           ]
         }
       },
@@ -77,7 +84,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "requests" */ "../views/Requests.vue"),
         meta: {
           middleware: [
-            auth
+            auth,
           ]
         }
       },
@@ -87,7 +94,7 @@ const routes = [
         component: () => import(/* webpackChunkName: "clients" */ "../views/Clients.vue"),
         meta: {
           middleware: [
-            auth
+            auth,
           ]
         }
       },
@@ -97,10 +104,10 @@ const routes = [
         component: () => import(/* webpackChunkName: "employees" */ "../views/Employees.vue"),
         meta: {
           middleware: [
-            auth
+            auth,
           ]
         }
-      }
+      },
     ]
   },
   {
@@ -115,7 +122,7 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach(async (to, from, next) => {
+router.beforeEach((to, from, next) => {
   if (to.meta.middleware) {
     const context = {
       to,
@@ -125,7 +132,7 @@ router.beforeEach(async (to, from, next) => {
     }
 
     for (let middleware of to.meta.middleware) {
-      await middleware({ ...context })
+      middleware({ ...context })
     }
   }
 
@@ -134,7 +141,7 @@ router.beforeEach(async (to, from, next) => {
 
 router.beforeEach((to, from, next) => {
   if (store.getters["auth/isAuthenticated"] && !store.getters.user) {
-    store.dispatch(FETCH_USER).then(next)
+    store.dispatch("fetchUser").then(next)
   } else {
     next()
   }

@@ -1,8 +1,7 @@
 <template>
   <div class="d-flex flex-column flex-root">
     <div
-      id="kt_login"
-      ref="kt_login"
+      ref="login"
       class="login login-4 login-signin-on d-flex flex-row-fluid"
     >
       <div
@@ -27,35 +26,51 @@
               <div class="text-muted font-weight-bold">Заполните форму, чтобы войти в аккаунт</div>
             </div>
             <form
-              id="kt_login_signin_form"
-              ref="kt_login_signin_form"
+              ref="signInForm"
               class="form"
+              @submit.prevent="submitSignInForm"
             >
               <div class="form-group mb-5">
                 <input
                   v-model="signInForm.username"
                   type="text"
                   class="form-control h-auto form-control-solid py-4 px-8"
-                  name="username"
+                  :class="{
+                    'is-invalid': errors.signInForm.username
+                  }"
                   placeholder="Имя пользователя"
                   autocomplete="off"
                 >
+                <div
+                  v-for="(error, index) in errors.signInForm.username"
+                  :key="index"
+                  class="invalid-feedback"
+                >
+                  {{ error }}
+                </div>
               </div>
               <div class="form-group mb-5">
                 <input
                   v-model="signInForm.password"
                   type="password"
                   class="form-control h-auto form-control-solid py-4 px-8"
-                  name="password"
+                  :class="{
+                    'is-invalid': errors.signInForm.password
+                  }"
                   placeholder="Пароль"
                 >
+                <div
+                  v-for="(error, index) in errors.signInForm.password"
+                  :key="index"
+                  class="invalid-feedback"
+                >
+                  {{ error }}
+                </div>
               </div>
               <button
-                id="kt_login_signin_submit"
-                ref="kt_login_signin_submit"
+                ref="signInFormSubmit"
                 type="submit"
                 class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-4"
-                @click="handleSignInForm"
               >
                 Войти
               </button>
@@ -63,7 +78,6 @@
             <div class="mt-10">
               <span class="opacity-70 mr-4">Еще нет аккаунта?</span>
               <a
-                id="kt_login_signup"
                 href=""
                 class="text-muted text-hover-primary font-weight-bold"
                 @click.prevent="showSignUpForm"
@@ -78,78 +92,129 @@
               <div class="text-muted font-weight-bold">Заполните форму, чтобы создать аккаунт</div>
             </div>
             <form
-              id="kt_login_signup_form"
-              ref="kt_login_signup_form"
+              ref="signUpForm"
               class="form"
+              @submit.prevent="submitSignUpForm"
             >
               <div class="form-group mb-5">
                 <input
                   v-model="signUpForm.first_name"
                   type="text"
                   class="form-control h-auto form-control-solid py-4 px-8"
-                  name="first_name"
+                  :class="{
+                    'is-invalid': errors.signUpForm.first_name
+                  }"
                   placeholder="Имя"
                 >
+                <div
+                  v-for="(error, index) in errors.signUpForm.first_name"
+                  :key="index"
+                  class="invalid-feedback"
+                >
+                  {{ error }}
+                </div>
               </div>
               <div class="form-group mb-5">
                 <input
                   v-model="signUpForm.last_name"
                   type="text"
                   class="form-control h-auto form-control-solid py-4 px-8"
-                  name="last_name"
+                  :class="{
+                    'is-invalid': errors.signUpForm.last_name
+                  }"
                   placeholder="Фамилия"
                 >
+                <div
+                  v-for="(error, index) in errors.signUpForm.last_name"
+                  :key="index"
+                  class="invalid-feedback"
+                >
+                  {{ error }}
+                </div>
               </div>
               <div class="form-group mb-5">
                 <input
                   v-model="signUpForm.company_name"
                   type="text"
                   class="form-control h-auto form-control-solid py-4 px-8"
-                  name="company_name"
+                  :class="{
+                    'is-invalid': errors.signUpForm.company_name
+                  }"
                   placeholder="Название организации"
                 >
+                <div
+                  v-for="(error, index) in errors.signUpForm.company_name"
+                  :key="index"
+                  class="invalid-feedback"
+                >
+                  {{ error }}
+                </div>
               </div>
               <div class="form-group mb-5">
                 <input
                   v-model="signUpForm.username"
                   type="text"
                   class="form-control h-auto form-control-solid py-4 px-8"
-                  name="username"
+                  :class="{
+                    'is-invalid': errors.signUpForm.username
+                  }"
                   placeholder="Имя пользователя"
                   autocomplete="off"
                 >
+                <div
+                  v-for="(error, index) in errors.signUpForm.username"
+                  :key="index"
+                  class="invalid-feedback"
+                >
+                  {{ error }}
+                </div>
               </div>
               <div class="form-group mb-5">
                 <input
                   v-model="signUpForm.password"
                   type="password"
                   class="form-control h-auto form-control-solid py-4 px-8"
-                  name="password"
+                  :class="{
+                    'is-invalid': errors.signUpForm.password
+                  }"
                   placeholder="Пароль"
                 >
+                <div
+                  v-for="(error, index) in errors.signUpForm.password"
+                  :key="index"
+                  class="invalid-feedback"
+                >
+                  {{ error }}
+                </div>
               </div>
               <div class="form-group mb-5">
                 <input
                   v-model="signUpForm.password_confirmation"
                   type="password"
                   class="form-control h-auto form-control-solid py-4 px-8"
-                  name="password_confirmation"
+                  :class="{
+                    'is-invalid': errors.signUpForm.password_confirmation
+                  }"
                   placeholder="Подтвердите пароль"
                   @paste.prevent
                 >
+                <div
+                  v-for="(error, index) in errors.signUpForm.password_confirmation"
+                  :key="index"
+                  class="invalid-feedback"
+                >
+                  {{ error }}
+                </div>
               </div>
               <div class="form-group d-flex flex-wrap flex-center mt-10">
                 <button
-                  id="kt_login_signup_submit"
-                  ref="kt_login_signup_submit"
+                  ref="signUpFormSubmit"
                   type="submit"
                   class="btn btn-primary font-weight-bold px-9 py-4 my-3 mx-2"
-                  @click="handleSignUpForm"
                 >
                   Создать
                 </button>
                 <button
-                  id="kt_login_signup_cancel"
                   type="button"
                   class="btn btn-light-primary font-weight-bold px-9 py-4 my-3 mx-2"
                   @click.prevent="showSignInForm"
@@ -166,18 +231,15 @@
 </template>
 
 <script>
-import { mapMutations, mapActions } from "vuex"
-import {
-  SET_PAGE_TITLE
-} from "../store"
-import {
-  LOGIN
-} from "../store/auth.module.js"
 import UsersService from "../services/users.service.js"
 
 export default {
   data () {
     return {
+      errors: {
+        signInForm: {},
+        signUpForm: {}
+      },
       signInForm: {
         username: null,
         password: null
@@ -192,277 +254,132 @@ export default {
       }
     }
   },
+
   computed: {
+    /**
+     * @returns {*}
+     */
     backgroundImage () {
       return require("../assets/media/bg/bg-3.jpg")
     },
+
+    /**
+     * @returns {*}
+     */
     logo () {
       return require("../assets/media/logos/logo-letter-13.png")
-    },
-    signInFormValidation () {
-      return window.FormValidation.formValidation(this.$refs["kt_login_signin_form"], {
-        fields: {
-          username: {
-            validators: {
-              notEmpty: {
-                message: "Введите имя пользователя"
-              }
-            }
-          },
-          password: {
-            validators: {
-              notEmpty: {
-                message: "Введите пароль"
-              }
-            }
-          }
-        },
-        plugins: {
-          trigger: new window.FormValidation.plugins.Trigger(),
-          bootstrap: new window.FormValidation.plugins.Bootstrap(),
-          submitButton: new window.FormValidation.plugins.SubmitButton()
-        }
-      })
-    },
-    signUpFormValidation () {
-      return window.FormValidation.formValidation(this.$refs["kt_login_signup_form"], {
-        fields: {
-          first_name: {
-            validators: {
-              notEmpty: {
-                message: "Введите имя"
-              },
-              stringLength: {
-                max: 191,
-                message: "Имя не может превышать 191 символ"
-              }
-            }
-          },
-          last_name: {
-            validators: {
-              notEmpty: {
-                message: "Введите фамилию"
-              },
-              stringLength: {
-                max: 191,
-                message: "Фамилия не может превышать 191 символ"
-              }
-            }
-          },
-          username: {
-            validators: {
-              notEmpty: {
-                message: "Введите имя пользователя"
-              },
-              regexp: {
-                regexp: /^[a-z][a-z0-9_]*$/i,
-                message: "Имя пользователя должно начинаться с латинской буквы и включать только латинские буквы, цифры и знаки нижнего подчеркивания"
-              },
-              stringLength: {
-                max: 191,
-                message: "Имя пользователя не может превышать 191 символ"
-              }
-            }
-          },
-          password: {
-            validators: {
-              notEmpty: {
-                message: "Введите пароль"
-              },
-              stringLength: {
-                min: 8,
-                message: "Пароль должен состоять минимум из 8 символов"
-              }
-            }
-          },
-          password_confirmation: {
-            validators: {
-              notEmpty: {
-                message: "Подтвердите пароль"
-              },
-              identical: {
-                compare: () => {
-                  return document.getElementById("kt_login_signup_form").querySelector("[name='password']").value
-                },
-                message: "Пароли должны совпадать"
-              }
-            }
-          }
-        },
-        plugins: {
-          trigger: new window.FormValidation.plugins.Trigger(),
-          bootstrap: new window.FormValidation.plugins.Bootstrap(),
-          submitButton: new window.FormValidation.plugins.SubmitButton()
-        }
-      })
     }
   },
+
   beforeMount () {
-    this[SET_PAGE_TITLE]("Войти в аккаунт")
+    this.$store.commit("setPageTitle", "Войти в аккаунт")
   },
+
   methods: {
-    ...mapMutations([
-      SET_PAGE_TITLE
-    ]),
-    ...mapActions([
-      "auth/" + LOGIN
-    ]),
-    resetSignInForm () {
-      this.signInFormValidation.resetForm(true)
-      this.signInForm.username = null
-      this.signInForm.password = null
-    },
-    resetSignUpForm () {
-      this.signUpFormValidation.resetForm(true)
-      this.signUpForm.company_name = null
-      this.signUpForm.first_name = null
-      this.signUpForm.last_name = null
-      this.signUpForm.username = null
-      this.signUpForm.password = null
-      this.signUpForm.password_confirmation = null
-    },
+    /**
+     * Shows the sign in form.
+     */
     showSignInForm () {
-      this.$refs["kt_login"].classList.remove("login-signup-on")
-      this.$refs["kt_login"].classList.add("login-signin-on")
-      this[SET_PAGE_TITLE]("Войти в аккаунт")
-      window.KTUtil.animateClass(
-        this.$refs["kt_login_signin_form"], "animate__animated animate__backInUp"
-      )
+      this.$refs["login"].classList.remove("login-signup-on")
+      this.$refs["login"].classList.add("login-signin-on")
+      this.$store.commit("setPageTitle", "Войти в аккаунт")
+      window.KTUtil.animateClass(this.$refs["signInForm"], "animate__animated animate__backInUp")
     },
+
+    /**
+     * Shows the sign up form.
+     */
     showSignUpForm () {
-      this.$refs["kt_login"].classList.remove("login-signin-on")
-      this.$refs["kt_login"].classList.add("login-signup-on")
-      this[SET_PAGE_TITLE]("Создать аккаунт")
-      window.KTUtil.animateClass(
-        this.$refs["kt_login_signup_form"], "animate__animated animate__backInUp"
-      )
+      this.$refs["login"].classList.remove("login-signin-on")
+      this.$refs["login"].classList.add("login-signup-on")
+      this.$store.commit("setPageTitle", "Создать аккаунт")
+      window.KTUtil.animateClass(this.$refs["signUpForm"], "animate__animated animate__backInUp")
     },
-    handleSignInForm () {
-      this.signInFormValidation.validate()
-        .then(status => {
-          if (status === "Valid") {
-            window.swal.fire({
-              text: "Все хорошо!",
-              icon: "success",
-              buttonsStyling: false,
-              confirmButtonText: "Отправить форму",
-              customClass: {
-                confirmButton: "btn font-weight-bold btn-light-primary"
-              }
-            })
-            .then(() => {
-              this.$refs["kt_login_signin_submit"].classList.add(
-                "spinner", "spinner-light", "spinner-right"
-              )
 
-              this["auth/" + LOGIN](this.signInForm)
-                .then(() => {
-                  this.$router.push({
-                    name: "dashboard"
-                  })
-                })
-                .catch(error => {
-                  console.log(error)
+    /**
+     * Submits the sign in form.
+     */
+    submitSignInForm () {
+      this.errors.signInForm = {}
+      this.$refs["signInFormSubmit"].classList.add("spinner", "spinner-light", "spinner-right")
 
-                  if (error.response.status === 400) {
-                    window.swal.fire({
-                      text: "Неверное имя пользователя или пароль!",
-                      icon: "error",
-                      buttonsStyling: false,
-                      confirmButtonText: "Попробовать снова",
-                      customClass: {
-                        confirmButton: "btn font-weight-bold btn-light-primary"
-                      }
-                    })
-                    .then(() => {
-                      this.resetSignInForm()
-                    })
-                  } else {
-                    window.swal.fire({
-                      text: "При входе в аккаунт произошла ошибка!",
-                      icon: "error",
-                      buttonsStyling: false,
-                      confirmButtonText: "Попробовать снова",
-                      customClass: {
-                        confirmButton: "btn font-weight-bold btn-light-primary"
-                      }
-                    })
-                    .then(() => {
-                      this.resetSignInForm()
-                    })
-                  }
-                })
-                .finally(() => {
-                  this.$refs["kt_login_signin_submit"].classList.remove(
-                    "spinner", "spinner-light", "spinner-right"
-                  )
-                })
-            })
-          } else {
+      this.$store.dispatch("auth/login", this.signInForm)
+        .then(() => {
+          this.$router.push({
+            name: "dashboard"
+          })
+        })
+        .catch(error => {
+          // console.log(error)
+
+          if (error.response.status === 422) {
+            this.errors.signInForm = error.response.data.errors
+
             window.swal.fire({
               text: "Форма заполнена с ошибками!",
               icon: "error",
               buttonsStyling: false,
               confirmButtonText: "Исправить ошибки",
+              customClass: {
+                confirmButton: "btn font-weight-bold btn-light-primary"
+              }
+            })
+          } else if (error.response.status === 400) {
+            window.swal.fire({
+              text: "Введен неверный пароль!",
+              icon: "error",
+              buttonsStyling: false,
+              confirmButtonText: "Попробовать снова",
+              customClass: {
+                confirmButton: "btn font-weight-bold btn-light-primary"
+              }
+            })
+          } else {
+            window.swal.fire({
+              text: "При входе в аккаунт произошла ошибка!",
+              icon: "error",
+              buttonsStyling: false,
+              confirmButtonText: "Попробовать снова",
               customClass: {
                 confirmButton: "btn font-weight-bold btn-light-primary"
               }
             })
           }
         })
+        .finally(() => {
+          this.$refs["signInFormSubmit"].classList.remove("spinner", "spinner-light", "spinner-right")
+        })
     },
-    handleSignUpForm () {
-      this.signUpFormValidation.validate()
-        .then(status => {
-          if (status === "Valid") {
-            window.swal.fire({
-              text: "Все хорошо!",
-              icon: "success",
-              buttonsStyling: false,
-              confirmButtonText: "Отправить форму",
-              customClass: {
-                confirmButton: "btn font-weight-bold btn-light-primary"
-              }
-            }).then(() => {
-              this.$refs["kt_login_signup_submit"].classList.add(
-                "spinner", "spinner-light", "spinner-right"
-              )
 
-              UsersService.register(this.signUpForm)
-                .then(() => {
-                  this["auth/" + LOGIN]({
-                    username: this.signUpForm.username,
-                    password: this.signUpForm.password
-                  })
-                  .then(() => {
-                    this.$router.push({
-                      name: "dashboard"
-                    })
-                  })
-                })
-                .catch(error => {
-                  console.log(error)
+    /**
+     * Submits the sign up form.
+     */
+    submitSignUpForm () {
+      this.errors.signUpForm = {}
+      this.$refs["signUpFormSubmit"].classList.add("spinner", "spinner-light", "spinner-right")
 
-                  window.swal.fire({
-                    text: "При создании аккаунта произошла ошибка!",
-                    icon: "error",
-                    buttonsStyling: false,
-                    confirmButtonText: "Попробовать снова",
-                    customClass: {
-                      confirmButton: "btn font-weight-bold btn-light-primary"
-                    }
-                  })
-                  .then(() => {
-                    this.resetSignUpForm()
-                  })
-                })
-                .finally(() => {
-                  this.$refs["kt_login_signup_submit"].classList.remove(
-                    "spinner", "spinner-light", "spinner-right"
-                  )
-                })
+      UsersService.register(this.signUpForm)
+        .then(() => {
+          this.$store.dispatch("auth/login", {
+            username: this.signUpForm.username,
+            password: this.signUpForm.password
+          })
+          .then(() => {
+            this.$router.push({
+              name: "dashboard"
             })
-          } else {
+          })
+          .catch(() /* error */ => {
+            // console.log(error)
+            this.showSignInForm()
+          })
+        })
+        .catch(error => {
+          // console.log(error)
+
+          if (error.response.status === 422) {
+            this.errors.signUpForm = error.response.data.errors
+
             window.swal.fire({
               text: "Форма заполнена с ошибками!",
               icon: "error",
@@ -472,7 +389,20 @@ export default {
                 confirmButton: "btn font-weight-bold btn-light-primary"
               }
             })
+          } else {
+            window.swal.fire({
+              text: "При создании аккаунта произошла ошибка!",
+              icon: "error",
+              buttonsStyling: false,
+              confirmButtonText: "Попробовать снова",
+              customClass: {
+                confirmButton: "btn font-weight-bold btn-light-primary"
+              }
+            })
           }
+        })
+        .finally(() => {
+          this.$refs["signUpFormSubmit"].classList.remove("spinner", "spinner-light", "spinner-right")
         })
     }
   }

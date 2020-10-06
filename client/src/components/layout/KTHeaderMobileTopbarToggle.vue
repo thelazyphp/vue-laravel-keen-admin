@@ -19,6 +19,7 @@
 <script>
 export default {
   name: "KTHeaderMobileTopbarToggle",
+
   mounted () {
     this.$nextTick(() => {
       window.KTLayoutHeaderTopbar.init("kt_header_mobile_topbar_toggle")

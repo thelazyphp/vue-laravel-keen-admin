@@ -14,9 +14,11 @@
 <script>
 export default {
   name: "KTSubheader",
+
   props: {
     pageTitle: String
   },
+
   mounted () {
     this.$nextTick(() => {
       window.KTLayoutSubheader.init("kt_subheader")

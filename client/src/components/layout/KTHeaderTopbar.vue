@@ -7,18 +7,22 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
 import KTQuickUserToggle from "./KTQuickUserToggle.vue"
 
 export default {
   name: "KTHeaderTopbar",
+
   components: {
     KTQuickUserToggle
   },
+
   computed: {
-    ...mapGetters([
-      "user"
-    ])
+    /**
+     * @returns {object}
+     */
+    user () {
+      return this.$store.getters.user
+    }
   }
 }
 </script>

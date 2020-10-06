@@ -14,13 +14,18 @@
 <script>
 export default {
   name: "KTQuickUserToggle",
+
   props: {
     userName: {
       type: String,
       default: ""
     }
   },
+
   computed: {
+    /**
+     * @returns {string}
+     */
     symbolLabelText () {
       return this.userName.substr(0, 1)
     }

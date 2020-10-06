@@ -176,6 +176,7 @@
 <script>
 export default {
   name: "KTAsideMenu",
+
   mounted () {
     this.$nextTick(() => {
       window.KTLayoutAsideMenu.init("kt_aside_menu")

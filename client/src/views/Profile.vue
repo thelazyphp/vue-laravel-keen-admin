@@ -5,7 +5,7 @@
         <ul class="nav nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x">
           <li class="nav-item mr-3">
             <a
-              href="#tab1"
+              href="#profileTab"
               class="nav-link active"
               data-toggle="tab"
             >
@@ -25,7 +25,7 @@
           </li>
           <li class="nav-item mr-3">
             <a
-              href="#tab2"
+              href="#accountTab"
               class="nav-link"
               data-toggle="tab"
             >
@@ -50,13 +50,13 @@
     <div class="card-body px-0">
       <div class="tab-content">
         <div
-          id="tab1"
+          id="profileTab"
           class="tab-pane show active px-7"
           role="tabpanel"
         >
           <form
-            ref="profileForm"
             class="form"
+            @submit.prevent="submitProfileForm"
           >
             <div class="card-body">
               <div class="row">
@@ -102,6 +102,7 @@
                           title="Удалить аватар"
                           data-action="cancel"
                           data-toggle="tooltip"
+                          @click="removeUserAvatar"
                         >
                           <i class="ki ki-bold-close icon-xs text-muted"></i>
                         </span>
@@ -119,10 +120,20 @@
                     <div class="col-lg-9">
                       <input
                         id="firstName"
-                        v-model="profileForm.firstName"
-                        type="text" class="form-control form-control-lg form-control-solid"
-                        name="firstName"
+                        v-model="profileForm.first_name"
+                        type="text"
+                        class="form-control form-control-lg form-control-solid"
+                        :class="{
+                          'is-invalid': this.errors.profileForm.first_name
+                        }"
                       >
+                      <div
+                        v-for="(error, index) in this.errors.profileForm.first_name"
+                        :key="index"
+                        class="invalid-feedback"
+                      >
+                        {{ error }}
+                      </div>
                     </div>
                   </div>
                   <div class="form-group row">
@@ -135,11 +146,20 @@
                     <div class="col-lg-9">
                       <input
                         id="lastName"
-                        v-model="profileForm.lastName"
+                        v-model="profileForm.last_name"
                         type="text"
                         class="form-control form-control-lg form-control-solid"
-                        name="lastName"
+                        :class="{
+                          'is-invalid': this.errors.profileForm.last_name
+                        }"
                       >
+                      <div
+                        v-for="(error, index) in this.errors.profileForm.last_name"
+                        :key="index"
+                        class="invalid-feedback"
+                      >
+                        {{ error }}
+                      </div>
                     </div>
                   </div>
                   <div class="form-group row">
@@ -150,7 +170,12 @@
                       E-Mail
                     </label>
                     <div class="col-lg-9">
-                      <div class="input-group input-group-lg input-group-solid">
+                      <div
+                        class="input-group input-group-lg input-group-solid"
+                        :class="{
+                          'is-invalid': this.errors.profileForm.email
+                        }"
+                      >
                         <div class="input-group-prepend">
                           <span class="input-group-text">
                             <i class="la la-at"></i>
@@ -159,9 +184,19 @@
                         <input
                           id="email"
                           v-model="profileForm.email"
-                          type="email" class="form-control form-control-lg form-control-solid"
-                          name="email"
+                          type="email"
+                          class="form-control form-control-lg form-control-solid"
+                          :class="{
+                            'is-invalid': this.errors.profileForm.email
+                          }"
                         >
+                      </div>
+                      <div
+                        v-for="(error, index) in this.errors.profileForm.email"
+                        :key="index"
+                        class="invalid-feedback"
+                      >
+                        {{ error }}
                       </div>
                       <span class="form-text text-muted">E-Mail будет виден только сотрудникам вашей организации.</span>
                     </div>
@@ -174,7 +209,12 @@
                       Контактный телефон
                     </label>
                     <div class="col-lg-9">
-                      <div class="input-group input-group-lg input-group-solid">
+                      <div
+                        class="input-group input-group-lg input-group-solid"
+                        :class="{
+                          'is-invalid': this.errors.profileForm.contact_phone
+                        }"
+                      >
                         <div class="input-group-prepend">
                           <span class="input-group-text">
                             <i class="la la-phone"></i>
@@ -182,11 +222,20 @@
                         </div>
                         <input
                           id="contactPhone"
-                          v-model="profileForm.contactPhone"
+                          v-model="profileForm.contact_phone"
                           type="phone"
                           class="form-control form-control-lg form-control-solid"
-                          name="contactPhone"
+                          :class="{
+                            'is-invalid': this.errors.profileForm.contact_phone
+                          }"
                         >
+                      </div>
+                      <div
+                        v-for="(error, index) in this.errors.profileForm.contact_phone"
+                        :key="index"
+                        class="invalid-feedback"
+                      >
+                        {{ error }}
                       </div>
                       <span class="form-text text-muted">Контактный телефон будет виден только сотрудникам вашей организации.</span>
                     </div>
@@ -205,7 +254,6 @@
                         ref="profileFormSubmit"
                         type="submit"
                         class="btn btn-light-primary font-weight-bold"
-                        @click="handleProfileForm"
                       >
                         Сохранить изменения
                       </button>
@@ -217,13 +265,13 @@
           </form>
         </div>
         <div
-          id="tab2"
+          id="accountTab"
           class="tab-pane px-7"
           role="tabpanel"
         >
           <form
-            ref="accountForm"
             class="form"
+            @submit.prevent="submitAccountForm"
           >
             <div class="card-body">
               <div class="row">
@@ -249,9 +297,18 @@
                           v-model="accountForm.username"
                           type="text"
                           class="form-control form-control-lg form-control-solid"
-                          name="username"
+                          :class="{
+                            'is-invalid': this.errors.accountForm.username
+                          }"
                           autocomplete="off"
                         >
+                        <div
+                          v-for="(error, index) in this.errors.accountForm.username"
+                          :key="index"
+                          class="invalid-feedback"
+                        >
+                          {{ error }}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -277,11 +334,20 @@
                     <div class="col-lg-9">
                       <input
                         id="curPassword"
-                        v-model="accountForm.curPassword"
+                        v-model="accountForm.cur_password"
                         type="password"
                         class="form-control form-control-lg form-control-solid"
-                        name="curPassword"
+                        :class="{
+                          'is-invalid': this.errors.accountForm.cur_password
+                        }"
                       >
+                      <div
+                        v-for="(error, index) in this.errors.accountForm.cur_password"
+                        :key="index"
+                        class="invalid-feedback"
+                      >
+                        {{ error }}
+                      </div>
                     </div>
                   </div>
                   <div class="form-group row">
@@ -294,11 +360,20 @@
                     <div class="col-lg-9">
                       <input
                         id="newPassword"
-                        v-model="accountForm.newPassword"
+                        v-model="accountForm.new_password"
                         type="password"
                         class="form-control form-control-lg form-control-solid"
-                        name="newPassword"
+                        :class="{
+                          'is-invalid': this.errors.accountForm.new_password
+                        }"
                       >
+                      <div
+                        v-for="(error, index) in this.errors.accountForm.new_password"
+                        :key="index"
+                        class="invalid-feedback"
+                      >
+                        {{ error }}
+                      </div>
                     </div>
                   </div>
                   <div class="form-group row">
@@ -311,12 +386,21 @@
                     <div class="col-lg-9">
                       <input
                         id="newPasswordConfirmation"
-                        v-model="accountForm.newPasswordConfirmation"
+                        v-model="accountForm.new_password_confirmation"
                         type="password"
                         class="form-control form-control-lg form-control-solid"
-                        name="newPasswordConfirmation"
+                        :class="{
+                          'is-invalid': this.errors.accountForm.new_password_confirmation
+                        }"
                         @paste.prevent
                       >
+                      <div
+                        v-for="(error, index) in this.errors.accountForm.new_password_confirmation"
+                        :key="index"
+                        class="invalid-feedback"
+                      >
+                        {{ error }}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -333,7 +417,6 @@
                         ref="accountFormSubmit"
                         type="submit"
                         class="btn btn-light-primary font-weight-bold"
-                        @click="handleAccountForm"
                       >
                         Сохранить изменения
                       </button>
@@ -350,183 +433,104 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex"
-import { SET_PAGE_TITLE, SET_USER } from "../store"
 import UsersService from "../services/users.service.js"
 
 export default {
   data () {
     return {
+      errors: {
+        profileForm: {},
+        accountForm: {}
+      },
       profileForm: {
-        firstName: null,
-        lastName: null,
+        first_name: null,
+        last_name: null,
         email: null,
-        contactPhone: null
+        contact_phone: null
       },
       accountForm: {
         username: null,
-        curPassword: null,
-        newPassword: null,
-        newPasswordConfirmation: null
+        cur_password: null,
+        new_password: null,
+        new_password_confirmation: null
       }
     }
   },
+
   computed: {
-    ...mapGetters([
-      "user"
-    ]),
+    /**
+     * @returns {object}
+     */
+    user () {
+      return this.$store.getters.user
+    },
+
+    /**
+     * @returns {*}
+     */
     defaultUserAvatar () {
       return require("../assets/media/users/blank.png")
     },
+
+    /**
+     * @returns {(*|string)}
+     */
     userAvatar () {
       return this.user.image ? this.user.image.url : this.defaultUserAvatar
-    },
-    profileFormValidation () {
-      return window.FormValidation.formValidation(this.$refs["profileForm"], {
-        fields: {
-          firstName: {
-            validators: {
-              notEmpty: {
-                message: "Введите имя"
-              },
-              stringLength: {
-                max: 191,
-                message: "Имя не может превышать 191 символ"
-              }
-            }
-          },
-          lastName: {
-            validators: {
-              notEmpty: {
-                message: "Введите фамилию"
-              },
-              stringLength: {
-                max: 191,
-                message: "Фамилия не может превышать 191 символ"
-              }
-            }
-          },
-          email: {
-            validators: {
-              emailAddress: {
-                message: "E-Mail введен неверно"
-              },
-              stringLength: {
-                max: 191,
-                message: "E-Mail не может превышать 191 символ"
-              }
-            }
-          },
-          contactPhone: {
-            validators: {
-              regexp: {
-                regexp: /^\+\d{1,3}\d{1,12}$/,
-                message: "Контактный телефон введен неверно"
-              }
-            }
-          }
-        },
-        plugins: {
-          trigger: new window.FormValidation.plugins.Trigger(),
-          bootstrap: new window.FormValidation.plugins.Bootstrap(),
-          submitButton: new window.FormValidation.plugins.SubmitButton()
-        }
-      })
-    },
-    accountFormValidation () {
-      return window.FormValidation.formValidation(this.$refs["accountForm"], {
-        fields: {
-          username: {
-            validators: {
-              notEmpty: {
-                message: "Введите имя пользователя"
-              },
-              callback: {
-                callback (input) {
-                  return /^[a-z]/i.test(input.value)
-                },
-                message: "Имя пользователя должно начинаться с буквы"
-              },
-              regexp: {
-                regexp: /^[a-z][a-z0-9_.\-@]*$/i,
-                message: "Допустимые символы: a-Z0-9_.-@"
-              },
-              stringLength: {
-                max: 191,
-                message: "Имя пользователя не может превышать 191 символ"
-              }
-            }
-          }
-        },
-        plugins: {
-          trigger: new window.FormValidation.plugins.Trigger(),
-          bootstrap: new window.FormValidation.plugins.Bootstrap(),
-          submitButton: new window.FormValidation.plugins.SubmitButton()
-        }
-      })
     }
   },
+
   created () {
     this.initProfileForm()
     this.initAccountForm()
   },
+
   beforeMount () {
-    this[SET_PAGE_TITLE]("Мой профиль")
+    this.$store.commit("setPageTitle", "Мой профиль")
   },
+
   mounted () {
     new window.KTImageInput("userAvatar")
   },
+
   methods: {
-    ...mapMutations([
-      SET_PAGE_TITLE,
-      SET_USER
-    ]),
+    /**
+     * Inits the profile form.
+     */
     initProfileForm () {
-      this.profileForm.firstName = this.user.first_name
-      this.profileForm.lastName = this.user.last_name
+      this.profileForm.first_name = this.user.first_name
+      this.profileForm.last_name = this.user.last_name
       this.profileForm.email = this.user.email
-      this.profileForm.contactPhone = this.user.contact_phone
+      this.profileForm.contact_phone = this.user.contact_phone
     },
+
+    /**
+     * Inits the account form.
+     */
     initAccountForm () {
       this.accountForm.username = this.user.username
     },
+
+    /**
+     * Uploads the user avatar.
+     *
+     * @param {Event} event
+     */
     uploadUserAvatar (event) {
       if (event.target.files.length) {
-        //
-      }
-    },
-    handleProfileForm () {
-      this.profileFormValidation.validate()
-        .then(status => {
-          if (status === "Valid") {
-            this.$refs["profileFormSubmit"].classList.add(
-              "spinner", "spinner-light", "spinner-right"
-            )
-
+        UsersService.uploadImage(event.target.files[0])
+          .then(res => {
             UsersService.updateProfile(this.user.id, {
-              first_name: this.profileForm.firstName,
-              last_name: this.profileForm.lastName,
-              email: this.profileForm.email,
-              contact_phone: this.profileForm.contactPhone
+              image_id: res.data.id
             })
             .then(res => {
-              this[SET_USER](res.data.data)
-
-              window.swal.fire({
-                text: "Изменения успешно сохранены!",
-                icon: "success",
-                buttonsStyling: false,
-                confirmButtonText: "Продолжить",
-                customClass: {
-                  confirmButton: "btn font-weight-bold btn-light-primary"
-                }
-              })
+              this.$store.commit("setUser", res.data.data)
             })
-            .catch(error => {
-              console.log(error)
+            .catch(() /* error */ => {
+              // console.log(error)
 
               window.swal.fire({
-                text: "Произошла неизвестная ошибка!",
+                text: "При изменении аватара произошла ошибка!",
                 icon: "error",
                 buttonsStyling: false,
                 confirmButtonText: "Попробовать снова",
@@ -535,83 +539,144 @@ export default {
                 }
               })
             })
-            .finally(() => {
-              this.profileFormValidation.resetForm(false)
+          })
+          .catch(() /* error */ => {
+            // console.log(error)
 
-              this.$refs["profileFormSubmit"].classList.remove(
-                "spinner", "spinner-light", "spinner-right"
-              )
+            window.swal.fire({
+              text: "При загрузке файла произошла ошибка!",
+              icon: "error",
+              buttonsStyling: false,
+              confirmButtonText: "Попробовать снова",
+              customClass: {
+                confirmButton: "btn font-weight-bold btn-light-primary"
+              }
             })
-          } else {
+          })
+      }
+    },
+
+    /**
+     * Removes the user avatar.
+     */
+    removeUserAvatar () {
+      UsersService.updateProfile(this.user.id, {
+        image_id: null
+      })
+      .then(res => {
+        this.$store.commit("setUser", res.data.data)
+      })
+      .catch(() /* error */ => {
+        // console.log(error)
+
+        window.swal.fire({
+          text: "При удалении аватара произошла ошибка!",
+          icon: "error",
+          buttonsStyling: false,
+          confirmButtonText: "Попробовать снова",
+          customClass: {
+            confirmButton: "btn font-weight-bold btn-light-primary"
+          }
+        })
+      })
+    },
+
+    /**
+     * Submits the profile form.
+     */
+    submitProfileForm () {
+      this.errors.profileForm = {}
+      this.$refs["profileFormSubmit"].classList.add("spinner", "spinner-light", "spinner-right")
+
+      UsersService.updateProfile(this.user.id, this.profileForm)
+        .then(res => {
+          this.$store.commit("setUser", res.data.data)
+
+          window.swal.fire({
+            text: "Изменения успешно сохранены!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Продолжить",
+            customClass: {
+              confirmButton: "btn font-weight-bold btn-light-primary"
+            }
+          })
+        })
+        .catch(error => {
+          // console.log(error)
+
+          if (error.response.status === 422) {
+            this.errors.profileForm = error.response.data.errors
+
             window.swal.fire({
               text: "Форма заполнена с ошибками!",
               icon: "error",
               buttonsStyling: false,
               confirmButtonText: "Исправить ошибки",
+              customClass: {
+                confirmButton: "btn font-weight-bold btn-light-primary"
+              }
+            })
+          } else {
+            this.initProfileForm()
+
+            window.swal.fire({
+              text: "При сохранении изменений произошла ошибка!",
+              icon: "error",
+              buttonsStyling: false,
+              confirmButtonText: "Попробовать снова",
               customClass: {
                 confirmButton: "btn font-weight-bold btn-light-primary"
               }
             })
           }
         })
+        .finally(() => {
+          this.$refs["profileFormSubmit"].classList.remove("spinner", "spinner-light", "spinner-right")
+        })
     },
-    handleAccountForm () {
-      this.accountFormValidation.validate()
-        .then(status => {
-          if (status === "Valid") {
-            this.$refs["accountFormSubmit"].classList.add(
-              "spinner", "spinner-light", "spinner-right"
-            )
 
-            let data = {
-              username: this.accountForm.username
+    /**
+     * Submits the account form.
+     */
+    submitAccountForm () {
+      this.errors.accountForm = {}
+      this.$refs["accountFormSubmit"].classList.add("spinner", "spinner-light", "spinner-right")
+
+      let data = {
+        username: this.accountForm.username
+      }
+
+      if (this.accountForm.new_password) {
+        data["new_password"] = this.accountForm.new_password
+        data["cur_password"] = this.accountForm.cur_password
+        data["new_password_confirmation"] = this.accountForm.new_password_confirmation
+      }
+
+      UsersService.updateAccount(this.user.id, data)
+        .then(res => {
+          this.$store.commit("setUser", res.data.data)
+
+          this.accountForm.cur_password = null
+          this.accountForm.new_password = null
+          this.accountForm.new_password_confirmation = null
+
+          window.swal.fire({
+            text: "Изменения успешно сохранены!",
+            icon: "success",
+            buttonsStyling: false,
+            confirmButtonText: "Продолжить",
+            customClass: {
+              confirmButton: "btn font-weight-bold btn-light-primary"
             }
+          })
+        })
+        .catch(error => {
+          // console.log(error)
 
-            if (this.accountForm.newPassword) {
-              data["new_password"] = this.accountForm.newPassword
-              data["cur_password"] = this.accountForm.curPassword
-              data["new_password_confirmation"] = this.accountForm.newPasswordConfirmation
-            }
+          if (error.response.status === 422) {
+            this.errors.accountForm = error.response.data.errors
 
-            UsersService.updateAccount(this.user.id, data)
-              .then(res => {
-                this[SET_USER](res.data.data)
-
-                window.swal.fire({
-                  text: "Изменения успешно сохранены!",
-                  icon: "success",
-                  buttonsStyling: false,
-                  confirmButtonText: "Продолжить",
-                  customClass: {
-                    confirmButton: "btn font-weight-bold btn-light-primary"
-                  }
-                })
-              })
-              .catch(error => {
-                console.log(error)
-
-                window.swal.fire({
-                  text: "Произошла неизвестная ошибка!",
-                  icon: "error",
-                  buttonsStyling: false,
-                  confirmButtonText: "Попробовать снова",
-                  customClass: {
-                    confirmButton: "btn font-weight-bold btn-light-primary"
-                  }
-                })
-              })
-              .finally(() => {
-                this.accountFormValidation.resetForm(false)
-
-                this.accountForm.newPassword = null
-                this.accountForm.curPassword = null
-                this.accountForm.newPasswordConfirmation = null
-
-                this.$refs["accountFormSubmit"].classList.remove(
-                  "spinner", "spinner-light", "spinner-right"
-                )
-              })
-          } else {
             window.swal.fire({
               text: "Форма заполнена с ошибками!",
               icon: "error",
@@ -621,7 +686,22 @@ export default {
                 confirmButton: "btn font-weight-bold btn-light-primary"
               }
             })
+          } else {
+            this.initAccountForm()
+
+            window.swal.fire({
+              text: "При сохранении изменений произошла ошибка!",
+              icon: "error",
+              buttonsStyling: false,
+              confirmButtonText: "Попробовать снова",
+              customClass: {
+                confirmButton: "btn font-weight-bold btn-light-primary"
+              }
+            })
           }
+        })
+        .finally(() => {
+          this.$refs["accountFormSubmit"].classList.remove("spinner", "spinner-light", "spinner-right")
         })
     }
   }

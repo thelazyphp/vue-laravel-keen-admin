@@ -30,14 +30,13 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex"
-import KTPageLoader from "../components/KTPageLoader.vue"
-import KTHeaderMobile from "../components/KTHeaderMobile.vue"
-import KTAside from "../components/KTAside.vue"
-import KTHeader from "../components/KTHeader.vue"
-import KTSubheader from "../components/KTSubheader.vue"
-import KTQuickUser from "../components/KTQuickUser.vue"
-import KTScrolltop from "../components/KTScrolltop.vue"
+import KTPageLoader from "../components/layout/KTPageLoader.vue"
+import KTHeaderMobile from "../components/layout/KTHeaderMobile.vue"
+import KTAside from "../components/layout/KTAside.vue"
+import KTHeader from "../components/layout/KTHeader.vue"
+import KTSubheader from "../components/layout/KTSubheader.vue"
+import KTQuickUser from "../components/layout/KTQuickUser.vue"
+import KTScrolltop from "../components/layout/KTScrolltop.vue"
 
 export default {
   components: {
@@ -49,17 +48,27 @@ export default {
     KTQuickUser,
     KTScrolltop
   },
+
   computed: {
-    ...mapGetters([
-      "pageTitle"
-    ]),
+    /**
+     * @returns {*}
+     */
     pageLoaderLogo () {
       return require("../assets/media/logos/logo-letter-13.png")
+    },
+
+    /**
+     * @returns {string}
+     */
+    pageTitle () {
+      return this.$store.getters.pageTitle
     }
   },
+
   beforeMount () {
     document.body.classList.add("page-loading")
   },
+
   mounted () {
     const timeout = setTimeout(() => {
       document.body.classList.remove("page-loading")

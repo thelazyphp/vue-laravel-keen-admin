@@ -68,7 +68,6 @@
         data-actions-box="true"
         data-select-all-text="Выбрать все"
         data-deselect-all-text="Убрать все"
-        data-none-results-text="Нет совпадений с {0}"
       >
         <option
           v-for="(value, key) in options.rooms"
@@ -284,13 +283,14 @@
           placeholder="До"
         >
       </div>
-      <input type="submit" class="d-none">
+    </div>
   </form>
 </template>
 
 <script>
 export default {
   name: "FiltersForm",
+
   props: {
     value: {
       type: Object,
@@ -301,14 +301,17 @@ export default {
       required: true
     }
   },
+
   data () {
     return {
       filters: this.value
     }
   },
+
   watch: {
     filters: {
       deep: true,
+
       handler (value) {
         this.$emit("input", value)
       }

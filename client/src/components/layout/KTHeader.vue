@@ -16,6 +16,7 @@ import KTHeaderTopbar from "./KTHeaderTopbar.vue"
 
 export default {
   name: "KTHeader",
+
   components: {
     KTHeaderMenu,
     KTHeaderTopbar

@@ -1,39 +1,50 @@
 import AuthService from "../services/auth.service.js"
-import {
-  SET_USER
-} from "./index.js"
-
-export const SET_TOKEN = "setToken"
-export const LOGOUT = "logout"
-export const LOGIN = "login"
 
 export default {
   namespaced: true,
+
   state: {
     token: localStorage.getItem("token")
   },
+
   getters: {
-    isAuthenticated (state) {
-      return state.token !== null
-    },
+    /**
+     * @returns {string?}
+     */
     token (state) {
       return state.token
+    },
+
+    /**
+     * @returns {boolean}
+     */
+    isAuthenticated (state) {
+      return state.token !== null
     }
   },
+
   mutations: {
-    [SET_TOKEN] (state, token) {
+    /**
+     * Stores the auth token.
+     *
+     * @param {string?} token
+     */
+    setToken (state, token) {
       state.token = token
     }
   },
+
   actions: {
-    [LOGOUT] ({ commit }) {
+    /**
+     * Logs the user in.
+     *
+     * @param {object} credentials
+     */
+    login ({ commit }, credentials) {
       return new Promise((resolve, reject) => {
-        AuthService.logout()
+        AuthService.login(credentials)
           .then(res => {
-            commit(SET_TOKEN, null)
-            commit(SET_USER, null, {
-              root: true
-            })
+            commit("setToken", res.data.access_token)
             return resolve(res)
           })
           .catch(error => {
@@ -41,11 +52,20 @@ export default {
           })
       })
     },
-    [LOGIN] ({ commit }, credentials) {
+
+    /**
+     * Logs the user out.
+     */
+    logout ({ commit }) {
       return new Promise((resolve, reject) => {
-        AuthService.login(credentials)
+        AuthService.logout()
           .then(res => {
-            commit(SET_TOKEN, res.data.access_token)
+            commit("setToken", null)
+
+            commit("setUser", null, {
+              root: true
+            })
+
             return resolve(res)
           })
           .catch(error => {

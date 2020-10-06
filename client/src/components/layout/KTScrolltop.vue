@@ -18,6 +18,7 @@
 <script>
 export default {
   name: "KTScrolltop",
+
   mounted () {
     this.$nextTick(() => {
       window.KTLayoutScrolltop.init("kt_scrolltop")

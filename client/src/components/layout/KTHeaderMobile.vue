@@ -22,13 +22,18 @@ import KTHeaderMobileTopbarToggle from "./KTHeaderMobileTopbarToggle.vue"
 
 export default {
   name: "KTHeaderMobile",
+
   components: {
     KTAsideMobileToggle,
     KTHeaderMobileTopbarToggle
   },
+
   computed: {
+    /**
+     * @returns {*}
+     */
     logo () {
-      return require("../assets/media/logos/logo-light.png")
+      return require("../../assets/media/logos/logo-light.png")
     }
   }
 }

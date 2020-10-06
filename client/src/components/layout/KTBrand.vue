@@ -21,12 +21,15 @@ import KTAsideToggle from "./KTAsideToggle.vue"
 
 export default {
   name: "KTBrand",
+
   components: {
     KTAsideToggle
   },
+
   props: {
     logo: String
   },
+
   mounted () {
     this.$nextTick(() => {
       window.KTLayoutBrand.init("kt_brand")

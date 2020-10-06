@@ -16,6 +16,7 @@
 <script>
 export default {
   name: "KTPageLoader",
+
   props: {
     logo: String,
     spinnerClass: {
@@ -29,5 +30,6 @@ export default {
 <style lang="scss" scoped>
 .page-loader {
   z-index: 9999 !important;
+  overflow: hidden;
 }
 </style>

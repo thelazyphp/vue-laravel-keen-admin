@@ -1,8 +1,6 @@
-export const SET_FILTERS = "setFilters"
-export const RESET_FILTERS = "resetFilters"
-
 export default {
   namespaced: true,
+
   state: {
     filters: {
       transaction: "sell",
@@ -43,7 +41,18 @@ export default {
       }
     }
   },
+
   getters: {
+    /**
+     * @returns {object}
+     */
+    filters (state) {
+      return state.filters
+    },
+
+    /**
+     * @returns {object}
+     */
     datatableParams (state) {
       let params = {}
 
@@ -52,7 +61,7 @@ export default {
       }
 
       if (state.filters.sellerType) {
-        params["seller.type:eq"] = state.filters.sellerType
+        params["seller_type:eq"] = state.filters.sellerType
       }
 
       if (state.filters.source.length) {
@@ -128,16 +137,23 @@ export default {
       }
 
       return params
-    },
-    filters (state) {
-      return state.filters
     }
   },
+
   mutations: {
-    [SET_FILTERS] (state, filters) {
+    /**
+     * Stores filters.
+     *
+     * @param {object} filters
+     */
+    setFilters (state, filters) {
       state.filters = filters
     },
-    [RESET_FILTERS] (state) {
+
+    /**
+     * Resets filters to the initial state.
+     */
+    resetFilters (state) {
       state.filters.transaction = "sell"
       state.filters.sellerType = null
       state.filters.source = []

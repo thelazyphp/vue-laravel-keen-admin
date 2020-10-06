@@ -3,7 +3,7 @@
     <div class="card-body px-7">
       <form
         class="form"
-        @submit.prevent="handleForm"
+        @submit.prevent="submitForm"
       >
         <div class="card-body">
           <div class="row">
@@ -323,9 +323,9 @@ export default {
     },
 
     /**
-     * Handles form.
+     * Submits form.
      */
-    handleForm () {
+    submitForm () {
       if (!this.userIsAdmin) {
         return
       }

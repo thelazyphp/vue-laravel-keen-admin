@@ -2,44 +2,66 @@ import Vue from "vue"
 import Vuex from "vuex"
 import ads from "./ads.module.js"
 import auth from "./auth.module.js"
+import employees from "./employees.module.js"
 import UsersService from "../services/users.service.js"
 
 Vue.use(Vuex)
-
-export const SET_PAGE_TITLE = "setPageTitle"
-export const SET_USER = "setUser"
-export const FETCH_USER = "fetchUser"
 
 export default new Vuex.Store({
   state: {
     pageTitle: "",
     user: null
   },
+
   getters: {
+    /**
+     * @returns {string}
+     */
     pageTitle (state) {
       return state.pageTitle
     },
+
+    /**
+     * @returns {object?}
+     */
     user (state) {
       return state.user
     }
   },
+
   mutations: {
-    [SET_PAGE_TITLE] (state, title) {
+    /**
+     * Stores page title.
+     *
+     * @param {string} title
+     */
+    setPageTitle (state, title) {
       state.pageTitle = title
+
       Vue.nextTick(() => {
-        document.title = title
+        document.title = title + " | Realty"
       })
     },
-    [SET_USER] (state, user) {
+
+    /**
+     * Stores the authenticated user.
+     *
+     * @param {object?} user
+     */
+    setUser (state, user) {
       state.user = user
     }
   },
+
   actions: {
-    [FETCH_USER] ({ commit }) {
+    /**
+     * Retrives the authenticated user.
+     */
+    fetchUser ({ commit }) {
       return new Promise((resolve, reject) => {
-        UsersService.getSelf()
+        UsersService.get("self")
           .then(res => {
-            commit(SET_USER, res.data.data)
+            commit("setUser", res.data.data)
             return resolve(res)
           })
           .catch(error => {
@@ -48,8 +70,10 @@ export default new Vuex.Store({
       })
     }
   },
+
   modules: {
     ads,
-    auth
+    auth,
+    employees,
   }
 })

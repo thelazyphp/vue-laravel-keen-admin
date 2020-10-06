@@ -18,24 +18,18 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex"
-import {
-  SET_PAGE_TITLE
-} from "../store"
-
 export default {
   computed: {
+    /**
+     * @returns {*}
+     */
     backgroundImage () {
       return require("../assets/media/error/bg1.jpg")
     }
   },
+
   beforeMount () {
-    this[SET_PAGE_TITLE]("Страница не найдена")
-  },
-  methods: {
-    ...mapMutations([
-      SET_PAGE_TITLE
-    ])
+    this.$store.commit("setPageTitle", "Страница не найдена")
   }
 }
 </script>

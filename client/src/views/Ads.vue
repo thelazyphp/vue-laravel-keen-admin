@@ -181,6 +181,7 @@ export default {
   components: {
     FiltersForm
   },
+
   data () {
     return {
       mapModalAddress: "",
@@ -189,28 +190,44 @@ export default {
       datatable: null
     }
   },
+
   computed: {
+    /**
+     * @returns {string}
+     */
     token () {
       return this.$store.getters["auth/token"]
     },
+
     filters: {
       get () {
-        return this.$store.state.ads.filters
+        return this.$store.getters["ads/filters"]
       },
+
       set (value) {
         this.$store.commit("ads/setFilters", value)
       }
     },
+
+    /**
+     * @returns {object}
+     */
     filterOptions () {
       return require("../data/filter.options.json")
     },
+
+    /**
+     * @returns {object}
+     */
     datatableParams () {
       return this.$store.getters["ads/datatableParams"]
     }
   },
+
   beforeMount () {
     this.$store.commit("setPageTitle", "Объявления")
   },
+
   mounted () {
     window.ymaps.ready(() => {
       this.map = new window.ymaps.Map("map", {
@@ -308,7 +325,8 @@ export default {
           sortable: false,
           width: 100,
           autoHide: true,
-          template: (row) => {
+
+          template (row) {
             let image = ""
 
             if (row.images.length) {
@@ -329,7 +347,8 @@ export default {
           sortable: true,
           width: 100,
           autoHide: true,
-          template: (row) => {
+
+          template (row) {
             return new Date(row.published_at).toLocaleDateString()
           }
         },
@@ -339,6 +358,7 @@ export default {
           sortable: true,
           width: 100,
           autoHide: true,
+
           template (row) {
             return row.full_address ? row.full_address.toLowerCase() : ""
           }
@@ -349,6 +369,7 @@ export default {
           sortable: true,
           width: 100,
           autoHide: true,
+
           template (row) {
             return row.address_district ? row.address_district.toLowerCase() : ""
           }
@@ -359,6 +380,7 @@ export default {
           sortable: true,
           width: 100,
           autoHide: true,
+
           template (row) {
             return row.address_microdistrict ? row.address_microdistrict.toLowerCase() : ""
           }
@@ -433,6 +455,7 @@ export default {
           width: 100,
           overflow: "visible",
           autoHide: false,
+
           template (row) {
             let template = `\
               <a href="` + row.url + `" class="btn btn-sm btn-clean btn-icon mr-2" target="_blank" title="Открыть источник">\
@@ -467,7 +490,11 @@ export default {
       ]
     })
   },
+
   methods: {
+    /**
+     * Searches ads.
+     */
     applySearch () {
       this.datatable.setDataSourceParam("query", {
         search: this.search
@@ -475,15 +502,23 @@ export default {
 
       this.datatable.load()
     },
+
+    /**
+     * Filters ads.
+     */
+    applyFilters () {
+      this.datatable.setDataSourceParam("params", this.datatableParams)
+      this.datatable.load()
+    },
+
+    /**
+     * Resets filters to the initial state.
+     */
     resetFilters () {
       window.$("#source").val("default").selectpicker("refresh")
       window.$("#rooms").val("default").selectpicker("refresh")
       this.$store.commit("ads/resetFilters")
       this.datatable.setDataSourceParam("params", {})
-      this.datatable.load()
-    },
-    applyFilters () {
-      this.datatable.setDataSourceParam("params", this.datatableParams)
       this.datatable.load()
     }
   }

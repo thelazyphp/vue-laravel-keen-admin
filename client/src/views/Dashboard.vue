@@ -5,19 +5,9 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex"
-import {
-  SET_PAGE_TITLE
-} from "../store"
-
 export default {
   beforeMount () {
-    this[SET_PAGE_TITLE]("Управление")
-  },
-  methods: {
-    ...mapMutations([
-      SET_PAGE_TITLE
-    ])
+    this.$store.commit("setPageTitle", "Управление")
   }
 }
 </script>

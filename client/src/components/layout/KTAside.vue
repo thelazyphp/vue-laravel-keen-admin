@@ -19,15 +19,21 @@ import KTAsideMenu from "./KTAsideMenu.vue"
 
 export default {
   name: "KTAside",
+
   components: {
     KTBrand,
     KTAsideMenu
   },
+
   computed: {
+    /**
+     * @returns {*}
+     */
     brandLogo () {
-      return require("../assets/media/logos/logo-light.png")
+      return require("../../assets/media/logos/logo-light.png")
     }
   },
+
   mounted () {
     this.$nextTick(() => {
       window.KTLayoutAside.init("kt_aside")
