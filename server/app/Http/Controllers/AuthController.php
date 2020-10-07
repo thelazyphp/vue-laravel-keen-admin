@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\Login;
 use App\Models\User;
+use Illuminate\Http\Request;
+use App\Http\Requests\RefreshToken;
 
 class AuthController extends Controller
 {
@@ -15,17 +17,14 @@ class AuthController extends Controller
     }
 
     /**
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\Login  $request
      * @return \Illuminate\Http\Response
      */
-    public function login(Request $request)
+    public function login(Login $request)
     {
-        $this->validate($request, [
-            'username' => 'bail|required|exists:users',
-            'password' => 'required',
-        ]);
+        $validated = $request->validated();
 
-        $user = User::where('username', $request->username)->first();
+        $user = User::where('username', $validated['username'])->first();
 
         //
 
@@ -33,8 +32,8 @@ class AuthController extends Controller
             Request::create('/oauth/token', 'POST', [
                 'grant_type'    => 'password',
                 'scope'         => '*',
-                'username'      => $request->username,
-                'password'      => $request->password,
+                'username'      => $validated['username'],
+                'password'      => $validated['password'],
                 'client_id'     => env('APP_CLIENT_ID'),
                 'client_secret' => env('APP_CLIENT_SECRET'),
             ])
@@ -50,20 +49,18 @@ class AuthController extends Controller
     }
 
     /**
-     * @param  \Illuminate\Http\Request  $request
+     * @param  App\Http\Requests\RefreshToken  $request
      * @return \Illuminate\Http\Response
      */
-    public function refreshToken(Request $request)
+    public function refreshToken(RefreshToken $request)
     {
-        $this->validate($request, [
-            'refresh_token' => 'required',
-        ]);
+        $validated = $request->validated();
 
         return app()->handle(
             Request::create('/oauth/token', 'POST', [
                 'grant_type'    => 'refresh_token',
                 'scope'         => '*',
-                'refresh_token' => $request->refresh_token,
+                'refresh_token' => $validated['refresh_token'],
                 'client_id'     => env('APP_CLIENT_ID'),
                 'client_secret' => env('APP_CLIENT_SECRET'),
             ])

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UploadImage;
 use Illuminate\Http\Request;
 use App\Models\Image;
 
@@ -27,16 +28,14 @@ class ImageController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\UploadImage  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(UploadImage $request)
     {
-        $this->validate($request, [
-            'file' => 'required|file|image|max:51200',
-        ]);
+        $validated = $request->validated();
 
-        $path = $request->file
+        $path = $validated['file']
             ->store('images', 'public');
 
         return Image::create([

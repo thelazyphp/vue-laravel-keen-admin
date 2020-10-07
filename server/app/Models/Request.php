@@ -38,8 +38,8 @@ class Request extends Model
      * @var array
      */
     protected $casts = [
-        'active'    => 'boolean',
-        'filters'   => 'array',
+        'active'  => 'boolean',
+        'filters' => 'array',
     ];
 
     /**

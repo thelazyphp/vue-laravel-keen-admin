@@ -16,10 +16,10 @@ class User extends JsonResource
     public function toArray($request)
     {
         return [
-            'roles'         => $this->roles,
             'id'            => $this->id,
-            'organization'  => $this->organization,
+            'company'       => $this->company,
             'image'         => Image::find($this->image_id),
+            'role'          => $this->role->name,
             'first_name'    => $this->first_name,
             'last_name'     => $this->last_name,
             'email'         => $this->email,

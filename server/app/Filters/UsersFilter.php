@@ -2,15 +2,15 @@
 
 namespace App\Filters;
 
-use App\Models\Seller;
+use App\Models\Role;
 
-class AdsFilter extends Filter
+class UsersFilter extends Filter
 {
     /**
      * {@inheritDoc}
      */
     protected $defaults = [
-        'sort' => '-published_at',
+        'sort' => 'first_name',
     ];
 
     /**
@@ -21,15 +21,11 @@ class AdsFilter extends Filter
     {
         return $this->builder->where(function ($builder) use ($value) {
             $builder = $builder->where(
-                'full_address', 'like', '%'.$value.'%'
-            );
-
-            $builder = $builder->where(
-                'address_district', 'like', '%'.$value.'%'
+                'last_name', 'like', '%'.$value.'%'
             );
 
             return $builder->orWhere(
-                'address_microdistrict', 'like', '%'.$value.'%'
+                'first_name', 'like', '%'.$value.'%'
             );
         });
     }
@@ -38,9 +34,9 @@ class AdsFilter extends Filter
      * @param  string  $value
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function sellerType ($value) {
+    public function roleIn ($value) {
         return $this->builder->whereIn(
-            'seller_id', Seller::select('id')->where('type', $value)->get()->pluck('id')->toArray()
+            'role_id', Role::whereIn('name', explode(',', $value))->get()->pluck('id')->toArray()
         );
     }
 }

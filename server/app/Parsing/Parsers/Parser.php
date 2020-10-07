@@ -150,9 +150,9 @@ abstract class Parser
 
         try {
             $model = Ad::updateOrCreate([
-                'category'  => $this->category,
-                'source'    => $this->source,
-                'url'       => $url,
+                'category' => $this->category,
+                'source'   => $this->source,
+                'url'      => $url,
             ], $attributes);
 
             $this->modelCreated(
@@ -217,9 +217,9 @@ abstract class Parser
                 || $history[count($history) - 1]['amount'] != $model->price_amount)
         ) {
             $history[] = [
-                'date'      => $model->published_at,
-                'amount'    => $model->price_amount,
-                'currency'  => $model->price_currency,
+                'date'     => $model->published_at,
+                'amount'   => $model->price_amount,
+                'currency' => $model->price_currency,
             ];
         }
 
@@ -237,9 +237,9 @@ abstract class Parser
                 || $history[count($history) - 1]['amount'] != $model->price_sq_m_amount)
         ) {
             $history[] = [
-                'date'      => $model->published_at,
-                'amount'    => $model->price_sq_m_amount,
-                'currency'  => $model->price_sq_m_currency,
+                'date'     => $model->published_at,
+                'amount'   => $model->price_sq_m_amount,
+                'currency' => $model->price_sq_m_currency,
             ];
         }
 

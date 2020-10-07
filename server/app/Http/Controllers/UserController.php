@@ -2,110 +2,62 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Filters\UsersFilter;
+use App\Http\Requests\GetCollection;
 use App\Models\User;
 use App\Http\Resources\Users;
 use App\Http\Requests\StoreUser;
+use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\User as UserResource;
 use App\Http\Requests\UpdateUser;
 use App\Http\Requests\RegisterUser;
-use App\Models\Organization;
+use App\Models\Company;
+use Illuminate\Http\Request;
 use App\Http\Requests\UpdateUserProfile;
 use App\Http\Requests\UpdateUserAccount;
+use App\Http\Requests\UpdateUserCompany;
 
 class UserController extends Controller
 {
-    public function __construct()
+    /**
+     * @var \App\Filters\UsersFilter
+     */
+    protected $filter;
+
+    /**
+     * @param  \App\Filters\UsersFilter  $filter
+     */
+    public function __construct(UsersFilter $filter)
     {
         $this->middleware('auth:api')->except([
             'register',
         ]);
+
+        $this->filter = $filter;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\GetCollection  $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(GetCollection $request)
     {
         $this->authorize('viewAny', User::class);
 
-        $this->validate($request, [
-            'query.search'          => 'nullable|string',
-            'params'                => 'array',
-            'sort.field'            => 'string',
-            'sort.sort'             => 'string:in:asc,desc',
-            'pagination.page'       => 'integer|min:1',
-            'pagination.perpage'    => 'integer|min:1',
-        ]);
+        $validated = $request->validated();
 
-        $query = User::query();
+        $query = auth()->user()->company->users();
 
-        if ($request->filled('query.search')) {
-            $search = $request->input('query.search');
-
-            //
-        }
-
-        foreach ($request->input('params', []) as $key => $value) {
-            [$field, $op] = explode(':', $key, 2);
-
-            //
-
-            switch ($op) {
-                case 'not':
-                    $query = $query->where($field, '<>', $value);
-                    break;
-                case 'eq':
-                    $query = $query->where($field, $value);
-                    break;
-                case 'lt':
-                    $query = $query->where($field, '<', $value);
-                    break;
-                case 'le':
-                    $query = $query->where($field, '<=', $value);
-                    break;
-                case 'gt':
-                    $query = $query->where($field, '>', $value);
-                    break;
-                case 'ge':
-                    $query = $query->where($field, '>=', $value);
-                    break;
-                case 'in':
-                    $query = $query->whereIn($field, explode(',', $value));
-                    break;
-                case 'not_in':
-                    $query = $query->whereNotIn($field, explode(',', $value));
-                    break;
-            }
-        }
-
-        $field = $request->input('sort.field', 'first_name');
-        $sort = $request->input('sort.sort', 'asc');
-        $page = (int) $request->input('pagination.page', 1);
-        $perpage = (int) $request->input('pagination.perpage', 10);
-
-        $total = $query->count();
-        $pages = ceil($total / $perpage);
-
-        $users = $query->orderBy($field, $sort)
-            ->skip(($page - 1) * $perpage)
-            ->take($perpage)
-            ->get();
-
-        return (new Users($users))->additional([
-            'meta' => [
-                'field'     => $field,
-                'sort'      => $sort,
-                'total'     => $total,
-                'pages'     => $pages,
-                'page'      => $page,
-                'perpage'   => $perpage,
-            ]
-        ]);
+        return new Users(
+            $query->paginate(
+                empty($validated['per_page'])
+                    ? null
+                    : $validated['per_page']
+            )
+        );
     }
 
     /**
@@ -125,6 +77,10 @@ class UserController extends Controller
         $user = User::create($validated);
 
         $user->organization()->associate(auth()->user()->organization);
+
+        $employee = Role::where('name', 'employee')->first();
+        $user->role()->associate($employee);
+
         $user->save();
 
         return new UserResource($user);
@@ -192,15 +148,39 @@ class UserController extends Controller
 
         $user = User::create($validated);
 
-        if (!empty($validated['organization_name'])) {
-            $user->organization()->associate(
-                Organization::create([
-                    'name' => $validated['organization_name'],
+        $admin = Role::where('name', 'admin')->first();
+        $user->role()->associate($admin);
+
+        if (!empty($validated['company_name'])) {
+            $user->company()->associate(
+                Company::create([
+                    'name' => $validated['company_name'],
                 ])
             );
-
-            $user->save();
         }
+
+        $user->save();
+
+        return new UserResource($user);
+    }
+
+    /**
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function updateRole(Request $request, User $user)
+    {
+        $this->authorize('updateRole', $user);
+
+        $this->validate($request, [
+            'name' => 'required|string|in:admin,manager,employee',
+        ]);
+
+        $role = Role::where('name', $request->name)->first();
+
+        $user->role()->associate($role);
+        $user->save();
 
         return new UserResource($user);
     }
@@ -239,5 +219,21 @@ class UserController extends Controller
         return new UserResource(
             tap($user)->update($validated)
         );
+    }
+
+    /**
+     * @param  \App\Http\Requests\UpdateUserCompany  $request
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Http\Response
+     */
+    public function updateCompany(UpdateUserCompany $request, User $user)
+    {
+        $this->authorize('updateCompany', $user);
+
+        $validated = $request->validated();
+
+        //
+
+        return new UserResource($user);
     }
 }

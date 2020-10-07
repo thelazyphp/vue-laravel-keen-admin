@@ -2,118 +2,52 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\AdsFilter;
+use App\Http\Requests\GetCollection;
 use Illuminate\Http\Request;
 use App\Models\Ad;
-use App\Models\Seller;
 use App\Http\Resources\Ads;
 use App\Http\Resources\Ad as AdResource;
 
 class AdController extends Controller
 {
-    public function __construct()
+    /**
+     * @var \App\Filters\AdsFilter
+     */
+    protected $filter;
+
+    public function __construct(AdsFilter $filter)
     {
         $this->middleware('auth:api')->except([
             //
         ]);
+
+        $this->filter = $filter;
     }
 
     /**
      * Display a listing of the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Http\Requests\GetCollection  $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index(GetCollection $request)
     {
-        $this->validate($request, [
-            'query.search'          => 'nullable|string',
-            'params'                => 'array',
-            'sort.field'            => 'string',
-            'sort.sort'             => 'string:in:asc,desc',
-            'pagination.page'       => 'integer|min:1',
-            'pagination.perpage'    => 'integer|min:1',
-        ]);
+        $validated = $request->validated();
 
         $query = Ad::query();
 
-        if ($request->filled('query.search')) {
-            $search = $request->input('query.search');
+        $query = $query->filter(
+            $this->filter, $request->all()
+        );
 
-            $query = $query->where(function ($query) use ($search) {
-                $query = $query->where(
-                    'full_address', 'like', '%'.$search.'%'
-                );
-
-                $query = $query->where(
-                    'address_district', 'like', '%'.$search.'%'
-                );
-
-                return $query->orWhere(
-                    'address_microdistrict', 'like', '%'.$search.'%'
-                );
-            });
-        }
-
-        foreach ($request->input('params', []) as $key => $value) {
-            [$field, $op] = explode(':', $key, 2);
-
-            if ($field == 'seller.type') {
-                $query = $query->whereIn(
-                    'seller_id', Seller::select('id')->where('type', $value)->get()->pluck('id')->toArray()
-                );
-            } else {
-                switch ($op) {
-                    case 'not':
-                        $query = $query->where($field, '<>', $value);
-                        break;
-                    case 'eq':
-                        $query = $query->where($field, $value);
-                        break;
-                    case 'lt':
-                        $query = $query->where($field, '<', $value);
-                        break;
-                    case 'le':
-                        $query = $query->where($field, '<=', $value);
-                        break;
-                    case 'gt':
-                        $query = $query->where($field, '>', $value);
-                        break;
-                    case 'ge':
-                        $query = $query->where($field, '>=', $value);
-                        break;
-                    case 'in':
-                        $query = $query->whereIn($field, explode(',', $value));
-                        break;
-                    case 'not_in':
-                        $query = $query->whereNotIn($field, explode(',', $value));
-                        break;
-                }
-            }
-        }
-
-        $field = $request->input('sort.field', 'published_at');
-        $sort = $request->input('sort.sort', 'asc');
-        $page = (int) $request->input('pagination.page', 1);
-        $perpage = (int) $request->input('pagination.perpage', 10);
-
-        $total = $query->count();
-        $pages = ceil($total / $perpage);
-
-        $users = $query->orderBy($field, $sort)
-            ->skip(($page - 1) * $perpage)
-            ->take($perpage)
-            ->get();
-
-        return (new Ads($users))->additional([
-            'meta' => [
-                'field'     => $field,
-                'sort'      => $sort,
-                'total'     => $total,
-                'pages'     => $pages,
-                'page'      => $page,
-                'perpage'   => $perpage,
-            ]
-        ]);
+        return new Ads(
+            $query->paginate(
+                empty($validated['per_page'])
+                    ? null
+                    : $validated['per_page']
+            )
+        );
     }
 
     /**

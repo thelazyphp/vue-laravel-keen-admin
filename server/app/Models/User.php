@@ -18,7 +18,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'organization_id',
+        'company_id',
         'image_id',
         'first_name',
         'last_name',
@@ -60,9 +60,25 @@ class User extends Authenticatable
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function organization()
+    public function company()
     {
-        return $this->belongsTo('App\Models\Organization');
+        return $this->belongsTo('App\Models\Company');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function role()
+    {
+        return $this->belongsTo('App\Models\Role');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function notifications()
+    {
+        return $this->belongsToMany('App\Models\Notification');
     }
 
     /**
@@ -79,22 +95,6 @@ class User extends Authenticatable
     public function requests()
     {
         return $this->hasMany('App\Models\Request');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function notifications()
-    {
-        return $this->belongsToMany('App\Models\Notification');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function roles()
-    {
-        return $this->belongsToMany('App\Models\Role');
     }
 
     /**
