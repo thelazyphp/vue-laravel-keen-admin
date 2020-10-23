@@ -3,7 +3,8 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Models\Image;
+use App\Http\Resources\Company;
+use App\Http\Resources\Image;
 
 class User extends JsonResource
 {
@@ -16,15 +17,15 @@ class User extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'            => $this->id,
-            'company'       => $this->company,
-            'image'         => Image::find($this->image_id),
-            'role'          => $this->role->name,
-            'first_name'    => $this->first_name,
-            'last_name'     => $this->last_name,
-            'email'         => $this->email,
-            'contact_phone' => $this->contact_phone,
-            'username'      => $this->username,
+            'id' => $this->id,
+            'company' => new Company($this->company),
+            'admin' => $this->admin,
+            'employee' => $this->employee,
+            'image' => new Image($this->image),
+            'name' => $this->name,
+            'email' => $this->email,
+            'locale' => $this->locale,
+            'timezone' => $this->timezone,
         ];
     }
 }

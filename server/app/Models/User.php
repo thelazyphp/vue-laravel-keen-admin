@@ -10,7 +10,19 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasApiTokens, HasFactory, Notifiable;
+
+    /**
+     * The model's default values for attributes.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'admin' => true,
+        'employee' => false,
+        'locale' => 'en',
+        'timezone' => 'UTC',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -19,13 +31,14 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'company_id',
+        'admin',
+        'employee',
         'image_id',
-        'first_name',
-        'last_name',
+        'name',
         'email',
-        'contact_phone',
-        'username',
         'password',
+        'locale',
+        'timezone',
     ];
 
     /**
@@ -34,7 +47,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     /**
@@ -43,65 +57,24 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
+        'admin' => 'boolean',
+        'employee' => 'boolean',
         'email_verified_at' => 'datetime',
     ];
 
     /**
-     * Find the user instance for the given username.
-     *
-     * @param  string  $username
-     * @return \App\Models\User
+     * Get the image record associated with the user.
      */
-    public function findForPassport($username)
+    public function image()
     {
-        return $this->where('username', $username)->first();
+        return $this->hasOne('App\Models\Image');
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * Get the company that owns the user.
      */
     public function company()
     {
         return $this->belongsTo('App\Models\Company');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function role()
-    {
-        return $this->belongsTo('App\Models\Role');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function notifications()
-    {
-        return $this->belongsToMany('App\Models\Notification');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function clients()
-    {
-        return $this->hasMany('App\Models\Client');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function requests()
-    {
-        return $this->hasMany('App\Models\Request');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function favorites()
-    {
-        return $this->belongsToMany('App\Models\Ad', 'favorites')->withTimestamps();
     }
 }

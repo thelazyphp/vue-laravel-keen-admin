@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,18 +14,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('users')->group(function () {
-    Route::post('/register', [\App\Http\Controllers\UserController::class, 'register']);
-    Route::match(['put', 'patch'], '/{user}/profile', [\App\Http\Controllers\UserController::class, 'updateProfile']);
-    Route::match(['put', 'patch'], '/{user}/account', [\App\Http\Controllers\UserController::class, 'updateAccount']);
-    Route::match(['put', 'patch'], '/{user}/company', [\App\Http\Controllers\UserController::class, 'updateCompany']);
-});
+Route::prefix('{version}')->group(function () {
+    Route::post('/auth/token', [AuthController::class, 'token']);
 
-Route::prefix('auth')->group(function () {
-    Route::post('/login', [\App\Http\Controllers\AuthController::class, 'login']);
-    Route::match(['get', 'post'], '/logout', [\App\Http\Controllers\AuthController::class, 'logout']);
-});
+    //
 
-Route::apiResource('ads', \App\Http\Controllers\AdController::class);
-Route::apiResource('users', \App\Http\Controllers\UserController::class);
-Route::apiResource('images', \App\Http\Controllers\ImageController::class)->only('store');
+    Route::middleware('auth:api')->group(function () {
+        Route::match(['get', 'post'], '/auth/logout', [AuthController::class, 'logout']);
+
+        //
+    });
+});

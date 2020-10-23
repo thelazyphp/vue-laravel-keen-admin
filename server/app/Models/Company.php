@@ -16,16 +16,10 @@ class Company extends Model
      */
     protected $fillable = [
         'name',
-        'website',
-        'email',
-        'phone',
-        'license',
-        'address',
-        'description',
     ];
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * Get the users for the company.
      */
     public function users()
     {

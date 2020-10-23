@@ -15,6 +15,25 @@ class Image extends Model
      * @var array
      */
     protected $fillable = [
+        'user_id',
         'url',
+        'path',
     ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'path',
+    ];
+
+    /**
+     * Get the user that owns the image.
+     */
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User');
+    }
 }
