@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,15 +12,3 @@ use App\Http\Controllers\AuthController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::prefix('{version}')->group(function () {
-    Route::post('/auth/token', [AuthController::class, 'token']);
-
-    //
-
-    Route::middleware('auth:api')->group(function () {
-        Route::match(['get', 'post'], '/auth/logout', [AuthController::class, 'logout']);
-
-        //
-    });
-});

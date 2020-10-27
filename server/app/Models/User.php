@@ -18,8 +18,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $attributes = [
-        'admin' => true,
-        'employee' => false,
         'locale' => 'en',
         'timezone' => 'UTC',
     ];
@@ -30,10 +28,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'company_id',
-        'admin',
-        'employee',
-        'image_id',
         'name',
         'email',
         'password',
@@ -57,10 +51,19 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'admin' => 'boolean',
-        'employee' => 'boolean',
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Check if the user is admin.
+     *
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->roles()
+            ->where('name', 'admin')->exists();
+    }
 
     /**
      * Get the image record associated with the user.
@@ -76,5 +79,13 @@ class User extends Authenticatable
     public function company()
     {
         return $this->belongsTo('App\Models\Company');
+    }
+
+    /**
+     * The roles that belong to the user.
+     */
+    public function roles()
+    {
+        return $this->belongsToMany('App\Models\Role');
     }
 }
