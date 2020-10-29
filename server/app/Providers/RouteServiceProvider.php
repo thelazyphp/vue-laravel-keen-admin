@@ -36,15 +36,15 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->configureRateLimiting();
-
-        Route::pattern('version', 'v[0-9]+(\.[0-9]+){0,2}');
+        Route::pattern('{version}', 'v[0-9]+(\.[0-9]+){0,2}');
 
         Route::bind('user', function ($value) {
             return $value === 'self'
                 ? auth()->user()
                 : User::findOrFail($value);
         });
+
+        $this->configureRateLimiting();
 
         $this->routes(function () {
             Route::prefix('api/{version}')

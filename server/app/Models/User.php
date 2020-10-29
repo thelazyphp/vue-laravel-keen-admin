@@ -13,16 +13,6 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
-     * The model's default values for attributes.
-     *
-     * @var array
-     */
-    protected $attributes = [
-        'locale' => 'en',
-        'timezone' => 'UTC',
-    ];
-
-    /**
      * The attributes that are mass assignable.
      *
      * @var array
@@ -31,7 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'locale',
+        'status',
+        'lang',
         'timezone',
     ];
 
@@ -54,38 +45,13 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    /**
-     * Check if the user is admin.
-     *
-     * @return bool
-     */
-    public function isAdmin()
-    {
-        return $this->roles()
-            ->where('name', 'admin')->exists();
-    }
-
-    /**
-     * Get the image record associated with the user.
-     */
     public function image()
     {
         return $this->hasOne('App\Models\Image');
     }
 
-    /**
-     * Get the company that owns the user.
-     */
     public function company()
     {
         return $this->belongsTo('App\Models\Company');
-    }
-
-    /**
-     * The roles that belong to the user.
-     */
-    public function roles()
-    {
-        return $this->belongsToMany('App\Models\Role');
     }
 }

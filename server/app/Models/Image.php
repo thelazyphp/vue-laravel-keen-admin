@@ -29,9 +29,6 @@ class Image extends Model
         'path',
     ];
 
-    /**
-     * Get the user that owns the image.
-     */
     public function user()
     {
         return $this->belongsTo('App\Models\User');

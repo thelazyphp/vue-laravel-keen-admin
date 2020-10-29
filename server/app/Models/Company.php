@@ -18,9 +18,6 @@ class Company extends Model
         'name',
     ];
 
-    /**
-     * Get the users for the company.
-     */
     public function users()
     {
         return $this->hasMany('App\Models\User');

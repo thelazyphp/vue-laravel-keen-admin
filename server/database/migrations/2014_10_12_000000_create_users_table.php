@@ -15,15 +15,16 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('company_id');
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
-            $table->string('locale')->default(config('app.locale'));
-            $table->string('timezone')->default(config('app.timezone'));
             $table->timestamps();
+            $table->unsignedBigInteger('company_id')->nullable();
+            $table->string('status')->default('active');
+            $table->string('lang')->default(config('app.locale'));
+            $table->string('timezone')->default(config('app.timezone'));
         });
     }
 
