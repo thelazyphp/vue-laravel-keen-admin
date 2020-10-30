@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Illuminate\Http\Request;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\AuthController;
 
@@ -16,16 +15,16 @@ use App\Http\Controllers\API\AuthController;
 |
 */
 
-Route::get('/version', function (Request $request) {
-    return response()->json([
-        'version' => $request->version,
-    ]);
-});
-
 Route::post('/users/register', [UserController::class, 'register']);
 
-Route::post('/token', [AuthController::class, 'token']);
+Route::post('/auth/token', [AuthController::class, 'token']);
 
-Route::middleware('auth:api')->match(['get', 'post'], '/logout', [AuthController::class, 'logout']);
+Route::middleware('auth:api')->match(['get', 'post'], '/auth/logout', [AuthController::class, 'logout']);
+
+Route::middleware('auth:api')->match(['put', 'patch'], '/users/{user}/account', [UserController::class, 'updateAccount']);
+
+Route::middleware('auth:api')->match(['put', 'patch'], '/users/{user}/profile', [UserController::class, 'updateProfile']);
+
+Route::middleware('auth:api')->match(['put', 'patch'], '/users/{user}/password', [UserController::class, 'updatePassword']);
 
 Route::middleware('auth:api')->apiResource('users', UserController::class);

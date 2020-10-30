@@ -14,14 +14,13 @@ use Illuminate\Support\Facades\Http;
 class AuthController extends Controller
 {
     /**
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function logout(Request $request)
+    public function logout()
     {
-        return $request->user()->token()->revoke()
-            ? response(['status' => 'ok'])
-            : response(['status' => 'failed'], 500);
+        auth()->user()
+            ->token()
+            ->revoke();
     }
 
     /**
@@ -32,29 +31,31 @@ class AuthController extends Controller
     {
         $rules = [
             'email' => ['required', 'email'],
-            'password' => ['required', 'string'],
+            'password' => ['required', 'password'],
         ];
 
         $validator = Validator::make(
             $request->all(),
             $rules,
-            trans('api.errors.validation')
+            trans('api.errors.validation'),
         );
 
-        $validator->validate();
+        $validated = $validator->validate();
 
-        $user = User::where('email', $request->email)->first();
+        $user = User::where(
+            'email', $validated['email']
+        )->first();
 
         if (! $user) {
-            throw ValidationException::withMessages([
+            ValidationException::withMessages([
                 'email' => [
                     trans('api.errors.auth.user'),
                 ],
             ]);
         }
 
-        if (! Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
+        if (! Hash::check($validated['password'], $user->password)) {
+            ValidationException::withMessages([
                 'password' => [
                     trans('api.errors.auth.password'),
                 ],
@@ -63,19 +64,17 @@ class AuthController extends Controller
 
         $client = Client::where('password_client', true)->first();
 
-        $response = Http::post(config('app.url').'/oauth/token', [
+        if (! $client) {
+            return response('', 500);
+        }
+
+        return Http::post(config('app.url').'/oauth/token', [
             'grant_type' => 'password',
             'scope' => '*',
-            'username' => $request->email,
-            'password' => $request->password,
+            'username' => $validated['email'],
+            'password' => $validated['password'],
             'client_id' => $client->id,
             'client_secret' => $client->secret,
         ]);
-
-        return response(
-            $response->body(),
-            $response->status(),
-            $response->headers()
-        );
     }
 }

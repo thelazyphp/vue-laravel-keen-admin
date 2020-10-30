@@ -21,9 +21,6 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'status',
-        'lang',
-        'timezone',
     ];
 
     /**
@@ -44,14 +41,4 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-
-    public function image()
-    {
-        return $this->hasOne('App\Models\Image');
-    }
-
-    public function company()
-    {
-        return $this->belongsTo('App\Models\Company');
-    }
 }

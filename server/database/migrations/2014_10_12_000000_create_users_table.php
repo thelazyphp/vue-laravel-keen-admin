@@ -21,10 +21,6 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-            $table->unsignedBigInteger('company_id')->nullable();
-            $table->string('status')->default('active');
-            $table->string('lang')->default(config('app.locale'));
-            $table->string('timezone')->default(config('app.timezone'));
         });
     }
 
