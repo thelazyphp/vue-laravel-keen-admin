@@ -7,11 +7,11 @@ var KTLayoutHeaderTopbar = function() {
 
     // Private functions
     var _init = function() {
-			_toggleObject = new KTToggle(_toggleElement, {
-				target: KTUtil.getBody(),
-				targetState: 'topbar-mobile-on',
-				toggleState: 'active',
-			});
+		_toggleObject = new KTToggle(_toggleElement, {
+			target: KTUtil.getBody(),
+			targetState: 'topbar-mobile-on',
+			toggleState: 'active'
+		});
     }
 
     // Public methods

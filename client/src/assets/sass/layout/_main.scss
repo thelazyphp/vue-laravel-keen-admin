@@ -11,6 +11,8 @@ body {
 @include media-breakpoint-up(lg) {
 	// Wrapper
 	.wrapper {
+		transition: get($header-config, desktop, fixed, transition);
+
 		// Fixed Header
 		.header-fixed & {
 			padding-top: get($header-config, desktop, fixed, height);
@@ -20,22 +22,12 @@ body {
 		.header-fixed.subheader-fixed.subheader-enabled & {
 			padding-top: get($header-config, desktop, fixed, height) + get($subheader-config, fixed, height);
 		}
-
-		// Fixed Aside
-		.aside-fixed & {
-			padding-left: get($aside-config, base, width);
-		}
-
-		// Minimize Aside
-		.aside-fixed.aside-minimize & {
-			padding-left: get($aside-config, base, minimized-width);
-		}
 	}
 
 	// Container
 	.container,
 	.container-fluid {
-		padding: 0 get($page-padding, desktop);
+		padding: 0 get($page-spacers, x, desktop);
 	}
 }
 
@@ -47,17 +39,12 @@ body {
 		.header-mobile-fixed & {
 			padding-top: get($header-config, tablet-and-mobile, fixed, height);
 		}
-
-		// Fixed Subheader
-		.header-mobile-fixed.subheader-mobile-fixed.subheader-enabled & {
-			padding-top: get($header-config, tablet-and-mobile, fixed, height) + get($subheader-config, fixed, height-mobile);
-		}
 	}
 
 	// Container
 	.container,
 	.container-fluid {
 		max-width: none;
-		padding: 0 get($page-padding, tablet-and-mobile);
+		padding: 0 get($page-spacers, x, tablet-and-mobile);
 	}
 }

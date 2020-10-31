@@ -1,67 +1,34 @@
-import Vue from "vue"
-import Vuex from "vuex"
-import ads from "./ads.module.js"
-import auth from "./auth.module.js"
-import employees from "./employees.module.js"
-import UsersService from "../services/users.service.js"
+import Vue from 'vue'
+import Vuex from 'vuex'
+import auth from './modules/auth.js'
+import Users from '../services/users.js'
 
 Vue.use(Vuex)
 
+export const SET_USER = 'setUser'
+export const FETCH_USER = 'fetchUser'
+
 export default new Vuex.Store({
+  modules: {
+    auth
+  },
+
   state: {
-    pageTitle: "",
     user: null
   },
 
-  getters: {
-    /**
-     * @returns {string}
-     */
-    pageTitle (state) {
-      return state.pageTitle
-    },
-
-    /**
-     * @returns {object?}
-     */
-    user (state) {
-      return state.user
-    }
-  },
-
   mutations: {
-    /**
-     * Stores page title.
-     *
-     * @param {string} title
-     */
-    setPageTitle (state, title) {
-      state.pageTitle = title
-
-      Vue.nextTick(() => {
-        document.title = title + " | Realty"
-      })
-    },
-
-    /**
-     * Stores the authenticated user.
-     *
-     * @param {object?} user
-     */
-    setUser (state, user) {
+    [SET_USER] (state, user) {
       state.user = user
     }
   },
 
   actions: {
-    /**
-     * Retrives the authenticated user.
-     */
-    fetchUser ({ commit }) {
+    [FETCH_USER] ({ commit }) {
       return new Promise((resolve, reject) => {
-        UsersService.get("self")
+        Users.getSelf()
           .then(res => {
-            commit("setUser", res.data.data)
+            commit(SET_USER, res.data)
             return resolve(res)
           })
           .catch(error => {
@@ -69,11 +36,5 @@ export default new Vuex.Store({
           })
       })
     }
-  },
-
-  modules: {
-    ads,
-    auth,
-    employees,
   }
 })

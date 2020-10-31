@@ -7,7 +7,8 @@ var KTLayoutHeader = function() {
     var _object;
 
 	// Private functions
-    // Get Height
+
+    // Get height
     var _getHeight = function() {
         var height = 0;
 
@@ -18,7 +19,7 @@ var KTLayoutHeader = function() {
         return height;
     }
 
-    // Get Height
+    // Get height
     var _getHeightForMobile = function() {
         var height;
 
@@ -27,7 +28,7 @@ var KTLayoutHeader = function() {
         return height;
     }
 
-    // Public Methods
+    // Public methods
 	return {
 		init: function(id, idForMobile) {
             _element = KTUtil.getById(id);

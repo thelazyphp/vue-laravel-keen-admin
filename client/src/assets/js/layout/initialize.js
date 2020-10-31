@@ -9,20 +9,11 @@ KTUtil.ready(function() {
     // Init Desktop & Mobile Headers
     KTLayoutHeader.init('kt_header', 'kt_header_mobile');
 
-    // Init Header Menu
-    KTLayoutHeaderMenu.init('kt_header_menu', 'kt_header_menu_wrapper');
-
     // Init Header Topbar For Mobile Mode
     KTLayoutHeaderTopbar.init('kt_header_mobile_topbar_toggle');
 
-    // Init Brand Panel For Logo
-    KTLayoutBrand.init('kt_brand');
-
     // Init Aside
     KTLayoutAside.init('kt_aside');
-
-    // Init Aside Menu Toggle
-    KTLayoutAsideToggle.init('kt_aside_toggle');
 
     // Init Aside Menu
     KTLayoutAsideMenu.init('kt_aside_menu');
@@ -71,15 +62,9 @@ KTUtil.ready(function() {
     // Init Quick User Panel
     KTLayoutQuickUser.init('kt_quick_user');
 
-    // Init Quick Search Panel
-    KTLayoutQuickSearch.init('kt_quick_search');
+    // Init Search Inline Dropdown For Desktop Mode
+    KTLayoutSearchInline().init('kt_quick_search_inline');
 
-    // Init Quick Cart Panel
-    KTLayoutQuickCartPanel.init('kt_quick_cart');
-
-    // Init Search For Quick Search Dropdown
+    // Init Search Dropdown For Tablet & Mobile Mode
     KTLayoutSearch().init('kt_quick_search_dropdown');
-
-    // Init Search For Quick Search Offcanvas Panel
-    KTLayoutSearchOffcanvas().init('kt_quick_search_offcanvas');
 });

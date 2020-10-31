@@ -4,6 +4,7 @@ var KTLayoutAside = function() {
     // Private properties
     var _body;
     var _element;
+    var _asideMenuWrapperElement;
     var _offcanvasObject;
 
     // Private functions
@@ -16,73 +17,30 @@ var KTLayoutAside = function() {
 			baseClass: offcanvasClass,
 			overlay: true,
 			closeBy: 'kt_aside_close_btn',
-			toggleBy: {
-				target: 'kt_aside_mobile_toggle',
-				state: 'mobile-toggle-active'
-			}
+			toggleBy: ['kt_aside_desktop_toggle', 'kt_aside_tablet_and_mobile_toggle']
 		});
-
-		// Handle Minimized Aside Hover
-		if (KTUtil.hasClass(_body, 'aside-fixed') && KTUtil.hasClass(_body, 'aside-minimize-hoverable')) {
-			var insideTm;
-			var outsideTm;
-
-            // Handle Aside Hover Mode
-			KTUtil.addEvent(_element, 'mouseenter', function(e) {
-				e.preventDefault();
-
-				if (KTUtil.isBreakpointUp('lg') === false) {
-					return;
-				}
-
-				if (outsideTm) {
-					clearTimeout(outsideTm);
-					outsideTm = null;
-				}
-
-				insideTm = setTimeout(function() {
-					if (KTUtil.hasClass(_body, 'aside-minimize') && KTUtil.isBreakpointUp('lg')) {
-						KTUtil.removeClass(_body, 'aside-minimize');
-
-						// Hover class
-						KTUtil.addClass(_body, 'aside-minimize-hover');
-
-						KTLayoutAsideMenu.getMenu().scrollUpdate();
-						KTLayoutAsideMenu.getMenu().scrollTop();
-					}
-				}, 50);
-			});
-
-			KTUtil.addEvent(_element, 'mouseleave', function(e) {
-				e.preventDefault();
-
-				if (KTUtil.isBreakpointUp('lg') === false) {
-					return;
-				}
-
-				if (insideTm) {
-					clearTimeout(insideTm);
-					insideTm = null;
-				}
-
-				outsideTm = setTimeout(function() {
-				    if (KTUtil.hasClass(_body, 'aside-minimize-hover') && KTUtil.isBreakpointUp('lg')) {
-					    KTUtil.removeClass(_body, 'aside-minimize-hover');
-					    KTUtil.addClass(_body, 'aside-minimize');
-
-						// Hover class
-                        KTLayoutAsideMenu.getMenu().scrollUpdate();
-						KTLayoutAsideMenu.getMenu().scrollTop();
-					}
-				}, 100);
-			});
-		}
 	}
+
+    var _initScroll = function() {
+        KTUtil.scrollInit(_asideMenuWrapperElement, {
+            disableForMobile: true,
+            resetHeightOnDestroy: true,
+            handleWindowResize: true,
+            height: function() {
+                var height = parseInt(KTUtil.getViewPort().height);
+
+                height = height - (parseInt(KTUtil.css(_asideMenuWrapperElement , 'marginBottom')) + parseInt(KTUtil.css(_asideMenuWrapperElement, 'marginTop')));
+
+                return height;
+            }
+        });
+    }
 
     // Public methods
 	return {
 		init: function(id) {
             _element = KTUtil.getById(id);
+            _asideMenuWrapperElement =  KTUtil.getById('kt_aside_menu_wrapper');
             _body = KTUtil.getBody();
 
             if (!_element) {
@@ -91,6 +49,7 @@ var KTLayoutAside = function() {
 
             // Initialize
             _init();
+            _initScroll();
         },
 
         getElement: function() {
@@ -99,18 +58,6 @@ var KTLayoutAside = function() {
 
         getOffcanvas: function() {
             return _offcanvasObject;
-        },
-
-        isFixed: function() {
-            return KTUtil.hasClass(_body, 'aside-fixed');
-        },
-
-        isMinimized: function() {
-            return (KTUtil.hasClass(_body, 'aside-fixed') && KTUtil.hasClass(_body, 'aside-minimize'));
-        },
-
-        isHoverable: function() {
-            return (KTUtil.hasClass(_body, 'aside-fixed') && KTUtil.hasClass(_body, 'aside-minimize-hoverable'));
         }
 	};
 }();

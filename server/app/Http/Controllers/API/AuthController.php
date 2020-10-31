@@ -31,13 +31,13 @@ class AuthController extends Controller
     {
         $rules = [
             'email' => ['required', 'email'],
-            'password' => ['required', 'password'],
+            'password' => ['required', 'string'],
         ];
 
         $validator = Validator::make(
             $request->all(),
             $rules,
-            trans('api.errors.validation'),
+            trans('api.errors.validation')
         );
 
         $validated = $validator->validate();
@@ -47,7 +47,7 @@ class AuthController extends Controller
         )->first();
 
         if (! $user) {
-            ValidationException::withMessages([
+            throw ValidationException::withMessages([
                 'email' => [
                     trans('api.errors.auth.user'),
                 ],
@@ -55,7 +55,7 @@ class AuthController extends Controller
         }
 
         if (! Hash::check($validated['password'], $user->password)) {
-            ValidationException::withMessages([
+            throw ValidationException::withMessages([
                 'password' => [
                     trans('api.errors.auth.password'),
                 ],

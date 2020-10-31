@@ -1,147 +1,74 @@
-import Vue from "vue"
-import VueRouter from "vue-router"
-import Login from "../views/Login.vue"
-import auth from "./middleware/auth.middleware.js"
-import guest from "./middleware/guest.middleware.js"
-import store from "../store"
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Login from '../views/Login.vue'
+import store from '../store'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: "/login",
-    name: "login",
+    path: '/login',
+    name: 'Login',
     component: Login,
     meta: {
-      middleware: [
-        guest,
-      ]
+      requiresGuest: true
     }
   },
   {
-    path: "/404",
-    name: "error",
-    component: () => import(/* webpackChunkName: "error" */ "../views/Error.vue")
-  },
-  {
-    path: "/",
-    component: () => import("../views/Layout.vue"),
-    redirect: "/dashboard",
+    path: '/',
+    component: () => import('../components/layout'),
     children: [
       {
-        path: "dashboard",
-        name: "dashboard",
-        component: () => import(/* webpackChunkName: "dashboard" */ "../views/Dashboard.vue"),
+        path: '',
+        name: 'Home',
+        component: () => import(/* webpackChunkName: "home" */ '../views/Home.vue'),
         meta: {
-          middleware: [
-            auth,
-          ]
+          requiresAuth: true
         }
       },
       {
-        path: "profile",
-        name: "profile",
-        component: () => import(/* webpackChunkName: "profile" */ "../views/Profile.vue"),
+        path: 'nca',
+        name: 'Nca',
+        component: () => import(/* webpackChunkName: "nca" */ '../views/Nca.vue'),
         meta: {
-          middleware: [
-            auth,
-          ]
+          requiresAuth: true
         }
       },
       {
-        path: "company",
-        name: "company",
-        component: () => import(/* webpackChunkName: "company" */ "../views/Company.vue"),
+        path: 'profile',
+        name: 'Profile',
+        component: () => import(/* webpackChunkName: "profile" */ '../views/Profile.vue'),
         meta: {
-          middleware: [
-            auth,
-          ]
+          requiresAuth: true
         }
-      },
-      {
-        path: "ads",
-        name: "ads",
-        component: () => import(/* webpackChunkName: "ads" */ "../views/Ads.vue"),
-        meta: {
-          middleware: [
-            auth,
-          ]
-        }
-      },
-      {
-        path: "bookmarks",
-        name: "bookmarks",
-        component: () => import(/* webpackChunkName: "bookmarks" */ "../views/Bookmarks.vue"),
-        meta: {
-          middleware: [
-            auth,
-          ]
-        }
-      },
-      {
-        path: "requests",
-        name: "requests",
-        component: () => import(/* webpackChunkName: "requests" */ "../views/Requests.vue"),
-        meta: {
-          middleware: [
-            auth,
-          ]
-        }
-      },
-      {
-        path: "clients",
-        name: "clients",
-        component: () => import(/* webpackChunkName: "clients" */ "../views/Clients.vue"),
-        meta: {
-          middleware: [
-            auth,
-          ]
-        }
-      },
-      {
-        path: "employees",
-        name: "employees",
-        component: () => import(/* webpackChunkName: "employees" */ "../views/Employees.vue"),
-        meta: {
-          middleware: [
-            auth,
-          ]
-        }
-      },
+      }
     ]
-  },
-  {
-    path: "*",
-    redirect: "/404"
   }
 ]
 
 const router = new VueRouter({
-  mode: "history",
+  mode: 'history',
   base: process.env.BASE_URL,
   routes
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.middleware) {
-    const context = {
-      to,
-      from,
-      next,
-      store
-    }
-
-    for (let middleware of to.meta.middleware) {
-      middleware({ ...context })
-    }
+  if (to.meta.requiresAuth && !store.state.auth.isAuthenticated) {
+    next({
+      name: 'Login'
+    })
+  } else if (to.meta.requiresGuest && store.state.auth.isAuthenticated) {
+    next({
+      name: 'Home'
+    })
+  } else {
+    next()
   }
-
-  next()
 })
 
 router.beforeEach((to, from, next) => {
-  if (store.getters["auth/isAuthenticated"] && !store.getters.user) {
-    store.dispatch("fetchUser").then(next)
+  if (store.state.auth.isAuthenticated && !store.state.user) {
+    store.dispatch('fetchUser').then(next)
   } else {
     next()
   }

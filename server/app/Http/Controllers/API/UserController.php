@@ -42,7 +42,7 @@ class UserController extends Controller
         );
 
         return User::create(
-            tap($validator->validate(), function ($validated) {
+            tap($validator->validate(), function (&$validated) {
                 $validated['password'] = Hash::make($validated['password']);
             })
         );
@@ -81,8 +81,10 @@ class UserController extends Controller
         );
 
         return tap($user)->update(
-            tap($validator->validate(), function ($validated) {
-                $validated['password'] = Hash::make($validated['password']);
+            tap($validator->validate(), function (&$validated) {
+                if (isset($validated['password'])) {
+                    $validated['password'] = Hash::make($validated['password']);
+                }
             })
         );
     }
@@ -119,7 +121,7 @@ class UserController extends Controller
         );
 
         return User::create(
-            tap($validator->validate(), function ($validated) {
+            tap($validator->validate(), function (&$validated) {
                 $validated['password'] = Hash::make($validated['password']);
             })
         );
@@ -184,7 +186,7 @@ class UserController extends Controller
         );
 
         return tap($user)->update(
-            tap($validator->validate(), function ($validated) {
+            tap($validator->validate(), function (&$validated) {
                 $validated['password'] = Hash::make($validated['new_password']);
             })
         );

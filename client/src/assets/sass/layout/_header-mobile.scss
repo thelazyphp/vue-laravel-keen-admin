@@ -15,7 +15,9 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 0 get($page-padding, tablet-and-mobile);
+		padding: 0 get($page-spacers, x, tablet-and-mobile);
+		background-color: get($header-config, tablet-and-mobile, default, bg-color);
+		border-bottom: get($header-config, tablet-and-mobile, default, border);
 		height: get($header-config, tablet-and-mobile, default, height);
 		min-height: get($header-config, tablet-and-mobile, default, height);
 		position: relative;
@@ -30,11 +32,6 @@
 			z-index: get($header-config, tablet-and-mobile, fixed, zindex);
 			height: get($header-config, tablet-and-mobile, fixed, height);
 			min-height: get($header-config, tablet-and-mobile, fixed, height);
-		}
-
-		// Topbar Shown Mode
-		.topbar-mobile-on & {
-			box-shadow: none !important;
 		}
 	}
 }
