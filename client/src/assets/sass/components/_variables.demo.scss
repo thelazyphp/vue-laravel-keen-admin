@@ -3,10 +3,14 @@
 //
 
 // Theme colors
-$primary:       									#F64E60;
-$primary-hover:    									#EE2D41;
-$primary-light:    									#FFE2E5;
-$primary-inverse:  									#FFFFFF;
+// $primary:       									#F64E60;
+// $primary-hover:    									#EE2D41;
+// $primary-light:    									#FFE2E5;
+// $primary-inverse:  									#FFFFFF;
+$primary:       									#3699FF; // Bootstrap variable
+$primary-hover:    									#187DE4; // Custom variable
+$primary-light:    									#E1F0FF; // Custom variable
+$primary-inverse:  									#FFFFFF; // Custom variable
 
 // Border Radiues
 $border-radius:            						    .85rem;

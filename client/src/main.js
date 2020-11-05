@@ -5,8 +5,6 @@ import store from './store'
 import axios from 'axios'
 import Auth from './services/auth.js'
 
-window.HOST_URL = 'https://preview.keenthemes.com/metronic/theme/html/tools/preview'
-
 window.KTAppSettings = {
   'breakpoints': {
     'sm': 576,
@@ -72,10 +70,10 @@ require('./assets/js/scripts.bundle.js')
 Vue.config.productionTip = false
 
 axios.defaults.params = {
-  lang: 'ru'
+  lang: require('./config.js').LOCALE
 }
 
-axios.defaults.baseURL = 'http://localhost/api.realty/api'
+axios.defaults.baseURL = require('./config.js').API_URL
 
 Auth.init()
 
