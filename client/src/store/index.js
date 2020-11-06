@@ -1,17 +1,13 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from 'axios'
-
-// mutation types:
-export const SET_AUTH_TOKEN = 'setAuthToken'
-export const SET_USER = 'setUser'
-export const SET_PAGE_TITLE = 'setPageTitle'
-export const SET_PAGE_IS_LOADING = 'setPageIsLoading'
-
-// action types:
-export const LOGIN = 'login'
-export const LOGOUT = 'logout'
-export const FETCH_USER = 'fetchUser'
+import {
+  SET_AUTH_TOKEN,
+  SET_IS_TWO_FACTOR,
+  SET_USER,
+  SET_PAGE_TITLE,
+  SET_PAGE_IS_LOADING
+} from './mutation-types.js'
 
 Vue.use(Vuex)
 
@@ -22,6 +18,7 @@ const PAGE_LOADING_TIMEOUT = 2000
 export default new Vuex.Store({
   state: {
     authToken: window.localStorage.getItem(AUTH_TOKEN_KEY),
+    isTwoFactor: false,
     user: null,
     pageTitle: '',
     pageIsLoading: false
@@ -36,15 +33,19 @@ export default new Vuex.Store({
       state.authToken = token
     },
 
+    [SET_IS_TWO_FACTOR] (state, isTwoFactor) {
+      state.isTwoFactor = isTwoFactor
+    },
+
     [SET_USER] (state, user) {
       state.user = user
     },
 
     [SET_PAGE_TITLE] (state, title) {
-      state.title = PAGE_TITLE_PATTERN.replace('{title}', title)
+      state.pageTitle = PAGE_TITLE_PATTERN.replace('{title}', title)
 
       Vue.nextTick(() => {
-        document.title = state.title
+        document.title = state.pageTitle
       })
     },
 
@@ -62,13 +63,19 @@ export default new Vuex.Store({
   },
 
   actions: {
-    [LOGIN] ({ commit }, data) {
+    login ({ commit }, data) {
       return new Promise((resolve, reject) => {
         axios.post('/auth/token', data)
           .then(res => {
-            const token = res.data.access_token
-            commit(SET_AUTH_TOKEN, token)
-            window.localStorage.setItem(AUTH_TOKEN_KEY, token)
+            if (res.data['2fa']) {
+              commit(SET_IS_TWO_FACTOR, true)
+            } else {
+              const token = res.data.access_token
+              commit(SET_IS_TWO_FACTOR, false)
+              commit(SET_AUTH_TOKEN, token)
+              window.localStorage.setItem(AUTH_TOKEN_KEY, token)
+            }
+
             return resolve(res)
           })
           .catch(error => {
@@ -77,7 +84,7 @@ export default new Vuex.Store({
       })
     },
 
-    [LOGOUT] ({ commit }) {
+    logout ({ commit }) {
       return new Promise((resolve, reject) => {
         axios.post('/auth/logout')
           .then(res => {
@@ -92,7 +99,7 @@ export default new Vuex.Store({
       })
     },
 
-    [FETCH_USER] ({ commit }) {
+    fetchUser ({ commit }) {
       return new Promise((resolve, reject) => {
         axios.get('/users/self')
           .then(res => {

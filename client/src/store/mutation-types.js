@@ -1,0 +1,5 @@
+export const SET_AUTH_TOKEN = 'setAuthToken'
+export const SET_IS_TWO_FACTOR = 'setIsTwoFactor'
+export const SET_USER = 'setUser'
+export const SET_PAGE_TITLE = 'setPageTitle'
+export const SET_PAGE_IS_LOADING = 'setPageIsLoading'

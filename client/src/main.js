@@ -67,6 +67,24 @@ window.KTAppSettings = {
 require('./assets/plugins/global/plugins.bundle.js')
 require('./assets/js/scripts.bundle.js')
 
+window.toastr.options = {
+  'closeButton': true,
+  'debug': false,
+  'newestOnTop': true,
+  'progressBar': false,
+  'positionClass': 'toast-top-right',
+  'preventDuplicates': false,
+  'onclick': null,
+  'showDuration': '300',
+  'hideDuration': '1000',
+  'timeOut': '5000',
+  'extendedTimeOut': '1000',
+  'showEasing': 'swing',
+  'hideEasing': 'linear',
+  'showMethod': 'fadeIn',
+  'hideMethod': 'fadeOut'
+}
+
 Vue.config.productionTip = false
 
 axios.defaults.params = {
