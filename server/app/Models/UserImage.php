@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Company extends Model
+class UserImage extends Model
 {
     use HasFactory;
 
@@ -15,19 +15,11 @@ class Company extends Model
      * @var array
      */
     protected $fillable = [
-        'owner_id',
-        'name',
+        'url',
     ];
 
-    public function owner()
+    public function user()
     {
-        return $this->hasOne(
-            'App\Models\User', 'owner_id'
-        );
-    }
-
-    public function users()
-    {
-        return $this->hasMany('App\Models\User');
+        return $this->belongsTo('App\Models\User');
     }
 }

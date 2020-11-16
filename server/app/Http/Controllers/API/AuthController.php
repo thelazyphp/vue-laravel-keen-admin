@@ -37,7 +37,7 @@ class AuthController extends Controller
         $validator = Validator::make(
             $request->all(),
             $rules,
-            trans('api.errors.validation')
+            trans('api.errors.validation'),
         );
 
         $validated = $validator->validate();
@@ -54,7 +54,7 @@ class AuthController extends Controller
             ]);
         }
 
-        if (! Hash::check($validated['password'], $user->password)) {
+        if (! Hash::check($user->password, $validated['password'])) {
             throw ValidationException::withMessages([
                 'password' => [
                     trans('api.errors.auth.password'),

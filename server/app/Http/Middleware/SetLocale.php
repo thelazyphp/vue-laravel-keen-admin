@@ -17,10 +17,8 @@ class SetLocale
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->is('api/*')) {
-            if ($request->query('lang')) {
-                App::setLocale($request->query('lang'));
-            }
+        if ($request->query('lang')) {
+            App::setLocale(($request->query('lang')));
         }
 
         return $next($request);
