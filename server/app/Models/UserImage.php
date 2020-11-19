@@ -18,6 +18,9 @@ class UserImage extends Model
         'url',
     ];
 
+    /**
+     *
+     */
     public function user()
     {
         return $this->belongsTo('App\Models\User');

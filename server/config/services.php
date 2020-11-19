@@ -14,8 +14,8 @@ return [
     |
     */
 
-    'jandex' => [
-        'api_key' => env('JANDEX_API_KEY'),
+    'yandex' => [
+        'api_key' => env('YANDEX_API_KEY'),
     ],
 
     'mailgun' => [

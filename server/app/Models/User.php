@@ -10,7 +10,7 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, Filterable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'last_name',
     ];
 
     /**
@@ -42,13 +43,39 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     *
+     */
     public function image()
     {
         return $this->hasOne('App\Models\UserImage');
     }
 
+    /**
+     *
+     */
     public function company()
     {
         return $this->belongsTo('App\Models\Company');
+    }
+
+    /**
+     *
+     */
+    public function employees()
+    {
+        return $this->company
+            ->users()
+            ->where(
+                'id', '<>', $this->id
+            );
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCompanyOwner()
+    {
+        return $this->id === $this->company->owner->id;
     }
 }
