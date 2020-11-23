@@ -3,7 +3,6 @@
 namespace App\Address;
 
 use App\Models\YandexGeocode;
-use App\Address\Components;
 use App\Models\Address\Country;
 use App\Models\Address\Province;
 use App\Models\Address\Area;
@@ -18,14 +17,32 @@ use App\Models\Address\Coordinates;
 class Geocoder
 {
     /**
+     * @var bool
+     */
+    protected $geocodeMetro = true;
+
+    /**
+     * @var string[]
+     */
+    protected $localitiesWithMetro = [
+        'Минск',
+    ];
+
+    /**
+     * @param  bool  $geocodeMetro
+     */
+    public function __construct($geocodeMetro = true)
+    {
+        $this->geocodeMetro = $geocodeMetro;
+    }
+
+    /**
      * @param  string  $request
      * @return \App\Address\Components
      */
     public function getAddressComponents($request)
     {
-        $geocode = YandexGeocode::where([
-            'request' => $request,
-        ])->first();
+        $geocode = YandexGeocode::where('request', $request)->first();
 
         if (! $geocode) {
             $attributes = [
@@ -70,9 +87,51 @@ class Geocoder
                     $attributes[$addressComponent->kind] = $addressComponent->name;
                 }
 
-                [$attributes['long'], $attributes['lat']] = explode(
-                    ' ', $geoObject->Point->pos, 2
-                );
+                [$attributes['long'], $attributes['lat']] = explode(' ', $geoObject->Point->pos, 2);
+
+                if (
+                    $this->geocodeMetro
+                    && ! isset($attributes['metro'])
+                    && isset($attributes['locality'])
+                    && in_array($attributes['locality'], $this->localitiesWithMetro)
+                ) {
+                    $request = implode(
+                        ',', [$attributes['long'], $attributes['lat']]
+                    );
+
+                    $data = json_decode(
+                        file_get_contents(
+                            "https://geocode-maps.yandex.ru/1.x?format=json&apikey={$apiKey}&geocode={$request}&kind=metro"
+                        )
+                    );
+
+                    if (
+                        $data->response
+                            ->GeoObjectCollection
+                            ->metaDataProperty
+                            ->GeocoderResponseMetaData
+                            ->found
+                    ) {
+                        $geoObject = $data->response
+                            ->GeoObjectCollection
+                            ->featureMember[0]
+                            ->GeoObject;
+
+                        foreach (
+                            $geoObject->metaDataProperty
+                                ->GeocoderMetaData
+                                ->Address
+                                ->Components as $addressComponent
+                        ) {
+                            if (
+                                $addressComponent->kind == 'route'
+                                || $addressComponent->kind == 'metro'
+                            ) {
+                                $attributes[$addressComponent->kind] = $addressComponent->name;
+                            }
+                        }
+                    }
+                }
             }
 
             $geocode = YandexGeocode::create($attributes);

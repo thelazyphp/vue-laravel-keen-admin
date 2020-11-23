@@ -2,9 +2,9 @@
 
 namespace App\Http\Filters;
 
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Str;
 
 class QueryFilter
 {
@@ -19,19 +19,13 @@ class QueryFilter
     protected $builder;
 
     /**
-     * @var string
+     * @var array
      */
-    protected $searchParam = 'q';
-
-    /**
-     * @var string
-     */
-    protected $sortParam = 'sort';
-
-    /**
-     * @var string
-     */
-    protected $filterParam = 'filter';
+    protected $ignoreParams = [
+        'lang',
+        'page',
+        'per_page',
+    ];
 
     /**
      * @param  \Illuminate\Http\Request  $request
@@ -49,66 +43,59 @@ class QueryFilter
     {
         $this->builder = $builder;
 
-        if ($this->request->query($this->searchParam)) {
-            $this->searchBy(
-                $this->request->query($this->searchParam)
-            );
-        }
+        $casts = $this->casts($this->request);
+        $filterable = $this->filterable($this->request);
 
-        if ($this->request->query($this->sortParam)) {
-            $sortable = $this->sortable($this->request);
-
-            foreach ($this->request->query($this->sortParam) as $order => $field) {
-                if (empty($sortable) || in_array($field, $sortable)) {
-                    $this->sortBy($field, $order);
-                }
+        foreach ($this->request->query() as $param => $value) {
+            if (isset($casts[$param])) {
+                $param = $casts[$param];
             }
-        }
 
-        if ($this->request->query($this->filterParam)) {
-            $filterable = $this->filterable($this->request);
+            if (in_array($param, $this->ignoreParams)) {
+                continue;
+            }
 
-            foreach ($this->request->query($this->filterParam) as $field => $value) {
-                if (empty($filterable) || in_array($field, $filterable)) {
-                    if (is_array($value)) {
-                        foreach ($value as $op => $val) {
-                            $method = Str::camel($field).Str::camel($op);
+            if (! empty($filterable) && ! in_array($param, $filterable)) {
+                continue;
+            }
 
-                            if (method_exists($this, $method)) {
-                                call_user_func(
-                                    [$this, $method], $val
-                                );
-                            } else {
-                                switch ($op) {
-                                    case 'l':
-                                        $this->builder = $this->builder->where($field, '<', $val);
-                                        break;
-                                    case 'le':
-                                        $this->builder = $this->builder->where($field, '<=', $val);
-                                        break;
-                                    case 'g':
-                                        $this->builder = $this->builder->where($field, '>', $val);
-                                        break;
-                                    case 'ge':
-                                        $this->builder = $this->builder->where($field, '>=', $val);
-                                        break;
-                                    case 'in':
-                                        $this->builder = $this->builder->whereIn($field, explode(',', $val));
-                                        break;
-                                }
-                            }
-                        }
+            if (is_array($value)) {
+                foreach ($value as $op => $val) {
+                    $method = Str::camel('filter_'.$param.'_'.$op);
+
+                    if (method_exists($this, $method)) {
+                        call_user_func(
+                            [$this, $method], $val
+                        );
                     } else {
-                        $method = Str::camel($field);
-
-                        if (method_exists($this, $method)) {
-                            call_user_func(
-                                [$this, $method], $value
-                            );
-                        } else {
-                            $this->builder = $this->builder->where($field, $value);
+                        switch ($op) {
+                            case 'l':
+                                $this->builder = $this->builder->where($param, '<', $val);
+                                break;
+                            case 'le':
+                                $this->builder = $this->builder->where($param, '<=', $val);
+                                break;
+                            case 'g':
+                                $this->builder = $this->builder->where($param, '>', $val);
+                                break;
+                            case 'ge':
+                                $this->builder = $this->builder->where($param, '>=', $val);
+                                break;
+                            case 'in':
+                                $this->builder = $this->builder->whereIn($param, explode(',', $val));
+                                break;
                         }
                     }
+                }
+            } else {
+                $method = Str::camel('filter_'.$param);
+
+                if (method_exists($this, $method)) {
+                    call_user_func(
+                        [$this, $method], $value
+                    );
+                } else {
+                    $this->builder = $this->builder->where($param, $value);
                 }
             }
         }
@@ -117,35 +104,12 @@ class QueryFilter
     }
 
     /**
-     * @param  string  $search
-     * @return void
-     */
-    protected function searchBy($search)
-    {
-        //
-    }
-
-    /**
-     * @param  string  $field
-     * @param  string  $order
-     * @return void
-     */
-    protected function sortBy($field, $order)
-    {
-        $this->builder = $this->builder->orderBy(
-            $field, $order
-        );
-    }
-
-    /**
      * @param  \Illuminate\Http\Request  $request
-     * @return string[]
+     * @return array
      */
-    protected function sortable(Request $request)
+    protected function casts(Request $request)
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     /**
@@ -154,8 +118,24 @@ class QueryFilter
      */
     protected function filterable(Request $request)
     {
-        return [
-            //
-        ];
+        return [];
+    }
+
+    /**
+     * @param  string  $field
+     * @return void
+     */
+    protected function filterSortAsc($field)
+    {
+        $this->builder = $this->builder->orderBy($field, 'asc');
+    }
+
+    /**
+     * @param  string  $field
+     * @return void
+     */
+    protected function filterSortDesc($field)
+    {
+        $this->builder = $this->builder->orderBy($field, 'desc');
     }
 }
