@@ -5,52 +5,67 @@ namespace App\Address;
 class Components
 {
     /**
-     * @var \App\Models\Address\Country
+     * @var float
+     */
+    public $lat;
+
+    /**
+     * @var float
+     */
+    public $long;
+
+    /**
+     * @var \App\Models\Address\Components\Country|null
      */
     public $country;
 
     /**
-     * @var \App\Models\Address\Province
+     * @var \App\Models\Address\Components\Province|null
      */
     public $province;
 
     /**
-     * @var \App\Models\Address\Area
+     * @var \App\Models\Address\Components\Area|null
      */
     public $area;
 
     /**
-     * @var \App\Models\Address\Locality
+     * @var \App\Models\Address\Components\Locality|null
      */
     public $locality;
 
     /**
-     * @var \App\Models\Address\District
+     * @var \App\Models\Address\Components\District|null
      */
     public $district;
 
     /**
-     * @var \App\Models\Address\Metro
+     * @var \App\Models\Address\Components\Metro|null
      */
     public $metro;
 
     /**
-     * @var \App\Models\Address\Street
+     * @var \App\Models\Address\Components\Street|null
      */
     public $street;
 
     /**
-     * @var \App\Models\Address\House
+     * @var \App\Models\Address\Components\House|null
      */
     public $house;
 
     /**
-     * @var \App\Models\Address\Entrance
+     * @var \App\Models\Address\Components\Entrance|null
      */
     public $entrance;
 
     /**
-     * @var \App\Models\Address\Coordinates
+     * @param  float  $lat
+     * @param  float  $long
      */
-    public $coordinates;
+    public function __construct($lat, $long)
+    {
+        $this->lat = $lat;
+        $this->long = $long;
+    }
 }

@@ -24,7 +24,7 @@ class QueryFilter
     protected $ignoreParams = [
         'lang',
         'page',
-        'per_page',
+        'limit',
     ];
 
     /**
@@ -83,6 +83,9 @@ class QueryFilter
                                 break;
                             case 'in':
                                 $this->builder = $this->builder->whereIn($param, explode(',', $val));
+                                break;
+                            case 'like':
+                                $this->builder = $this->builder->where($param, 'like', '%'.$val.'%');
                                 break;
                         }
                     }

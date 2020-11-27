@@ -5,7 +5,7 @@
 
     RewriteEngine On
 
-    RewriteBase /api.realty/
+    RewriteBase /api.real-estate-crm/
 
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .

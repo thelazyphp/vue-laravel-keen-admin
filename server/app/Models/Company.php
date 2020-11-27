@@ -15,22 +15,17 @@ class Company extends Model
      * @var array
      */
     protected $fillable = [
+        'owner_id',
         'name',
     ];
 
-    /**
-     *
-     */
     public function owner()
     {
-        return $this->hasOne(
+        return $this->belongsTo(
             'App\Models\User', 'owner_id'
         );
     }
 
-    /**
-     *
-     */
     public function users()
     {
         return $this->hasMany('App\Models\User');

@@ -36,15 +36,21 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->configureRateLimiting();
-
         Route::bind('user', function ($value) {
-            return $value === 'self'
+            return $value === 'me'
                 ? auth()->user()
                 : User::findOrFail($value);
         });
 
+        $this->configureRateLimiting();
+
         $this->routes(function () {
+            Route::middleware('api')
+                ->namespace($this->namespace)
+                ->group(base_path('routes/api.php'));
+        });
+
+        /* $this->routes(function () {
             Route::prefix('api')
                 ->middleware('api')
                 ->namespace($this->namespace)
@@ -53,7 +59,7 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
-        });
+        }); */
     }
 
     /**

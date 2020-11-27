@@ -19,9 +19,14 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
-        'password',
         'last_name',
+        'email',
+        'username',
+        'password',
+
+        // 'name',
+        // 'email',
+        // 'password',
     ];
 
     /**
@@ -44,38 +49,25 @@ class User extends Authenticatable
     ];
 
     /**
-     *
+     * @return bool
      */
-    public function image()
+    public function isCompanyOwner()
     {
-        return $this->hasOne('App\Models\UserImage');
+        return $this->id == $this->company->owner->id;
     }
 
-    /**
-     *
-     */
     public function company()
     {
         return $this->belongsTo('App\Models\Company');
     }
 
-    /**
-     *
-     */
-    public function employees()
+    public function image()
     {
-        return $this->company
-            ->users()
-            ->where(
-                'id', '<>', $this->id
-            );
+        return $this->hasOne('App\Models\UserImage');
     }
 
-    /**
-     * @return bool
-     */
-    public function isCompanyOwner()
+    public function permissions()
     {
-        return $this->id === $this->company->owner->id;
+        return $this->hasOne('App\Models\UserPermissions');
     }
 }
